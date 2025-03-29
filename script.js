@@ -13,9 +13,9 @@ void main() {
 
 const fsSource = `
 precision mediump float;
-//uniform vec4 uColor;
+uniform vec4 uColor;
 void main() {
-  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  gl_FragColor = uColor;
 }
 `;
 
@@ -30,6 +30,10 @@ gl.useProgram(shaderProgram);
 
 // Атрибут, через который мы будем передавать данные в шейдер (в данном случае вершинный, т.к. переменная из него)
 const positionLocation = gl.getAttribLocation(shaderProgram, "aPosition");
+
+// Пример работы с uniform uColor (в тупую задаём переменную цвета)
+const uColorLocation = gl.getUniformLocation(shaderProgram, "uColor");
+gl.uniform4fv(uColorLocation, [0.0, 0.0, 1.0, 1.0]);
 
 // Создаём буфер и присоединяем его (он нужен для передачи данных в шейдер)
 // Далее всегда перед передачей данных в атрибут positionLocation, надо сначала привязать
