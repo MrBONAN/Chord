@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGL: Анимация синусоиды</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div id="controls">
+        <h2>Настройки анимации</h2>
+        <div class="input-group">
+            <label for="position-function">Начальное положение:</label>
+            <input type="text" id="position-function" value="(31 * Math.sin(2 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31">
+        </div>
+        <div class="input-group">
+            <label for="speed-function">Начальная скорость:</label>
+            <input type="text" id="speed-function" value="(Math.sin(Math.PI * x) + 12 * Math.sin(3 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31">
+        </div>
+        <button id="apply-functions">Применить</button>
+    </div>
+    <div id="draw-area">
+        <canvas id="glcanvas" width="800" height="600"></canvas>
+    </div>
+</div>
+<script type="module" src="script.js"></script>
+<script type="module" src="webGlHelper.js"></script>
+</body>
+</html>
