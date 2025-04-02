@@ -1,8 +1,18 @@
 "use strict";
 
 import {getCanvasAndGl, initShaderProgram, createBuffer} from './webGlHelper.js';
+import {
+    calculateFunctionHeights,
+    calculateDCoefficients,
+    calculateECoefficients,
+    getMainStringFunction,
+    createFunctionPoints
+} from "./integrate.js";
 
+const stringLineColor = [1.0, 0.0, 0.0, 1.0];
+const speedLineColor = [0.0, 0.0, 1.0, 1.0];
 const {canvas, gl} = getCanvasAndGl("glcanvas");
+
 
 const vsSource = `
 attribute vec2 aPosition;
@@ -19,66 +29,61 @@ void main() {
 }
 `;
 
-const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-// Шейдерные программы объединяют в себе 2 вида шейдеров: вершинные и фрагментные
-// 1) Вершинный обрабатывает позицию. На вход подаётся в каком-то виде координата, на выходе четырёхмерный обработанный вектор
-// 2) Фрагментный нужен для обработки цвета (можно всякие штуки там мутить)
-// Сама программа нужна, чтобы в коде создавать несколько пресетов. Допустим есть 2 окна и рисоваться линии должны по-разном
-// Да даже можно в том же самом окне рисовать 2 разные линии (красная и синяя, например) при помощи разных shaderProgram
-// Перед этим надо сначала её подключить
-gl.useProgram(shaderProgram);
+const left = 0;
+const right = 1;
+const dx = 0.01
+const T0 = 20;
+const p = 2.5;
+// const tempInitialPositionFunction = (x) => x * (1 - x);
+// const tempInitialSpeedFunction = (x) => 0;
+// Функция повеселее (это типа та, которую мы делали на лекции, но я её домножил на 1/31, чтобы влезало в экран)
+const tempInitialPositionFunction = (x) => (31 * Math.sin(2 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
+const tempInitialSpeedFunction = (x) => (Math.sin(Math.PI * x) + 12 * Math.sin(3 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
+// Количество слагаемых в разложении в ряд
+const N = 100;
 
-// Атрибут, через который мы будем передавать данные в шейдер (в данном случае вершинный, т.к. переменная из него)
-const positionLocation = gl.getAttribLocation(shaderProgram, "aPosition");
+const a = Math.sqrt(T0 / p);
+const L = right - left;
+const pointsCount = Math.floor(L / dx);
+var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
-// Пример работы с uniform uColor (в тупую задаём переменную цвета)
-const uColorLocation = gl.getUniformLocation(shaderProgram, "uColor");
-gl.uniform4fv(uColorLocation, [0.0, 0.0, 1.0, 1.0]);
+const initialPositionHeights = calculateFunctionHeights(tempInitialPositionFunction, pointsCount, dx, left);
+const initialSpeedHeights = calculateFunctionHeights(tempInitialSpeedFunction, pointsCount, dx, left);
+const D = calculateDCoefficients(a, L, lambdas, initialPositionHeights, dx, left);
+const E = calculateECoefficients(a, L, lambdas, initialSpeedHeights, dx, left);
 
-// Создаём буфер и присоединяем его (он нужен для передачи данных в шейдер)
-// Далее всегда перед передачей данных в атрибут positionLocation, надо сначала привязать
-// данный буфер к ТОМУ ЖЕ ТИПУ gl буфера, в данном случае gl.ARRAY_BUFFER
+const stringFunction = getMainStringFunction(D, E, lambdas, a);
+
+
+///////////////// WEBGL НАСТРОЙКА
+const drawLineProgram = initShaderProgram(gl, vsSource, fsSource);
+gl.useProgram(drawLineProgram);
+
+const positionLocation = gl.getAttribLocation(drawLineProgram, "aPosition");
+
+const uColorLocation = gl.getUniformLocation(drawLineProgram, "uColor");
+gl.uniform4fv(uColorLocation, stringLineColor);
+
 const positionBuffer = createBuffer(gl, positionLocation, gl.ARRAY_BUFFER, 2, gl.FLOAT);
 gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-// Параметры синусоиды
-const amplitude = 0.5;
-const frequency = 4.0;
-const pointCount = 200;
-const speed = 1.0;
-
-// Функция для генерации точек синусоиды с учётом сдвига фазы
-function generateSineWaveVertices(phase) {
-    const vertices = [];
-    for (let i = 0; i <= pointCount; i++) {
-        const x = -1 + (2 * i) / pointCount;
-        const y = amplitude * Math.sin(frequency * Math.PI * (x + phase));
-        vertices.push(x, y);
-    }
-
-    return new Float32Array(vertices);
-}
-
-// Устанавливаем цвет для очистки
 gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
+/////////////////
 function render(time) {
     // Время приходит в миллисекундах; переводим в секунды
     const t = time * 0.001;
-    const phase = t * speed; // сдвиг фазы изменяется со временем
+    const stringFunctionInCurrentMoment = (x) => stringFunction(t, x);
 
-    // Генерируем новые вершины синусоиды
-    const vertices = generateSineWaveVertices(phase);
+    const heights = calculateFunctionHeights(stringFunctionInCurrentMoment, pointsCount, dx, left);
+    const vertices = createFunctionPoints(heights, dx, left);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
-    // Устанавливаем viewport и очищаем canvas. viewport - область canvas, в которой рисуем
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Рисуем синусоиду как непрерывную линию
     gl.drawArrays(gl.LINE_STRIP, 0, vertices.length / 2);
 
-    // Запрашиваем следующий кадр
     requestAnimationFrame(render);
 }
 

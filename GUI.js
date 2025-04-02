@@ -34,18 +34,18 @@ const right = 1;
 const dx = 0.01
 const T0 = 20;
 const p = 2.5;
-const tempInitialPositionFunction = (x) => x * (1 - x);
-const tempInitialSpeedFunction = (x) => 0;
+// const tempInitialPositionFunction = (x) => x * (1 - x);
+// const tempInitialSpeedFunction = (x) => 0;
+// Функция повеселее (это типа та, которую мы делали на лекции, но я её домножил на 1/31, чтобы влезало в экран)
+const tempInitialPositionFunction = (x) => (31 * Math.sin(2 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
+const tempInitialSpeedFunction = (x) => (Math.sin(Math.PI * x) + 12 * Math.sin(3 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
 // Количество слагаемых в разложении в ряд
 const N = 100;
 
 const a = Math.sqrt(T0 / p);
 const L = right - left;
 const pointsCount = Math.floor(L / dx);
-// Рассматриваем функции на отрезке от 0 до L
-// const initialPositionFunction = (x) => tempInitialPositionFunction(x + left);
-// const initialSpeedFunction = (x) => tempInitialSpeedFunction(x + left);
-var lambdas = new Array(N).map((_, index) => Math.PI * (index + 1) / L);
+var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
 const initialPositionHeights = calculateFunctionHeights(tempInitialPositionFunction, pointsCount, dx, left);
 const initialSpeedHeights = calculateFunctionHeights(tempInitialSpeedFunction, pointsCount, dx, left);
@@ -75,7 +75,7 @@ function render(time) {
     const t = time * 0.001;
     const stringFunctionInCurrentMoment = (x) => stringFunction(t, x);
 
-    const heights = calculateFunctionHeights(tempInitialPositionFunction, pointsCount, dx, left);
+    const heights = calculateFunctionHeights(stringFunctionInCurrentMoment, pointsCount, dx, left);
     const vertices = createFunctionPoints(heights, dx, left);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 

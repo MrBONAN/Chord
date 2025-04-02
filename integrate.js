@@ -56,15 +56,24 @@ export function getMainStringFunction(D, E, lambdas, a) {
         console.error("Неправильное соотношение между количеством коэффициентов для итоговой функции");
         count = Math.min(D.length, E.length, lambdas.length);
     }
-    return (t, x) => lambdas.reduce((sum, lambda, i) =>
-        (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
+    return (t, x) => {
+        let y = 0;
+        for (let i = 0; i < count; i++) {
+            y += (D[i] * Math.sin(a * lambdas[i] * t) + E[i] * Math.cos(a * lambdas[i] * t)) * Math.sin(lambdas[i] * x)
+        }
+        return y;
+    };
+    // В этой строчке был косяк. Мб можно как-то её переписать, чтобы заработало, но в падлу
+    // return (t, x) => lambdas.reduce((sum, lambda, i) =>
+    //     (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
 }
 
 export function createFunctionPoints(heights, dx, startX) {
-    const points = new Map();
+    const points = new Float32Array(heights.length * 2);
     let x = startX;
     for (let i = 0; i < heights.length; i += 1) {
-        points[x] = heights[i];
+        points[i * 2] = x;
+        points[i * 2 + 1] = heights[i];
         x += dx;
     }
 
