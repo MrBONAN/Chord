@@ -50,13 +50,23 @@ export function calculateECoefficients(a, L, lambdas, heights, dx, startX) {
     return E;
 }
 
-export function getMainStringFunction(D, E, lambdas) {
+export function getMainStringFunction(D, E, lambdas, a) {
     let count = lambdas.length;
     if (D.length !== E.length || E.length !== lambdas.length) {
         console.error("Неправильное соотношение между количеством коэффициентов для итоговой функции");
         count = Math.min(D.length, E.length, lambdas.length);
     }
-    return (t, x) => {
-        lambdas.redu
-    };
+    return (t, x) => lambdas.reduce((sum, lambda, i) =>
+        (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
+}
+
+export function createFunctionPoints(heights, dx, startX) {
+    const points = new Map();
+    let x = startX;
+    for (let i = 0; i < heights.length; i += 1) {
+        points[x] = heights[i];
+        x += dx;
+    }
+
+    return points;
 }
