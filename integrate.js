@@ -18,7 +18,7 @@ export function multiplyFunctionHeights(heights1, heights2) {
 export function calculateFunctionHeights(func, count, dx, startX) {
     let x = startX;
     const heights = [];
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count + 1; i++) {
         heights.push(func(x));
         x += dx;
     }
@@ -72,10 +72,9 @@ export function createFunctionPoints(heights, dx, startX) {
     const points = new Float32Array(heights.length * 2);
     let x = startX;
     for (let i = 0; i < heights.length; i += 1) {
-        points[i * 2] = x;
+        points[i * 2] = 2 * x - 1;
         points[i * 2 + 1] = heights[i];
         x += dx;
     }
-
     return points;
 }

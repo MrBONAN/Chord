@@ -72,7 +72,7 @@ gl.clearColor(1.0, 1.0, 1.0, 1.0);
 /////////////////
 function render(time) {
     // Время приходит в миллисекундах; переводим в секунды
-    const t = time * 0.001;
+    const t = time * 0.0001;
     const stringFunctionInCurrentMoment = (x) => stringFunction(t, x);
 
     const heights = calculateFunctionHeights(stringFunctionInCurrentMoment, pointsCount, dx, left);
