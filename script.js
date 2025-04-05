@@ -74,8 +74,9 @@ function render(time) {
     // Время приходит в миллисекундах; переводим в секунды
     const t = time * 0.0001;
     const shiftedStringFunctionInCurrentMoment = (x) => shiftedStringFunction(t, x);
-
-    const vertices = createFunctionPoints(shiftedStringFunctionInCurrentMoment, pointsCount, 0, 1, -1, 1);
+    // 4 последних параметра задают область, которую мы рассматриваем
+    const vertices = createFunctionPoints(shiftedStringFunctionInCurrentMoment, pointsCount, left, right,
+        0, 1, -1, 1);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
     gl.viewport(0, 0, canvas.width, canvas.height);

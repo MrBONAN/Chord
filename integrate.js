@@ -61,7 +61,10 @@ export function getMainStringFunction(D, E, lambdas, a) {
         sum + (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
 }
 
-export function createFunctionPoints(func, pointsCount, left, right, bottom, top, leftFuncBorder = undefined, rightFuncBorder = undefined) {
+export function createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders = true) {
+    // TODO
+    // параметры leftFuncBorder и rightFuncBorder понадобятся для отрисовки функции вне отрезка (указываем, надо ли рисовать, при помощи showOutsideBorders)
+    // пока не реализовал, но это позже
     const dx = (right - left) / (pointsCount - 1);
     const points = new Float32Array(pointsCount * 2);
     let x = 0;
@@ -70,8 +73,8 @@ export function createFunctionPoints(func, pointsCount, left, right, bottom, top
     for (let i = 0; i < pointsCount; i++) {
         // Нормализуем по осям X и Y
         points[i * 2] = x / width * 2 - 1;
-        // !ВНИМАНИЕ! т.к. функция у нас УЖЕ на отезке [0, L], а x как рази из этого отрезка, то надо считать func(x), т.е. без сдвига
-        points[i * 2 + 1] = (func(x) - bottom) / height * 2 - 1;
+        // Я в душе **не знаю** почему такой аргумент в функции работает, но он РАБОТАЕТ!
+        points[i * 2 + 1] = (func(x - leftFuncBorder + left) - bottom) / height * 2 - 1;
         x += dx;
     }
     return points;
