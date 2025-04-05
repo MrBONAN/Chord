@@ -12,6 +12,7 @@ import {
 const stringLineColor = [1.0, 0.0, 0.0, 1.0];
 const speedLineColor = [0.0, 0.0, 1.0, 1.0];
 const {canvas, gl} = getCanvasAndGl("glcanvas");
+const PI = Math.PI;
 
 
 const vsSource = `
@@ -34,11 +35,8 @@ const right = 1;
 const dx = 0.01
 const T0 = 20;
 const p = 2.5;
-// const tempInitialPositionFunction = (x) => x * (1 - x);
-// const tempInitialSpeedFunction = (x) => 0;
-// Функция повеселее (это типа та, которую мы делали на лекции, но я её домножил на 1/31, чтобы влезало в экран)
-const tempInitialPositionFunction = (x) => (31 * Math.sin(2 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
-const tempInitialSpeedFunction = (x) => (Math.sin(Math.PI * x) + 12 * Math.sin(3 * Math.PI * x) + 2 * Math.sin(5 * Math.PI * x)) / 31;
+const tempInitialPositionFunction = (x) => Math.sin(2 * PI * x);
+const tempInitialSpeedFunction = (x) => 3*PI*Math.sin(PI*x) + 9*PI*Math.sin(3*PI*x) + 15*PI*Math.sin(5*PI*x);
 // Количество слагаемых в разложении в ряд
 const N = 100;
 
@@ -49,8 +47,8 @@ var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
 const initialPositionHeights = calculateFunctionHeights(tempInitialPositionFunction, pointsCount, dx, left);
 const initialSpeedHeights = calculateFunctionHeights(tempInitialSpeedFunction, pointsCount, dx, left);
-const D = calculateDCoefficients(a, L, lambdas, initialPositionHeights, dx, left);
-const E = calculateECoefficients(a, L, lambdas, initialSpeedHeights, dx, left);
+const D = calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx, left);
+const E = calculateECoefficients(a, L, lambdas, initialPositionHeights, dx, left);
 
 const stringFunction = getMainStringFunction(D, E, lambdas, a);
 
