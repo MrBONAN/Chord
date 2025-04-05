@@ -33,8 +33,8 @@ void main() {
 const left = 0;
 const right = 1;
 const dx = 0.01
-const T0 = 20;
-const p = 2.5;
+const T0 = 9;
+const p = 1;
 const tempInitialPositionFunction = (x) => Math.sin(2 * PI * x);
 const tempInitialSpeedFunction = (x) => 3*PI*Math.sin(PI*x) + 9*PI*Math.sin(3*PI*x) + 15*PI*Math.sin(5*PI*x);
 // Количество слагаемых в разложении в ряд
@@ -42,16 +42,18 @@ const N = 100;
 
 const a = Math.sqrt(T0 / p);
 const L = right - left;
-const pointsCount = Math.floor(L / dx);
+const pointsCount = Math.floor(L / dx) + 1;
 var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
-const initialPositionHeights = calculateFunctionHeights(tempInitialPositionFunction, pointsCount, dx, left);
-const initialSpeedHeights = calculateFunctionHeights(tempInitialSpeedFunction, pointsCount, dx, left);
-const D = calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx, left);
-const E = calculateECoefficients(a, L, lambdas, initialPositionHeights, dx, left);
+const shiftedInitialPositionFunction = (x) => tempInitialPositionFunction(x - left);
+const shiftedInitialSpeedFunction = (x) => tempInitialSpeedFunction(x - left);
 
-const stringFunction = getMainStringFunction(D, E, lambdas, a);
+const initialPositionHeights = calculateFunctionHeights(shiftedInitialPositionFunction, pointsCount, dx);
+const initialSpeedHeights = calculateFunctionHeights(shiftedInitialSpeedFunction, pointsCount, dx);
+const D = calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
+const E = calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
 
+const shiftedStringFunction = getMainStringFunction(D, E, lambdas, a);
 
 ///////////////// WEBGL НАСТРОЙКА
 const drawLineProgram = initShaderProgram(gl, vsSource, fsSource);
@@ -71,10 +73,10 @@ gl.clearColor(1.0, 1.0, 1.0, 1.0);
 function render(time) {
     // Время приходит в миллисекундах; переводим в секунды
     const t = time * 0.0001;
-    const stringFunctionInCurrentMoment = (x) => stringFunction(t, x);
+    const shiftedStringFunctionInCurrentMoment = (x) => shiftedStringFunction(t, x);
 
-    const heights = calculateFunctionHeights(stringFunctionInCurrentMoment, pointsCount, dx, left);
-    const vertices = createFunctionPoints(heights, dx, left);
+    const heights = calculateFunctionHeights(shiftedStringFunctionInCurrentMoment, pointsCount, dx);
+    const vertices = createFunctionPoints(heights, dx);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
     gl.viewport(0, 0, canvas.width, canvas.height);
