@@ -32,7 +32,7 @@ void main() {
 
 const left = 0;
 const right = 1;
-const dx = 0.01
+const dx = 0.001
 const T0 = 9;
 const p = 1;
 const tempInitialPositionFunction = (x) => Math.sin(2 * PI * x);
@@ -75,8 +75,7 @@ function render(time) {
     const t = time * 0.0001;
     const shiftedStringFunctionInCurrentMoment = (x) => shiftedStringFunction(t, x);
 
-    const heights = calculateFunctionHeights(shiftedStringFunctionInCurrentMoment, pointsCount, dx);
-    const vertices = createFunctionPoints(heights, dx);
+    const vertices = createFunctionPoints(shiftedStringFunctionInCurrentMoment, pointsCount, 0, 1, -1, 1);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
     gl.viewport(0, 0, canvas.width, canvas.height);

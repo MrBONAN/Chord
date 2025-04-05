@@ -56,16 +56,22 @@ export function getMainStringFunction(D, E, lambdas, a) {
         console.error("Неправильное соотношение между количеством коэффициентов для итоговой функции");
         count = Math.min(D.length, E.length, lambdas.length);
     }
+    lambdas = lambdas.slice(0, count);
     return (t, x) => lambdas.reduce((sum, lambda, i) =>
         sum + (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
 }
 
-export function createFunctionPoints(heights, dx) {
-    const points = new Float32Array(heights.length * 2);
+export function createFunctionPoints(func, pointsCount, left, right, bottom, top, leftFuncBorder = undefined, rightFuncBorder = undefined) {
+    const dx = (right - left) / (pointsCount - 1);
+    const points = new Float32Array(pointsCount * 2);
     let x = 0;
-    for (let i = 0; i < heights.length; i += 1) {
-        points[i * 2] = 2 * x - 1;
-        points[i * 2 + 1] = heights[i];
+    const width = right - left;
+    const height = top - bottom;
+    for (let i = 0; i < pointsCount; i++) {
+        // Нормализуем по осям X и Y
+        points[i * 2] = x / width * 2 - 1;
+        // !ВНИМАНИЕ! т.к. функция у нас УЖЕ на отезке [0, L], а x как рази из этого отрезка, то надо считать func(x), т.е. без сдвига
+        points[i * 2 + 1] = (func(x) - bottom) / height * 2 - 1;
         x += dx;
     }
     return points;
