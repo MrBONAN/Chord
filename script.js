@@ -32,7 +32,7 @@ void main() {
 
 const left = 0;
 const right = 1;
-const dx = 0.001
+const dx = 0.0001
 const T0 = 9;
 const p = 1;
 const tempInitialPositionFunction = (x) => Math.sin(2 * PI * x);
@@ -71,12 +71,10 @@ gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
 /////////////////
 function render(time) {
-    // Время приходит в миллисекундах; переводим в секунды
     const t = time * 0.0001;
     const shiftedStringFunctionInCurrentMoment = (x) => shiftedStringFunction(t, x);
-    // 4 последних параметра задают область, которую мы рассматриваем
     const vertices = createFunctionPoints(shiftedStringFunctionInCurrentMoment, pointsCount, left, right,
-        0, 1, -1, 1);
+        -10, 2, -3.1, 2, false);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
     gl.viewport(0, 0, canvas.width, canvas.height);

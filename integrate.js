@@ -61,21 +61,18 @@ export function getMainStringFunction(D, E, lambdas, a) {
         sum + (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
 }
 
-export function createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders = true) {
-    // TODO
-    // параметры leftFuncBorder и rightFuncBorder понадобятся для отрисовки функции вне отрезка (указываем, надо ли рисовать, при помощи showOutsideBorders)
-    // пока не реализовал, но это позже
+export function createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
     const dx = (right - left) / (pointsCount - 1);
-    const points = new Float32Array(pointsCount * 2);
-    let x = 0;
+    const points = [];
     const width = right - left;
     const height = top - bottom;
-    for (let i = 0; i < pointsCount; i++) {
-        // Нормализуем по осям X и Y
-        points[i * 2] = x / width * 2 - 1;
-        // Я в душе **не знаю** почему такой аргумент в функции работает, но он РАБОТАЕТ!
-        points[i * 2 + 1] = (func(x - leftFuncBorder + left) - bottom) / height * 2 - 1;
-        x += dx;
+    const eps = 1e-5
+    for (let i = 0, x = 0; i < pointsCount; i++, x += dx) {
+        if (!showOutsideBorders && !(-eps <= x - leftFuncBorder + left && x + left < rightFuncBorder + eps)) {
+            continue;
+        }
+        points.push(x / width * 2 - 1);
+        points.push((func(x - leftFuncBorder + left) - bottom) / height * 2 - 1);
     }
-    return points;
+    return new Float32Array(points);
 }
