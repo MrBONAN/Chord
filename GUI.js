@@ -4,9 +4,6 @@ import {initShaderProgram, createBuffer} from './webGlHelper.js';
 import {StringCalculator} from "./integrate.js";
 
 export class GUI {
-    static stringLineColor = [1.0, 0.0, 0.0, 1.0];
-    static speedLineColor = [0.0, 0.0, 1.0, 1.0];
-
     static vsSource = `
 attribute vec2 aPosition;
 void main() {
@@ -30,13 +27,15 @@ void main() {
         GUI.positionBuffer = createBuffer(gl, positionLocation, gl.ARRAY_BUFFER, 2, gl.FLOAT);
     }
 
-    static drawString(gl, canvas, func, pointsCount, leftBorder, rightBorder, left, right, top, bottom, showOutsideBorders) {
-        const vertices = StringCalculator.createFunctionPoints(func, pointsCount, leftBorder, rightBorder,
-            left, right, bottom, top, showOutsideBorders);
+    static drawString(gl, canvas, stringFunction, color, time, pointsCount, left, right, top, bottom, showOutsideBorders) {
+        const funcSnapshot = (x) => stringFunction.func(time, x);
+        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount,
+            stringFunction.leftBorder, stringFunction.rightBorder, left, right, bottom, top, showOutsideBorders);
+
         gl.useProgram(GUI.drawLineProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, GUI.positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
-        gl.uniform4fv(GUI.uColorLocation, GUI.stringLineColor);
+        gl.uniform4fv(GUI.uColorLocation, color);
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.drawArrays(gl.LINE_STRIP, 0, vertices.length / 2);
     }

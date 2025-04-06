@@ -1,5 +1,7 @@
 "use strict";
 
+import {StringFunction} from "./StringFunction.js";
+
 export class StringCalculator {
     static integrate(heights, dx) {
         return heights.reduce((sum, height) => sum + height * dx, 0);
@@ -76,7 +78,8 @@ export class StringCalculator {
         const D = StringCalculator.calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
         const E = StringCalculator.calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
 
-        return StringCalculator.calculateFunction(D, E, lambdas, a);
+        const func = StringCalculator.calculateFunction(D, E, lambdas, a);
+        return new StringFunction(func, leftBorder, rightBorder);
     }
 
     static createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
