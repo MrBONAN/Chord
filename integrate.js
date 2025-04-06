@@ -63,7 +63,7 @@ export function getMainStringFunction(D, E, lambdas, a) {
 
 export function createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
     const dx = (right - left) / (pointsCount - 1);
-    const points = [];
+    const points = new Array(pointsCount * 2);
     const width = right - left;
     const height = top - bottom;
     const eps = 1e-5
