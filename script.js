@@ -1,13 +1,7 @@
 "use strict";
 
 import {getCanvasAndGl, initShaderProgram, createBuffer} from './webGlHelper.js';
-import {
-    calculateFunctionHeights,
-    calculateDCoefficients,
-    calculateECoefficients,
-    getMainStringFunction,
-    createFunctionPoints
-} from "./integrate.js";
+import { StringCalculator } from "./integrate.js";
 
 const stringLineColor = [1.0, 0.0, 0.0, 1.0];
 const speedLineColor = [0.0, 0.0, 1.0, 1.0];
@@ -33,27 +27,14 @@ void main() {
 const left = 0;
 const right = 1;
 const dx = 0.0001
+const pointsCount = Math.floor((right - left) / dx) + 1;
 const T0 = 9;
 const p = 1;
-const tempInitialPositionFunction = (x) => Math.sin(2 * PI * x);
-const tempInitialSpeedFunction = (x) => 3*PI*Math.sin(PI*x) + 9*PI*Math.sin(3*PI*x) + 15*PI*Math.sin(5*PI*x);
-// Количество слагаемых в разложении в ряд
-const N = 100;
-
 const a = Math.sqrt(T0 / p);
-const L = right - left;
-const pointsCount = Math.floor(L / dx) + 1;
-var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
+const positionFunction = (x) => Math.sin(2 * PI * x);
+const speedFunction = (x) => 3 * PI * Math.sin(PI * x) + 9 * PI * Math.sin(3 * PI * x) + 15 * PI * Math.sin(5 * PI * x);
 
-const shiftedInitialPositionFunction = (x) => tempInitialPositionFunction(x - left);
-const shiftedInitialSpeedFunction = (x) => tempInitialSpeedFunction(x - left);
-
-const initialPositionHeights = calculateFunctionHeights(shiftedInitialPositionFunction, pointsCount, dx);
-const initialSpeedHeights = calculateFunctionHeights(shiftedInitialSpeedFunction, pointsCount, dx);
-const D = calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
-const E = calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
-
-const shiftedStringFunction = getMainStringFunction(D, E, lambdas, a);
+const shiftedStringFunction = StringCalculator.getMainStringFunction(positionFunction, speedFunction, left, right, a, dx);
 
 ///////////////// WEBGL НАСТРОЙКА
 const drawLineProgram = initShaderProgram(gl, vsSource, fsSource);
@@ -72,8 +53,8 @@ gl.clearColor(1.0, 1.0, 1.0, 1.0);
 /////////////////
 function render(time) {
     const t = time * 0.0001;
-    const shiftedStringFunctionInCurrentMoment = (x) => shiftedStringFunction(t, x);
-    const vertices = createFunctionPoints(shiftedStringFunctionInCurrentMoment, pointsCount, left, right,
+    const stringFunctionSnapshot = (x) => shiftedStringFunction(t, x);
+    const vertices = StringCalculator.createFunctionPoints(stringFunctionSnapshot, pointsCount, left, right,
         -10, 2, -3.1, 2, false);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.DYNAMIC_DRAW);
 
