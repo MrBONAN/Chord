@@ -1,6 +1,6 @@
 "use strict";
 
-import {StringFunction} from "./StringFunction.js";
+import { StringFunction } from "./StringFunction.js";
 
 export class StringCalculator {
     static integrate(heights, dx) {
@@ -11,7 +11,6 @@ export class StringCalculator {
         if (heights1.length !== heights2.length) {
             console.error(`Количество точек, в которых вычислены значения функций, должны совпадать: ${heights1.length} != ${heights2.length}`);
         }
-
         const minLength = Math.min(heights1.length, heights2.length);
         return heights1
             .slice(0, minLength)
@@ -30,24 +29,24 @@ export class StringCalculator {
 
     static calculateMainIntegral(heights, dx, lambda) {
         const sinFunc = (x) => Math.sin(x * lambda);
-        const sinHeights = StringCalculator.calculateFunctionHeights(sinFunc, heights.length, dx, 0);
+        const sinHeights = StringCalculator.calculateFunctionHeights(sinFunc, heights.length, dx);
         const functionsCompositionHeights = StringCalculator.multiplyFunctionHeights(heights, sinHeights);
         return StringCalculator.integrate(functionsCompositionHeights, dx);
     }
 
-    static calculateDCoefficients(a, L, lambdas, initialPositionHeights, dx) {
+    static calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx) {
         const D = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, dx, lambda);
+            const integral = StringCalculator.calculateMainIntegral(initialSpeedHeights, dx, lambda);
             D.push(2 / (a * lambda * L) * integral);
         }
         return D;
     }
 
-    static calculateECoefficients(a, L, lambdas, heights, dx) {
+    static calculateECoefficients(a, L, lambdas, initialPositionHeights, dx) {
         const E = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(heights, dx, lambda);
+            const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, dx, lambda);
             E.push(2 / L * integral);
         }
         return E;
@@ -68,13 +67,11 @@ export class StringCalculator {
         const N = 100;
         const L = rightBorder - leftBorder;
         const pointsCount = Math.floor(L / dx) + 1;
-        var lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
+        const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
-        const shiftedInitialPositionFunction = (x) => initialPositionFunction(x - leftBorder);
-        const shiftedInitialSpeedFunction = (x) => initialSpeedFunction(x - leftBorder);
-
-        const initialPositionHeights = StringCalculator.calculateFunctionHeights(shiftedInitialPositionFunction, pointsCount, dx);
-        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(shiftedInitialSpeedFunction, pointsCount, dx);
+        // Здесь не нужно смещать, если функция уже определена на [leftBorder, rightBorder]
+        const initialPositionHeights = StringCalculator.calculateFunctionHeights(initialPositionFunction, pointsCount, dx);
+        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(initialSpeedFunction, pointsCount, dx);
         const D = StringCalculator.calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
         const E = StringCalculator.calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
 
@@ -82,19 +79,46 @@ export class StringCalculator {
         return new StringFunction(func, leftBorder, rightBorder);
     }
 
-    static createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
-        const dx = (right - left) / (pointsCount - 1);
-        const points = new Array(pointsCount * 2);
-        const width = right - left;
-        const height = top - bottom;
-        const eps = 1e-5
-        for (let i = 0, x = 0; i < pointsCount; i++, x += dx) {
-            if (!showOutsideBorders && !(-eps <= x - leftFuncBorder + left && x + left < rightFuncBorder + eps)) {
+    /**
+     * Создаёт массив координат для функции с преобразованием из физического пространства в координаты [-1,1]
+     * для WebGL.
+     *
+     * @param {function} func – функция от x, возвращающая y (физические координаты)
+     * @param {number} pointsCount – количество точек для вычисления
+     * @param {number} leftFuncBorder – физический минимум по x, где функция определена (например, 0)
+     * @param {number} rightFuncBorder – физический максимум по x (например, 1)
+     * @param {number} xMinToDraw – физический минимум по x для отображения (например, 0)
+     * @param {number} xMaxToDraw – физический максимум по x для отображения (например, 1)
+     * @param {number} yMinToDraw – физический минимум по y для отображения (например, -2)
+     * @param {number} yMaxToDraw – физический максимум по y для отображения (например, 2)
+     * @param {boolean} showOutsideBorders – показывать ли точки вне [xMinToDraw, xMaxToDraw]
+     * @returns {Float32Array} – массив координат в пространстве [-1,1]
+     */
+    static createFunctionPoints(
+        func,
+        pointsCount,
+        leftFuncBorder,
+        rightFuncBorder,
+        xMinToDraw,
+        xMaxToDraw,
+        yMinToDraw,
+        yMaxToDraw,
+        showOutsideBorders = false
+    ) {
+        // Шаг по физическим x
+        const physicalDx = (rightFuncBorder - leftFuncBorder) / (pointsCount - 1);
+        const coords = [];
+        for (let i = 0; i < pointsCount; i++) {
+            const xVal = leftFuncBorder + i * physicalDx;
+            if (!showOutsideBorders && (xVal < xMinToDraw || xVal > xMaxToDraw)) {
                 continue;
             }
-            points.push(x / width * 2 - 1);
-            points.push((func(x - leftFuncBorder + left) - bottom) / height * 2 - 1);
+            const yVal = func(xVal);
+            // Преобразуем в NDC: x и y от [xMinToDraw, xMaxToDraw] и [yMinToDraw, yMaxToDraw] в диапазон [-1,1]
+            const ndcX = (xVal - xMinToDraw) / (xMaxToDraw - xMinToDraw) * 2 - 1;
+            const ndcY = (yVal - yMinToDraw) / (yMaxToDraw - yMinToDraw) * 2 - 1;
+            coords.push(ndcX, ndcY);
         }
-        return new Float32Array(points);
+        return new Float32Array(coords);
     }
 }

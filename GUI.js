@@ -1,7 +1,7 @@
 "use strict";
 
-import {initShaderProgram, createBuffer} from './webGlHelper.js';
-import {StringCalculator} from "./integrate.js";
+import { initShaderProgram, createBuffer } from './webGlHelper.js';
+import { StringCalculator } from "./integrate.js";
 
 export class GUI {
     static vsSource = `
@@ -15,7 +15,7 @@ void main() {
 precision mediump float;
 uniform vec4 uColor;
 void main() {
-  gl_FragColor = uColor;
+    gl_FragColor = uColor;
 }
 `;
 
@@ -27,10 +27,35 @@ void main() {
         GUI.positionBuffer = createBuffer(gl, positionLocation, gl.ARRAY_BUFFER, 2, gl.FLOAT);
     }
 
-    static drawString(gl, canvas, stringFunction, color, time, pointsCount, left, right, top, bottom, showOutsideBorders) {
+    /**
+     * Отрисовка функции.
+     * 
+     * @param {WebGLRenderingContext} gl 
+     * @param {HTMLCanvasElement} canvas 
+     * @param {StringFunction} stringFunction – объект, содержащий функцию и границы по x
+     * @param {Array} color – массив RGBA, например [1.0, 0.0, 0.0, 1.0]
+     * @param {number} time – текущее время для анимации
+     * @param {number} pointsCount – сколько точек вычислять
+     * @param {number} xMinToDraw – физический минимум по x для отображения (например, 0)
+     * @param {number} xMaxToDraw – физический максимум по x для отображения (например, 1)
+     * @param {number} yMinToDraw – физический минимум по y (например, -2)
+     * @param {number} yMaxToDraw – физический максимум по y (например, 2)
+     * @param {boolean} showOutsideBorders – показывать ли точки вне указанных границ
+     */
+    static drawString(gl, canvas, stringFunction, color, time, pointsCount,
+                      xMinToDraw, xMaxToDraw, yMinToDraw, yMaxToDraw, showOutsideBorders) {
         const funcSnapshot = (x) => stringFunction.func(time, x);
-        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount,
-            stringFunction.leftBorder, stringFunction.rightBorder, left, right, bottom, top, showOutsideBorders);
+        const vertices = StringCalculator.createFunctionPoints(
+            funcSnapshot,
+            pointsCount,
+            stringFunction.leftBorder,   // физический x-min (например, 0)
+            stringFunction.rightBorder,  // физический x-max (например, 1)
+            xMinToDraw,
+            xMaxToDraw,
+            yMinToDraw,
+            yMaxToDraw,
+            showOutsideBorders
+        );
 
         gl.useProgram(GUI.drawLineProgram);
         gl.bindBuffer(gl.ARRAY_BUFFER, GUI.positionBuffer);

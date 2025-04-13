@@ -7,11 +7,10 @@ export function getCanvasAndGl(canvasId) {
         console.error("Ваш браузер не поддерживает WebGL");
         alert("Ваш браузер не поддерживает WebGL");
     }
-
-    return {canvas, gl};
+    return { canvas, gl };
 }
 
-export function loadShader(gl, type, source, ...args) {
+export function loadShader(gl, type, source) {
     const shader = gl.createShader(type);
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
@@ -26,7 +25,7 @@ export function loadShader(gl, type, source, ...args) {
     return shader;
 }
 
-export function initShaderProgram(gl, vsSource, fsSource, ...args) {
+export function initShaderProgram(gl, vsSource, fsSource) {
     const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
     const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
     const shaderProgram = gl.createProgram();
@@ -43,12 +42,11 @@ export function initShaderProgram(gl, vsSource, fsSource, ...args) {
     return shaderProgram;
 }
 
-export function createBuffer(gl, glAttribute, bufferType, size, elementsType, normalized = false, stride = 0, offset = 0, ...args) {
+export function createBuffer(gl, glAttribute, bufferType, size, elementsType, normalized = false, stride = 0, offset = 0) {
     const buffer = gl.createBuffer();
     gl.bindBuffer(bufferType, buffer);
     gl.enableVertexAttribArray(glAttribute);
     gl.vertexAttribPointer(glAttribute, size, elementsType, normalized, stride, offset);
-    console.info("Создан буфер")
-
+    console.info("Создан буфер");
     return buffer;
 }
