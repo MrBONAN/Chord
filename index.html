@@ -4,75 +4,14 @@
   <meta charset="UTF-8">
   <title>WebGL: Анимация струны с динамическими параметрами</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    /* Контейнер для бокового блока и области визуализации */
-    #container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    /* Блок с параметрами (слева от канвы) */
-    #params {
-      width: 220px;
-      border: 2px solid #999;
-      padding: 10px;
-      background-color: #fff;
-    }
-    /* Область визуализации */
-    #draw-area {
-      /* можно задать при необходимости свои стили */
-    }
-    canvas {
-      display: block;
-      border: 1px solid #ccc;
-    }
-    /* Блок с легендой под визуализацией */
-    #info {
-      margin-top: 20px;
-      padding: 10px;
-      border: 2px solid #999;
-      width: 800px;
-      text-align: center;
-      background-color: #fff;
-    }
-    #info p {
-      margin: 5px;
-    }
-    /* Стили для inline-редактирования */
-    .editable {
-      cursor: pointer;
-      border-bottom: 1px dashed #666;
-    }
-    .editable input {
-      width: 60px;
-      font-family: inherit;
-      font-size: inherit;
-    }
-  </style>
 </head>
 <body>
   <div id="container">
-    <!-- Блок параметров (будет заполнен скриптом с inline-редактированием) -->
-    <div id="params">
-      <!-- Содержимое будет сгенерировано скриптом -->
-    </div>
-    <!-- Область визуализации -->
+    <div id="params"></div>
     <div id="draw-area">
       <canvas id="glcanvas" width="800" height="600"></canvas>
     </div>
   </div>
-  <!-- Блок с легендой -->
   <div id="info">
     <p><strong>Легенда:</strong></p>
     <p>Серая линия — начальное положение струны (t = 0).</p>
