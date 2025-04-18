@@ -1,5 +1,50 @@
 "use strict";
 
+import {StringCalculator} from "./integrate.js";
+import {GUI} from "./GUI.js";
+
+let context = GUI.getContext("glcanvas");
+const stringLineColor = "red";
+context.lineWidth = 2;
+
+const PI = Math.PI;
+
+const left = 0;
+const right = 1;
+const dx = 0.0001
+const pointsCount = Math.floor((right - left) / dx) + 1;
+const T0 = 9;
+const p = 1;
+const a = Math.sqrt(T0 / p);
+const positionFunction = (x) => Math.sin(2 * PI * x);
+const speedFunction = (x) => 3 * PI * Math.sin(PI * x) + 9 * PI * Math.sin(3 * PI * x) + 15 * PI * Math.sin(5 * PI * x);
+
+const stringFunction = StringCalculator.getMainStringFunction(positionFunction, speedFunction, left, right, a, dx);
+
+const dataBounds = {
+    left: -0.1, right: 1.1,
+    bottom: -3, top: 3
+};
+const clipBounds = {
+    left: 0, right: context.canvas.width,
+    bottom: context.canvas.height, top: 0 // тут ошибки нет, просто в canvas отсчёт идёт сверху вниз
+}
+
+function render(milliseconds) {
+    const time = milliseconds * 0.0001;
+
+    GUI.clearCanvas(context)
+    GUI.drawString(context, stringFunction, stringLineColor, time, pointsCount,
+        dataBounds, clipBounds, false);
+
+    requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+
+
+"use strict";
+
 import { getCanvasAndGl } from "./webGlHelper.js";
 import { StringCalculator } from "./integrate.js";
 import { GUI } from "./GUI.js";
@@ -8,9 +53,9 @@ import { GUI } from "./GUI.js";
 const { canvas, gl } = getCanvasAndGl("glcanvas");
 
 let params = {
-  T0: 9,
-  p: 1,
-  dx: 0.001
+    T0: 9,
+    p: 1,
+    dx: 0.001
 };
 
 const left = 0;
@@ -23,43 +68,43 @@ const PI = Math.PI;
 
 const positionFunction = (x) => Math.sin(2 * PI * x);
 const speedFunction = (x) =>
-  3 * PI * Math.sin(PI * x) +
-  9 * PI * Math.sin(3 * PI * x) +
-  15 * PI * Math.sin(5 * PI * x);
+    3 * PI * Math.sin(PI * x) +
+    9 * PI * Math.sin(3 * PI * x) +
+    15 * PI * Math.sin(5 * PI * x);
 
 let stringFunction = StringCalculator.getMainStringFunction(
-  positionFunction,
-  speedFunction,
-  left,
-  right,
-  a,
-  params.dx
-);
-
-GUI.initStringShaderProgram(gl);
-
-// Функция обновления зависимых параметров симуляции
-function updateSimulationParameters() {
-  a = Math.sqrt(params.T0 / params.p);
-  fundamentalPeriod = 2 / a;
-  period = fundamentalPeriod * 10;
-  pointsCount = Math.floor((right - left) / params.dx) + 1;
-  stringFunction = StringCalculator.getMainStringFunction(
     positionFunction,
     speedFunction,
     left,
     right,
     a,
     params.dx
-  );
-  renderParamsUI();
+);
+
+GUI.initStringShaderProgram(gl);
+
+// Функция обновления зависимых параметров симуляции
+function updateSimulationParameters() {
+    a = Math.sqrt(params.T0 / params.p);
+    fundamentalPeriod = 2 / a;
+    period = fundamentalPeriod * 10;
+    pointsCount = Math.floor((right - left) / params.dx) + 1;
+    stringFunction = StringCalculator.getMainStringFunction(
+        positionFunction,
+        speedFunction,
+        left,
+        right,
+        a,
+        params.dx
+    );
+    renderParamsUI();
 }
 
 // Функция генерации HTML для блока параметров
 function renderParamsUI() {
-  const paramsBlock = document.getElementById("params");
-  if (paramsBlock) {
-    paramsBlock.innerHTML = `
+    const paramsBlock = document.getElementById("params");
+    if (paramsBlock) {
+        paramsBlock.innerHTML = `
       <p><strong>Параметры струны:</strong></p>
       <p>T₀: <span class="editable" data-key="T0">${params.T0}</span></p>
       <p>p: <span class="editable" data-key="p">${params.p}</span></p>
@@ -69,46 +114,46 @@ function renderParamsUI() {
       <p>Период T: <span id="fundamentalPeriodDisplay">${fundamentalPeriod.toFixed(2)}</span> сек</p>
       <p>Замедленный период: <span id="periodDisplay">${period.toFixed(2)}</span> сек</p>
     `;
-    attachEditableListeners();
-  }
+        attachEditableListeners();
+    }
 }
 
 // Функция навешивания событий для inline-редактирования параметров
 function attachEditableListeners() {
-  const editables = document.querySelectorAll(".editable");
-  editables.forEach((span) => {
-    span.addEventListener("click", function () {
-      if (this.querySelector("input")) return;
-      const currentValue = this.textContent;
-      const dataKey = this.getAttribute("data-key");
-      const input = document.createElement("input");
-      input.type = "number";
-      input.value = currentValue;
-      input.style.width = "60px";
-      this.textContent = "";
-      this.appendChild(input);
-      input.focus();
-      input.addEventListener("blur", function () {
-        commitEdit(this, dataKey);
-      });
-      input.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          this.blur();
-        }
-      });
+    const editables = document.querySelectorAll(".editable");
+    editables.forEach((span) => {
+        span.addEventListener("click", function () {
+            if (this.querySelector("input")) return;
+            const currentValue = this.textContent;
+            const dataKey = this.getAttribute("data-key");
+            const input = document.createElement("input");
+            input.type = "number";
+            input.value = currentValue;
+            input.style.width = "60px";
+            this.textContent = "";
+            this.appendChild(input);
+            input.focus();
+            input.addEventListener("blur", function () {
+                commitEdit(this, dataKey);
+            });
+            input.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    this.blur();
+                }
+            });
+        });
     });
-  });
 }
 
 // Функция фиксации изменения параметра
 function commitEdit(inputElement, key) {
-  const newValue = parseFloat(inputElement.value);
-  if (!isNaN(newValue)) {
-    params[key] = newValue;
-    updateSimulationParameters();
-  } else {
-    updateSimulationParameters();
-  }
+    const newValue = parseFloat(inputElement.value);
+    if (!isNaN(newValue)) {
+        params[key] = newValue;
+        updateSimulationParameters();
+    } else {
+        updateSimulationParameters();
+    }
 }
 
 renderParamsUI();
@@ -118,17 +163,17 @@ const staticGraphColor = [0.5, 0.5, 0.5, 1.0];
 
 // Функция отрисовки анимации
 function render(milliseconds) {
-  const elapsed = milliseconds / 1000;
-  const slowTime = elapsed / 10;
-  const timeModulo = (elapsed % period).toFixed(2);
-  const timeDisplayEl = document.getElementById("timeDisplay");
-  if (timeDisplayEl) {
-    timeDisplayEl.textContent = timeModulo;
-  }
-  GUI.clearCanvas(gl);
-  GUI.drawString(gl, canvas, stringFunction, staticGraphColor, 0, pointsCount, left, right, -2, 2, true);
-  GUI.drawString(gl, canvas, stringFunction, stringLineColor, slowTime, pointsCount, left, right, -2, 2, false);
-  requestAnimationFrame(render);
+    const elapsed = milliseconds / 1000;
+    const slowTime = elapsed / 10;
+    const timeModulo = (elapsed % period).toFixed(2);
+    const timeDisplayEl = document.getElementById("timeDisplay");
+    if (timeDisplayEl) {
+        timeDisplayEl.textContent = timeModulo;
+    }
+    GUI.clearCanvas(gl);
+    GUI.drawString(gl, canvas, stringFunction, staticGraphColor, 0, pointsCount, left, right, -2, 2, true);
+    GUI.drawString(gl, canvas, stringFunction, stringLineColor, slowTime, pointsCount, left, right, -2, 2, false);
+    requestAnimationFrame(render);
 }
 
 requestAnimationFrame(render);

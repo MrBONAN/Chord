@@ -69,9 +69,11 @@ export class StringCalculator {
         const pointsCount = Math.floor(L / dx) + 1;
         const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
 
-        // Здесь не нужно смещать, если функция уже определена на [leftBorder, rightBorder]
-        const initialPositionHeights = StringCalculator.calculateFunctionHeights(initialPositionFunction, pointsCount, dx);
-        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(initialSpeedFunction, pointsCount, dx);
+        const shiftedInitialPositionFunction = (x) => initialPositionFunction(x - leftBorder);
+        const shiftedInitialSpeedFunction = (x) => initialSpeedFunction(x - leftBorder);
+
+        const initialPositionHeights = StringCalculator.calculateFunctionHeights(shiftedInitialPositionFunction, pointsCount, dx);
+        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(shiftedInitialSpeedFunction, pointsCount, dx);
         const D = StringCalculator.calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
         const E = StringCalculator.calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
 
@@ -97,28 +99,37 @@ export class StringCalculator {
     static createFunctionPoints(
         func,
         pointsCount,
-        leftFuncBorder,
-        rightFuncBorder,
-        xMinToDraw,
-        xMaxToDraw,
-        yMinToDraw,
-        yMaxToDraw,
-        showOutsideBorders = false
+        xFuncMin, xFuncMax,
+        dataBounds,
+        clipBounds,
+        showOutsideBorders
     ) {
-        // Шаг по физическим x
-        const physicalDx = (rightFuncBorder - leftFuncBorder) / (pointsCount - 1);
+        const {left: xDataMin, right: xDataMax, bottom: yDataMin, top: yDataMax} = dataBounds;
+        const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
+
+        const physicalDx = (xDataMax - xDataMin) / (pointsCount - 1);
+        const dataWidth = xDataMax - xDataMin;
+        const dataHeight = yDataMax - yDataMin;
+        const clipWidth = xClipMax - xClipMin;
+        const clipHeight = yClipMax - yClipMin;
+        const eps = 1e-5;
+
         const coords = [];
+
         for (let i = 0; i < pointsCount; i++) {
-            const xVal = leftFuncBorder + i * physicalDx;
-            if (!showOutsideBorders && (xVal < xMinToDraw || xVal > xMaxToDraw)) {
+            const x = xDataMin + physicalDx * i;
+
+            if (!showOutsideBorders && (x < xFuncMin - eps || x > xFuncMax + eps)) {
                 continue;
             }
-            const yVal = func(xVal);
-            // Преобразуем в NDC: x и y от [xMinToDraw, xMaxToDraw] и [yMinToDraw, yMaxToDraw] в диапазон [-1,1]
-            const ndcX = (xVal - xMinToDraw) / (xMaxToDraw - xMinToDraw) * 2 - 1;
-            const ndcY = (yVal - yMinToDraw) / (yMaxToDraw - yMinToDraw) * 2 - 1;
-            coords.push(ndcX, ndcY);
+            // Нормировка x из [xDataMin..xDataMax] в [xClipMin..xClipMax]
+            const xClipped = ((x - xDataMin) / dataWidth) * clipWidth + xClipMin;
+            // Нормировка y из [yDataMin..yDataMax] в [yClipMin..yClipMax]
+            const yClipped = ((func(x) - yDataMin) / dataHeight) * clipHeight + yClipMin;
+
+            coords.push(xClipped, yClipped);
         }
-        return new Float32Array(coords);
+
+        return coords;
     }
 }
