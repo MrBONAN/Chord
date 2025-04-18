@@ -84,7 +84,7 @@ export class StringCalculator {
 
     static createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
         const dx = (right - left) / (pointsCount - 1);
-        const points = new Array(pointsCount * 2);
+        const points = [];
         const width = right - left;
         const height = top - bottom;
         const eps = 1e-5
@@ -95,6 +95,6 @@ export class StringCalculator {
             points.push(x / width * 2 - 1);
             points.push((func(x - leftFuncBorder + left) - bottom) / height * 2 - 1);
         }
-        return new Float32Array(points);
+        return points;
     }
 }
