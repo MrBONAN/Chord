@@ -82,19 +82,41 @@ export class StringCalculator {
         return new StringFunction(func, leftBorder, rightBorder);
     }
 
-    static createFunctionPoints(func, pointsCount, leftFuncBorder, rightFuncBorder, left, right, bottom, top, showOutsideBorders) {
-        const dx = (right - left) / (pointsCount - 1);
+    static createFunctionPoints(
+        func,
+        pointsCount,
+        xFuncMin, xFuncMax,
+        dataBounds,
+        clipBounds,
+        showOutsideBorders
+    ) {
+        const {left: xDataMin, right: xDataMax, bottom: yDataMin, top: yDataMax} = dataBounds;
+        const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
+
+        const dx = (xDataMax - xDataMin) / (pointsCount - 1);
+        const dataWidth = xDataMax - xDataMin;
+        const dataHeight = yDataMax - yDataMin;
+        const clipWidth = xClipMax - xClipMin;
+        const clipHeight = yClipMax - yClipMin;
+        const eps = 1e-5;
+
         const points = [];
-        const width = right - left;
-        const height = top - bottom;
-        const eps = 1e-5
-        for (let i = 0, x = 0; i < pointsCount; i++, x += dx) {
-            if (!showOutsideBorders && !(-eps <= x - leftFuncBorder + left && x + left < rightFuncBorder + eps)) {
+
+        for (let i = 0; i < pointsCount; i++) {
+            const x = xDataMin + dx * i;
+
+            if (!showOutsideBorders && (x < xFuncMin - eps || x > xFuncMax + eps)) {
                 continue;
             }
-            points.push(x / width * 2 - 1);
-            points.push((func(x - leftFuncBorder + left) - bottom) / height * 2 - 1);
+            // Нормировка x из [xDataMin..xDataMax] в [xClipMin..xClipMax]
+            const xClipped = ((x - xDataMin) / dataWidth) * clipWidth + xClipMin;
+            // Нормировка y из [yDataMin..yDataMax] в [yClipMin..yClipMax]
+            const yClipped = ((func(x) - yDataMin) / dataHeight) * clipHeight + yClipMin;
+
+            points.push(xClipped, yClipped);
         }
+
         return points;
     }
+
 }
