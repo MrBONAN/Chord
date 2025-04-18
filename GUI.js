@@ -9,19 +9,17 @@ export class GUI {
     }
 
     /**
-     * Отрисовка функции.
+     * Рисует ломаную, заданную точками функции, на 2D‑контексте Canvas.
      *
-     * @param {WebGLRenderingContext} gl
-     * @param {HTMLCanvasElement} canvas
-     * @param {StringFunction} stringFunction – объект, содержащий функцию и границы по x
-     * @param {Array} color – массив RGBA, например [1.0, 0.0, 0.0, 1.0]
-     * @param {number} time – текущее время для анимации
-     * @param {number} pointsCount – сколько точек вычислять
-     * @param {number} xMinToDraw – физический минимум по x для отображения (например, 0)
-     * @param {number} xMaxToDraw – физический максимум по x для отображения (например, 1)
-     * @param {number} yMinToDraw – физический минимум по y (например, -2)
-     * @param {number} yMaxToDraw – физический максимум по y (например, 2)
-     * @param {boolean} showOutsideBorders – показывать ли точки вне указанных границ
+     * @param {CanvasRenderingContext2D} context – 2D‑контекст Canvas.
+     * @param {StringFunction} stringFunction – объект с методом func(time, x) и полями leftBorder, rightBorder.
+     * @param {string} color – цвет обводки в формате CSS (например, '#ff0000' или 'rgba(255,0,0,1)').
+     * @param {number} time – параметр времени для анимации.
+     * @param {number} pointsCount – количество точек для отрисовки.
+     * @param {{left: number, right: number, bottom: number, top: number}} dataBounds – границы области данных для вычисления точек.
+     * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области вывода (проекция).
+     * @param {boolean} showOutsideBorders – отображать ли точки за пределами leftBorder..rightBorder.
+     * @returns {void}
      */
     static drawString(context, stringFunction, color, time, pointsCount, dataBounds, clipBounds, showOutsideBorders) {
         const funcSnapshot = (x) => stringFunction.func(time, x);

@@ -82,19 +82,16 @@ export class StringCalculator {
     }
 
     /**
-     * Создаёт массив координат для функции с преобразованием из физического пространства в координаты [-1,1]
-     * для WebGL.
+     * Создаёт массив координат [x, y, …] для функции с нормированием из области данных в область клиппирования.
      *
-     * @param {function} func – функция от x, возвращающая y (физические координаты)
-     * @param {number} pointsCount – количество точек для вычисления
-     * @param {number} leftFuncBorder – физический минимум по x, где функция определена (например, 0)
-     * @param {number} rightFuncBorder – физический максимум по x (например, 1)
-     * @param {number} xMinToDraw – физический минимум по x для отображения (например, 0)
-     * @param {number} xMaxToDraw – физический максимум по x для отображения (например, 1)
-     * @param {number} yMinToDraw – физический минимум по y для отображения (например, -2)
-     * @param {number} yMaxToDraw – физический максимум по y для отображения (например, 2)
-     * @param {boolean} showOutsideBorders – показывать ли точки вне [xMinToDraw, xMaxToDraw]
-     * @returns {Float32Array} – массив координат в пространстве [-1,1]
+     * @param {function(number): number} func – функция от x (физические координаты), возвращающая y.
+     * @param {number} pointsCount – количество точек для выборки.
+     * @param {number} xFuncMin – физический минимум по x, где функция определена.
+     * @param {number} xFuncMax – физический максимум по x, где функция определена.
+     * @param {{left: number, right: number, bottom: number, top: number}} dataBounds – границы области данных (мин/макс по x и y).
+     * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области клиппирования, в которую проецируются координаты.
+     * @param {boolean} showOutsideBorders – включать ли точки вне диапазона [xFuncMin, xFuncMax].
+     * @returns {number[]} – плоский массив координат [x1, y1, x2, y2, …] в пределах clipBounds.
      */
     static createFunctionPoints(
         func,
