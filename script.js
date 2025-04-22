@@ -11,7 +11,6 @@ context.lineWidth = 2;
 
 const PI = Math.PI;
 
-const drawer = new Drawer(GUI, canvas, context);
 const left = 0;
 const right = 1;
 const dx = 0.0001
@@ -34,6 +33,7 @@ const clipBounds = {
     bottom: context.canvas.height, top: 0 // тут ошибки нет, просто в canvas отсчёт идёт сверху вниз
 }
 
+const drawer = new Drawer(GUI, canvas, context);
 const toggleBtn = document.getElementById('toggleDraw');
 toggleBtn.addEventListener('click', () => {
     drawer.isDrawingMode = !drawer.isDrawingMode;
@@ -50,11 +50,11 @@ toggleBtn.addEventListener('click', () => {
 let offset = 0;
 function render(milliseconds) {
     if (!drawer.isDrawingMode) {
-        const time = milliseconds * 0.0001 - offset;
+        const time = (milliseconds - offset) * 0.0001;
         GUI.clearCanvas(context);
         GUI.drawString(context, stringFunction, stringLineColor, time, pointsCount, dataBounds, clipBounds, false);
     } else {
-        offset = milliseconds * 0.0001;
+        offset = milliseconds;
     }
     requestAnimationFrame(render);
 }

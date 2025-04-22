@@ -61,8 +61,7 @@ export class Drawer {
     }
 
     addPoint(x, y) {
-        this.drawPoint(x, this.toWindowY(this.points[x]), 'white');
-        this.drawPoint(x, y, 'black');
+        this.context.clearRect(x, 0, 1, this.canvas.height);
         this.points[x] = this.toNumY(y);
     }
 
@@ -70,18 +69,20 @@ export class Drawer {
         const dx = Math.abs(end.x - start.x);
         const dy = Math.abs(end.y - start.y);
         const steps = Math.max(dx, dy);
-        
-        for (let i = 0; i <= steps; i++) {
+        for (let i = 1; i <= steps; i++) {
             const t = steps === 0 ? 0 : i / steps;
             const x = Math.round(start.x + t * (end.x - start.x));
             const y = Math.round(start.y + t * (end.y - start.y));
             this.addPoint(x, y);
         }
+        this.drawLine(start.x, start.y, end.x, end.y);
     }
 
-    drawPoint(x, y, color) {
-        this.context.fillStyle = color;
-        this.context.fillRect(x, y, 1, 1);
+    drawLine(x1, y1, x2, y2) {
+        this.context.beginPath();
+        this.context.moveTo(x1, y1);
+        this.context.lineTo(x2, y2);
+        this.context.stroke();
     }
 
     createLinearInterpolator(points) {
@@ -93,7 +94,7 @@ export class Drawer {
             
             const y1 = points[x1];
             const y2 = points[x2];
-            return y1 + (y2 - y1) * (x - x1);
+            return - y1 - (y2 - y1) * (x - x1);
         };
     }
 }
