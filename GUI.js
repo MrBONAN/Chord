@@ -3,9 +3,8 @@
 import {StringCalculator} from "./integrate.js";
 
 export class GUI {
-    static getContext(canvasId) {
-        const canvas = document.getElementById(canvasId);
-        return canvas.getContext('2d');
+    static getCanvas(canvasId) {
+        return document.getElementById(canvasId);
     }
 
     /**
