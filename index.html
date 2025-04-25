@@ -7,18 +7,33 @@
 </head>
 <body>
 <div id="container">
-    <form id="params">
-        <fieldset>
-            <legend><b>Параметры струны</b></legend>
-
-            <label>ρ (плотность) <input id="density" type="number" step="any" value="1"></label>
-            <label>T₀ (натяжение) <input id="tension" type="number" step="any" value="9"></label>
-            <label>Начало струны (по X) <input id="leftBound" type="number" step="any" value="0"></label>
-            <label>Конец струны (по X) <input id="rightBound" type="number" step="any" value="1"></label>
-            <label>Ф-я нач. положения <input id="posFunc" type="text" value="Math.sin(2*Math.PI*x)"></label>
-            <label>Ф-я нач. скорости <input id="speedFunc" type="text" value="0"></label>
-        </fieldset>
-
+    <div id="all-params">
+        <form id="params">
+            <fieldset>
+                <legend><b>Параметры струны</b></legend>
+                <label>ρ (плотность)
+                    <input id="density" type="number" step="any" value="1">
+                </label>
+                <label>T₀ (натяжение)
+                    <input id="tension" type="number" step="any" value="9">
+                </label>
+                <label>Начало струны (по X)
+                    <input id="leftBound" type="number" step="any" value="0">
+                </label>
+                <label>Конец струны (по X)
+                    <input id="rightBound" type="number" step="any" value="1">
+                </label>
+                <label>Ф-я нач. положения
+                    <input id="posFunc" type="text" value="Math.sin(2*Math.PI*x)">
+                </label>
+                <label>Ф-я нач. скорости
+                    <input id="speedFunc" type="text" value="0">
+                </label>
+                <button type="button" id="applyParams">Применить</button>
+                <button type="button" id="toggleDraw">Начать рисование</button>
+            </fieldset>
+        </form>
+        <form id="options">
         <details>
             <summary><b>Дополнительные настройки</b></summary>
             <label>dx
@@ -37,13 +52,10 @@
             <label>
                 <input id="freeze" type="checkbox"> Фиксировать положение
             </label>
+            <input type="reset" value="Сбросить">
         </details>
-
-        <input type="reset" value="Сбросить">
-        <button type="button" id="applyParams">Применить</button>
-        <button type="button" id="toggleDraw">Начать рисование</button>
-    </form>
-
+        </form>
+    </div>
 
     <div id="draw-area">
         <canvas id="glcanvas" width="800" height="600"></canvas>

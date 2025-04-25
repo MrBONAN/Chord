@@ -1,4 +1,4 @@
-#params {
+#all-params {
   width: 600px;
   border: 2px solid #999;
   padding: 10px;
@@ -6,20 +6,20 @@
   font-size: 14pt;
 }
 
-#params legend {
+#all-params legend {
   text-align: center;
   width: 100%;
   font-size: 20pt;
   margin-bottom: 10px;
 }
 
-#params fieldset {
+#all-params fieldset {
   border: none;
   padding: 0;
   margin: 0;
 }
 
-#params label {
+#all-params label {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -27,13 +27,13 @@
   /*font-size: 20px;*/
 }
 
-#params input {
+#all-params input {
   width: 100%;
   box-sizing: border-box;
   padding: 4px 6px;
 }
 
-#params button {
+#all-params button {
   margin-top: 6px;
   width: 100%;
 }
@@ -71,4 +71,15 @@
 
 #info p {
   margin: 5px;
+}
+
+input.invalid {
+  animation: pulseError 1.6s ease-out forwards;
+}
+
+@keyframes pulseError {
+  0%   { box-shadow: 0 0 0 4px rgba(255,0,0,1);   }
+  40%  { box-shadow: 0 0 0 4px rgba(255,0,0,.6); }
+  80%  { box-shadow: 0 0 0 4px rgba(255,0,0,.15);}
+  100% { box-shadow: 0 0 0 0 rgba(255,0,0,0);    }
 }

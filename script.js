@@ -1,8 +1,8 @@
 "use strict";
 
-import { StringCalculator } from "./integrate.js";
-import { GUI } from "./GUI.js";
-import { Drawer } from "./draw.js";
+import {StringCalculator} from "./integrate.js";
+import {GUI} from "./GUI.js";
+import {Drawer} from "./draw.js";
 
 const PI = Math.PI;
 
@@ -11,9 +11,8 @@ const ctx = canvas.getContext("2d");
 ctx.lineWidth = 2;
 
 const toggleBtn = document.getElementById("toggleDraw");
-const applyBtn  = document.getElementById("applyParams");
-const freeze  = document.getElementById("freeze");
-const timeDisplay  = document.getElementById("timeDisplay");
+const applyBtn = document.getElementById("applyParams");
+const timeDisplay = document.getElementById("timeDisplay");
 
 let p       = 1;
 let T0      = 9;
@@ -29,7 +28,7 @@ let startTime   = 0;
 let isFrozen    = false;
 
 let positionFunction = x => Math.sin(2 * PI * x);
-let speedFunction    = x => 0;
+let speedFunction = x => 0;
 
 let stringVersion = 1;
 let stringFunction = StringCalculator.getMainStringFunction(
@@ -37,7 +36,7 @@ let stringFunction = StringCalculator.getMainStringFunction(
 );
 
 
-const dataBounds = { left: 0, right: 1, bottom: -1, top: 1 };
+const dataBounds = {left: 0, right: 1, bottom: -1, top: 1};
 const clipBounds = {
     left: 0,
     right: ctx.canvas.width,
@@ -56,7 +55,7 @@ toggleBtn.addEventListener("click", () => {
         drawer.points = new Array(canvas.width).fill(0);
     } else {
         positionFunction = drawer.createLinearInterpolator(drawer.points);
-        stringFunction   = StringCalculator.getMainStringFunction(
+        stringFunction = StringCalculator.getMainStringFunction(
             positionFunction, speedFunction, left, right, a, dx, modes
         );
         toggleBtn.textContent = "Начать рисование";
@@ -70,37 +69,122 @@ const syncTimeOffset = () =>
 syncTimeOffset();
 
 applyBtn.addEventListener("click", () => {
-    p        =  +document.getElementById("density").value;
-    T0       =  +document.getElementById("tension").value;
-    left     =  +document.getElementById("leftBound").value;
-    right    =  +document.getElementById("rightBound").value;
-    dx       =  +document.getElementById("dx").value;
-    pointsCount = +document.getElementById("pointsCount").value;
-    modes    =  +document.getElementById("modes").value;
-    timeScale = +document.getElementById("timeScale").value || 1;
-    startTime = +document.getElementById("startTime").value   || 0;
-    isFrozen  = +document.getElementById("freeze").checked;
+    p = +document.getElementById("density").value;
+    T0 = +document.getElementById("tension").value;
+    left = +document.getElementById("leftBound").value;
+    right = +document.getElementById("rightBound").value;
 
-    const posExpr   = document.getElementById("posFunc").value;
+    const posExpr = document.getElementById("posFunc").value;
     const speedExpr = document.getElementById("speedFunc").value;
 
     positionFunction = new Function("x", `return ${posExpr};`);
-    speedFunction    = new Function("x", `return ${speedExpr};`);
+    speedFunction = new Function("x", `return ${speedExpr};`);
 
     a = Math.sqrt(T0 / p);
 
     stringFunction = StringCalculator.getMainStringFunction(
         positionFunction, speedFunction, left, right, a, dx, modes
     );
-    dataBounds.left  = left;
+    dataBounds.left = left;
     dataBounds.right = right;
     stringVersion++;
     syncTimeOffset();
 });
 
+// Настройка для всех input-ов: сохраняем значение по умолчанию (чтобы к нему потом откатываться)
+// Также добавляем ивент - после окончания анимации, удаляем свойство invalid (красная рамочка вокруг поля)
+const inputs = document.querySelectorAll('#all-params input');
+inputs.forEach(el => {
+    el.dataset.prev = el.value;
+    el.addEventListener('animationend', () => {
+        el.classList.remove('invalid');
+    });
+});
+
+function restartAnimation(el) {
+    el.classList.remove('invalid');
+    void el.offsetWidth;
+    el.classList.add('invalid');
+}
+
+// Для всех параметров можно будет установить валидатор. Перед установкой значения будет проходить проверка на корректность
+// В случае некорректности, появится рамочка и значение откатится к последнему корректному сохранённому
+document.getElementById('all-params').addEventListener('change', e => {
+    const el = e.target;
+    if (el.validate === undefined) {
+        return;
+    }
+    if (!el.validate(el.value)) {
+        el.value = el.dataset.prev;
+        restartAnimation(el);
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return;
+    }
+    el.dataset.prev = el.value;
+}, true);
+
+function isNumber(v) {
+    if (String(v).trim() === '') return false;
+    const n = Number(v);
+    return Number.isFinite(n)
+}
+
+const dxInput = document.getElementById("dx");
+dxInput.validate = (strValue) => {
+    const value = +strValue;
+    return isNumber(strValue) && value >= 1e-6 && value <= 0.1;
+};
+
+dxInput.addEventListener("change", () => {
+    dx = +dxInput.value;
+    stringFunction = StringCalculator.getMainStringFunction(
+        positionFunction, speedFunction, left, right, a, dx, modes
+    );
+});
+
+const pointsCountInput = document.getElementById("pointsCount");
+pointsCountInput.validate = (strValue) => {
+    const value = +strValue;
+    return isNumber(strValue) && value >= 2 && value <= 1e4;
+};
+
+pointsCountInput.addEventListener("change", () => {
+    pointsCount = +pointsCountInput.value;
+});
+
+const modesInput = document.getElementById("modes");
+modesInput.validate = (strValue) => {
+    const value = +strValue;
+    return isNumber(strValue) && value > 0;
+
+};
+modesInput.addEventListener("change", () => {
+    modes = +modesInput.value;
+    stringFunction = StringCalculator.getMainStringFunction(
+        positionFunction, speedFunction, left, right, a, dx, modes
+    );
+});
+
+const timeScaleInput = document.getElementById("timeScale");
+timeScaleInput.validate = (strValue) => {
+    const value = +strValue;
+    return isNumber(strValue) && value >= 1e-3;
+};
+timeScaleInput.addEventListener("change", () => {
+    timeScale = +timeScaleInput.value;
+});
+
+const startTimeInput = document.getElementById("startTime");
+startTimeInput.addEventListener("change", () => {
+    // Тут вообще надо логику переписывать. Оно сейчас не изменяет текущее время вообще никак.
+    startTime = +startTimeInput.value || 0;
+});
+
 let currentT = 0;
+const freeze = document.getElementById("freeze");
 freeze.addEventListener("change", () => {
-    isFrozen  = freeze.checked;
+    isFrozen = freeze.checked;
     if (isFrozen) {
         startTime = currentT;
     }
@@ -108,10 +192,11 @@ freeze.addEventListener("change", () => {
 });
 
 let lastStringVersion = stringVersion;
+
 function render(ms) {
     if (!drawer.isDrawingMode && lastStringVersion === stringVersion) {
         const rawT = (ms - timeOffset) * 0.0001 * timeScale;
-        currentT   = isFrozen ? startTime : rawT;
+        currentT = isFrozen ? startTime : rawT;
 
         GUI.clearCanvas(ctx);
         GUI.drawString(ctx, stringFunction, "rgba(100,100,100,0.5)",
