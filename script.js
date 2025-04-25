@@ -23,7 +23,7 @@ let a = Math.sqrt(T0 / p);
 let dx = 0.0001;
 let pointsCount = 200;
 let modes = 100;
-let timeScale = 1;
+let timeScale = 0.1;
 let startTime = 0;
 let isFrozen = false;
 
@@ -204,7 +204,7 @@ let lastStringVersion = stringVersion;
 
 function render(ms) {
     if (!drawer.isDrawingMode && lastStringVersion === stringVersion) {
-        const rawT = (ms - timeOffset + startTime / 0.0001) * 0.0001 * timeScale;
+        const rawT = (startTime / 0.001 + (ms - timeOffset) * timeScale) * 0.001;
         currentT = isFrozen ? frozenTime : rawT;
 
         GUI.clearCanvas(ctx);
