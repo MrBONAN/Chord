@@ -14,18 +14,18 @@ const toggleBtn = document.getElementById("toggleDraw");
 const applyBtn = document.getElementById("applyParams");
 const timeDisplay = document.getElementById("timeDisplay");
 
-let p       = 1;
-let T0      = 9;
-let left    = 0;
-let right   = 1;
-let a       = Math.sqrt(T0 / p);
+let p = 1;
+let T0 = 9;
+let left = 0;
+let right = 1;
+let a = Math.sqrt(T0 / p);
 
-let dx      = 0.0001;
+let dx = 0.0001;
 let pointsCount = 200;
-let modes       = 100;
-let timeScale   = 1;
-let startTime   = 0;
-let isFrozen    = false;
+let modes = 100;
+let timeScale = 1;
+let startTime = 0;
+let isFrozen = false;
 
 let positionFunction = x => Math.sin(2 * PI * x);
 let speedFunction = x => 0;
@@ -64,8 +64,7 @@ toggleBtn.addEventListener("click", () => {
 });
 
 let timeOffset = 0;
-const syncTimeOffset = () =>
-    timeOffset = performance.now() - startTime / (0.0001 * timeScale);
+const syncTimeOffset = () => timeOffset = performance.now() - timeOffset;
 syncTimeOffset();
 
 applyBtn.addEventListener("click", () => {
@@ -176,17 +175,27 @@ timeScaleInput.addEventListener("change", () => {
 });
 
 const startTimeInput = document.getElementById("startTime");
+startTimeInput.validate = (strValue) => {
+    const value = +strValue;
+    return isNumber(strValue) && value >= 0;
+};
 startTimeInput.addEventListener("change", () => {
-    // Тут вообще надо логику переписывать. Оно сейчас не изменяет текущее время вообще никак.
-    startTime = +startTimeInput.value || 0;
+    if (isFrozen) {
+        timeOffset = 0;
+    } else {
+        timeOffset = performance.now();
+    }
+    startTime = +startTimeInput.value;
+    frozenTime = startTime;
 });
 
 let currentT = 0;
+let frozenTime = 0;
 const freeze = document.getElementById("freeze");
 freeze.addEventListener("change", () => {
     isFrozen = freeze.checked;
     if (isFrozen) {
-        startTime = currentT;
+        frozenTime = currentT;
     }
     syncTimeOffset();
 });
@@ -195,12 +204,12 @@ let lastStringVersion = stringVersion;
 
 function render(ms) {
     if (!drawer.isDrawingMode && lastStringVersion === stringVersion) {
-        const rawT = (ms - timeOffset) * 0.0001 * timeScale;
-        currentT = isFrozen ? startTime : rawT;
+        const rawT = (ms - timeOffset + startTime / 0.0001) * 0.0001 * timeScale;
+        currentT = isFrozen ? frozenTime : rawT;
 
         GUI.clearCanvas(ctx);
         GUI.drawString(ctx, stringFunction, "rgba(100,100,100,0.5)",
-            0, pointsCount, dataBounds, clipBounds, false);
+            startTime, pointsCount, dataBounds, clipBounds, false);
         GUI.drawString(ctx, stringFunction, "red",
             currentT, pointsCount, dataBounds, clipBounds, false);
 
