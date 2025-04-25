@@ -1,72 +1,65 @@
-/* Сброс отступов */
-* {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-  margin-top: 20px;
-}
-
 #params {
-  width: 220px;
+  width: 300px;
   border: 2px solid #999;
   padding: 10px;
   background-color: #fff;
 }
 
-#draw-area {
-  border: 2px solid #333;
-  height: 50vh;
-  width: 50vw;
+#params fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+#params label {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+#params input {
+  width: 100%;
   box-sizing: border-box;
-  position: relative;
+  padding: 4px 6px;
+}
+
+#params button {
+  margin-top: 6px;
+  width: 100%;
+}
+
+
+#container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+
+#draw-area {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 #glcanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid #ccc;
+  border: 2px solid #333;
+  width: 800px;
+  height: 600px;
 }
 
 #info {
   margin-top: 20px;
   padding: 10px;
   border: 2px solid #999;
-  width: 800px;
+  width: 500px;
   text-align: center;
   background-color: #fff;
 }
 
 #info p {
   margin: 5px;
-}
-
-.editable {
-  cursor: pointer;
-  border-bottom: 1px dashed #666;
-}
-
-.editable input {
-  width: 60px;
-  font-family: inherit;
-  font-size: inherit;
 }

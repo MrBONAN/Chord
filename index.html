@@ -1,26 +1,65 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>WebGL: Анимация струны с динамическими параметрами</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>WebGL: Анимация струны с динамическими параметрами</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="container">
+<div id="container">
     <div id="params">
-      
-      <button id="toggleDraw">Начать рисование</button>
+        <fieldset>
+            <legend><b>Параметры струны</b></legend>
+
+            <label>ρ (плотность)
+                <input id="density" type="number" step="any" value="1">
+            </label>
+
+            <label>T₀ (натяжение)
+                <input id="tension" type="number" step="any" value="9">
+            </label>
+
+            <label>Начало струны (по X)
+                <input id="leftBound" type="number" step="any" value="0">
+            </label>
+
+            <label>Конец струны (по X)
+                <input id="rightBound" type="number" step="any" value="1">
+            </label>
+
+            <label>dx
+                <input id="dx" type="number" step="any" value="0.0001">
+            </label>
+
+            <label>Количество точек
+                <input id="pointsCount" type="number" value="10001">
+            </label>
+
+            <label>y₀(x)
+                <input id="posFunc" type="text" value="Math.sin(2 * Math.PI * x)">
+            </label>
+
+            <label>v₀(x)
+                <input id="speedFunc" type="text" value="0">
+            </label>
+
+            <button id="applyParams">Применить</button>
+        </fieldset>
+
+        <button id="toggleDraw">Начать рисование</button>
     </div>
+
     <div id="draw-area">
-      <canvas id="glcanvas" width="800" height="600"></canvas>
+        <canvas id="glcanvas" width="800" height="600"></canvas>
+        <div id="info">
+            <p><strong>Легенда:</strong></p>
+            <p>Серая линия — начальное положение струны (t = 0).</p>
+            <p>Красная линия — текущее положение струны.</p>
+            <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+        </div>
     </div>
-  </div>
-  <div id="info">
-    <p><strong>Легенда:</strong></p>
-    <p>Серая линия — начальное положение струны (t = 0).</p>
-    <p>Красная линия — текущее положение струны.</p>
-    <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
-  </div>
-  <script type="module" src="script.js"></script>
+
+</div>
+<script type="module" src="script.js"></script>
 </body>
 </html>
