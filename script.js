@@ -24,8 +24,11 @@ let dx = 0.0001;
 let pointsCount = 200;
 let modes = 100;
 let timeScale = 0.1;
-let startTime = 0;
 let isFrozen = false;
+
+
+let actualTime = 0;
+let startTime = 0;
 
 let positionFunction = x => Math.sin(2 * PI * x);
 let speedFunction = x => 0;
@@ -63,10 +66,6 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
-let timeOffset = 0;
-const syncTimeOffset = () => timeOffset = performance.now() - timeOffset;
-syncTimeOffset();
-
 applyBtn.addEventListener("click", () => {
     p = +document.getElementById("density").value;
     T0 = +document.getElementById("tension").value;
@@ -87,7 +86,7 @@ applyBtn.addEventListener("click", () => {
     dataBounds.left = left;
     dataBounds.right = right;
     stringVersion++;
-    syncTimeOffset();
+
 });
 
 // Настройка для всех input-ов: сохраняем значение по умолчанию (чтобы к нему потом откатываться)
@@ -180,42 +179,36 @@ startTimeInput.validate = (strValue) => {
     return isNumber(strValue) && value >= 0;
 };
 startTimeInput.addEventListener("change", () => {
-    if (isFrozen) {
-        timeOffset = 0;
-    } else {
-        timeOffset = performance.now();
-    }
-    startTime = +startTimeInput.value;
-    frozenTime = startTime;
+    startTime = +startTimeInput.value
+    actualTime = startTime;
 });
 
-let currentT = 0;
-let frozenTime = 0;
 const freeze = document.getElementById("freeze");
 freeze.addEventListener("change", () => {
     isFrozen = freeze.checked;
-    if (isFrozen) {
-        frozenTime = currentT;
-    }
-    syncTimeOffset();
 });
 
 let lastStringVersion = stringVersion;
 
+let lastTime = performance.now();
+
 function render(ms) {
+    const deltaTime = ms - lastTime;
+    lastTime = ms;
     if (!drawer.isDrawingMode && lastStringVersion === stringVersion) {
-        const rawT = (startTime / 0.001 + (ms - timeOffset) * timeScale) * 0.001;
-        currentT = isFrozen ? frozenTime : rawT;
+        if (!isFrozen) {
+            actualTime += deltaTime * 0.001 * timeScale;
+        }
 
         GUI.clearCanvas(ctx);
         GUI.drawString(ctx, stringFunction, "rgba(100,100,100,0.5)",
             startTime, pointsCount, dataBounds, clipBounds, false);
         GUI.drawString(ctx, stringFunction, "red",
-            currentT, pointsCount, dataBounds, clipBounds, false);
+            actualTime, pointsCount, dataBounds, clipBounds, false);
 
-        timeDisplay.textContent = currentT.toFixed(2);
+        timeDisplay.textContent = actualTime.toFixed(2);
     } else {
-        timeOffset = ms;
+        actualTime = 0;
         lastStringVersion = stringVersion;
     }
     requestAnimationFrame(render);
