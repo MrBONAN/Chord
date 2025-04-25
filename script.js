@@ -33,7 +33,6 @@ let startTime = 0;
 let positionFunction = x => Math.sin(2 * PI * x);
 let speedFunction = x => 0;
 
-let stringVersion = 1;
 let stringFunction = StringCalculator.getMainStringFunction(
     positionFunction, speedFunction, left, right, a, dx, modes
 );
@@ -62,7 +61,7 @@ toggleBtn.addEventListener("click", () => {
             positionFunction, speedFunction, left, right, a, dx, modes
         );
         toggleBtn.textContent = "Начать рисование";
-        stringVersion++;
+        actualTime = 0;
     }
 });
 
@@ -85,8 +84,7 @@ applyBtn.addEventListener("click", () => {
     );
     dataBounds.left = left;
     dataBounds.right = right;
-    stringVersion++;
-
+    actualTime = 0;
 });
 
 // Настройка для всех input-ов: сохраняем значение по умолчанию (чтобы к нему потом откатываться)
@@ -188,14 +186,12 @@ freeze.addEventListener("change", () => {
     isFrozen = freeze.checked;
 });
 
-let lastStringVersion = stringVersion;
-
 let lastTime = performance.now();
 
 function render(ms) {
     const deltaTime = ms - lastTime;
     lastTime = ms;
-    if (!drawer.isDrawingMode && lastStringVersion === stringVersion) {
+    if (!drawer.isDrawingMode) {
         if (!isFrozen) {
             actualTime += deltaTime * 0.001 * timeScale;
         }
@@ -209,7 +205,6 @@ function render(ms) {
         timeDisplay.textContent = actualTime.toFixed(2);
     } else {
         actualTime = 0;
-        lastStringVersion = stringVersion;
     }
     requestAnimationFrame(render);
 }
