@@ -19,7 +19,7 @@ let T0      = 9;
 let left    = 0;
 let right   = 1;
 let dx      = 0.0001;
-let pointsCount = Math.floor((right - left) / dx) + 1;
+let pointsCount = 200;
 let a       = Math.sqrt(T0 / p);
 
 let positionFunction = x => Math.sin(2 * PI * x);
@@ -28,6 +28,7 @@ let speedFunction    = x => 0;
 let stringFunction = StringCalculator.getMainStringFunction(
     positionFunction, speedFunction, left, right, a, dx
 );
+let stringVersion = 1; // Чтобы обновлять timeOffset
 
 
 const dataBounds = { left: 0, right: 1, bottom: -1, top: 1 };
@@ -53,6 +54,7 @@ toggleBtn.addEventListener("click", () => {
             positionFunction, speedFunction, left, right, a, dx
         );
         toggleBtn.textContent = "Начать рисование";
+        stringVersion++;
     }
 });
 
@@ -78,15 +80,29 @@ applyBtn.addEventListener("click", () => {
     );
     dataBounds.left = left;
     dataBounds.right = right;
+    stringVersion++;
 });
 
 
-let offset = 0;
+let timeOffset = 0;
+let lastStringVersion = stringVersion;
 function render(ms) {
-    if (!drawer.isDrawingMode) {
-        const t = (ms - offset) * 0.0001;
+    if (!drawer.isDrawingMode && lastStringVersion  === stringVersion) {
+        const t = (ms - timeOffset) * 0.0001;
 
         GUI.clearCanvas(ctx);
+
+        GUI.drawString(
+            ctx,
+            stringFunction,
+            "rgba(0,0,255,0.5)",
+            0,
+            pointsCount,
+            dataBounds,
+            clipBounds,
+            false
+        );
+
         GUI.drawString(
             ctx,
             stringFunction,
@@ -100,7 +116,8 @@ function render(ms) {
 
         document.getElementById("timeDisplay").textContent = t.toFixed(2);
     } else {
-        offset = ms;
+        timeOffset = ms;
+        lastStringVersion = stringVersion;
     }
 
     requestAnimationFrame(render);
