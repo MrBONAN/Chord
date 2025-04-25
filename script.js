@@ -57,7 +57,7 @@ toggleBtn.addEventListener("click", () => {
     } else {
         positionFunction = drawer.createLinearInterpolator(drawer.points);
         stringFunction   = StringCalculator.getMainStringFunction(
-            positionFunction, speedFunction, left, right, a, dx
+            positionFunction, speedFunction, left, right, a, dx, modes
         );
         toggleBtn.textContent = "Начать рисование";
         stringVersion++;
@@ -114,7 +114,6 @@ function render(ms) {
         currentT   = isFrozen ? startTime : rawT;
 
         GUI.clearCanvas(ctx);
-
         GUI.drawString(ctx, stringFunction, "rgba(100,100,100,0.5)",
             0, pointsCount, dataBounds, clipBounds, false);
         GUI.drawString(ctx, stringFunction, "red",
