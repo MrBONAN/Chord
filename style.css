@@ -1,8 +1,17 @@
 #params {
-  width: 500px;
+  width: 600px;
   border: 2px solid #999;
   padding: 10px;
   background-color: #fff;
+  font-size: 14pt;
+}
+
+#params legend {
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  font-size: 20pt;
+  margin-bottom: 10px;
 }
 
 #params fieldset {
@@ -16,7 +25,7 @@
   flex-direction: row;
   gap: 10px;
   margin-bottom: 10px;
-  font-size: 14px;
+  /*font-size: 20px;*/
 }
 
 #params input {

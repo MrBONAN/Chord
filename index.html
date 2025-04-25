@@ -7,9 +7,9 @@
 </head>
 <body>
 <div id="container">
-    <div id="params">
+    <form id="params">
         <fieldset>
-            <legend><b>Параметры струны</b></legend>
+            <legend>Параметры струны</legend>
 
             <label>ρ (плотность)
                 <input id="density" type="number" step="any" value="1">
@@ -35,19 +35,21 @@
                 <input id="pointsCount" type="number" value="200">
             </label>
 
-            <label>y₀(x)
+            <label>Ф-я начального положения
                 <input id="posFunc" type="text" value="Math.sin(2 * Math.PI * x)">
             </label>
 
-            <label>v₀(x)
+            <label>Ф-я начальной скорости
                 <input id="speedFunc" type="text" value="0">
             </label>
+
+            <input type="reset" value="Спросить параметры">
 
             <button id="applyParams">Применить</button>
         </fieldset>
 
         <button id="toggleDraw">Начать рисование</button>
-    </div>
+    </form>
 
     <div id="draw-area">
         <canvas id="glcanvas" width="800" height="600"></canvas>
