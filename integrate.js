@@ -63,8 +63,8 @@ export class StringCalculator {
             sum + (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
     }
 
-    static getMainStringFunction(initialPositionFunction, initialSpeedFunction, leftBorder, rightBorder, a, dx) {
-        const N = 100;
+    static getMainStringFunction(initialPositionFunction, initialSpeedFunction, leftBorder, rightBorder, a, dx, modes) {
+        const N = modes;
         const L = rightBorder - leftBorder;
         const pointsCount = Math.floor(L / dx) + 1;
         const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);

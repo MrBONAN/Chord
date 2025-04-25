@@ -9,52 +9,46 @@
 <div id="container">
     <form id="params">
         <fieldset>
-            <legend>Параметры струны</legend>
+            <legend><b>Параметры струны</b></legend>
 
-            <label>ρ (плотность)
-                <input id="density" type="number" step="any" value="1">
-            </label>
+            <label>ρ (плотность) <input id="density" type="number" step="any" value="1"></label>
+            <label>T₀ (натяжение) <input id="tension" type="number" step="any" value="9"></label>
+            <label>Начало струны (по X) <input id="leftBound" type="number" step="any" value="0"></label>
+            <label>Конец струны (по X) <input id="rightBound" type="number" step="any" value="1"></label>
+            <label>Ф-я нач. положения <input id="posFunc" type="text" value="Math.sin(2*Math.PI*x)"></label>
+            <label>Ф-я нач. скорости <input id="speedFunc" type="text" value="0"></label>
+        </fieldset>
 
-            <label>T₀ (натяжение)
-                <input id="tension" type="number" step="any" value="9">
-            </label>
-
-            <label>Начало струны (по X)
-                <input id="leftBound" type="number" step="any" value="0">
-            </label>
-
-            <label>Конец струны (по X)
-                <input id="rightBound" type="number" step="any" value="1">
-            </label>
-
+        <details>
+            <summary><b>Дополнительные настройки</b></summary>
             <label>dx
                 <input id="dx" type="number" step="any" value="0.0001">
             </label>
-
             <label>Количество точек
                 <input id="pointsCount" type="number" value="200">
             </label>
-
-            <label>Ф-я начального положения
-                <input id="posFunc" type="text" value="Math.sin(2 * Math.PI * x)">
+            <label>Слагаемых ряда (modes)
+                <input id="modes" type="number" value="100"></label>
+            <label>Масштаб времени <input id="timeScale" type="number" step="any" value="1">
             </label>
-
-            <label>Ф-я начальной скорости
-                <input id="speedFunc" type="text" value="0">
+            <label>Стартовое время (c)
+                <input id="startTime" type="number" step="any" value="0">
             </label>
+            <label>
+                <input id="freeze" type="checkbox"> Фиксировать положение
+            </label>
+        </details>
 
-            <input type="reset" value="Спросить параметры">
-
-            <button type="button" id="applyParams">Применить</button>
-        </fieldset>
-
+        <input type="reset" value="Сбросить">
+        <button type="button" id="applyParams">Применить</button>
         <button type="button" id="toggleDraw">Начать рисование</button>
     </form>
+
 
     <div id="draw-area">
         <canvas id="glcanvas" width="800" height="600"></canvas>
         <div id="info">
-            <p><strong>Легенда:</strong></p>
+            <p><b>Легенда:</b></p>
             <p>Серая линия — начальное положение струны (t = 0).</p>
             <p>Красная линия — текущее положение струны.</p>
             <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
