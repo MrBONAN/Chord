@@ -2,8 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>WebGL: Анимация струны с динамическими параметрами</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Анимация струны с динамическими параметрами</title>
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/params.css">
+    <link rel="stylesheet" href="styles/draw.css">
+    <link rel="stylesheet" href="styles/animations.css">
 </head>
 <body>
 <div id="container">
@@ -34,27 +37,27 @@
             </fieldset>
         </form>
         <form id="options">
-        <details>
-            <summary><b>Дополнительные настройки</b></summary>
-            <label>dx
-                <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
-            </label>
-            <label>Количество точек
-                <input id="pointsCount" type="number" value="200" min="2" max="1e4">
-            </label>
-            <label>Слагаемых ряда (modes)
-                <input id="modes" type="number" value="100" min="1"></label>
-            <label>Масштаб времени
-                <input id="timeScale" type="number" step="0.1" value="0.1" min="1e-3">
-            </label>
-            <label>Стартовое время (с)
-                <input id="startTime" type="number" step="0.1" value="0" min="0">
-            </label>
-            <label>
-                <input id="freeze" type="checkbox"> Фиксировать положение
-            </label>
-            <input type="reset" value="Сбросить">
-        </details>
+            <details>
+                <summary><b>Дополнительные настройки</b></summary>
+                <label>dx
+                    <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
+                </label>
+                <label>Количество точек
+                    <input id="pointsCount" type="number" value="200" min="2" max="1e4">
+                </label>
+                <label>Слагаемых ряда (modes)
+                    <input id="modes" type="number" value="100" min="1"></label>
+                <label>Масштаб времени
+                    <input id="timeScale" type="number" step="0.1" value="0.1" min="1e-3">
+                </label>
+                <label>Стартовое время (с)
+                    <input id="startTime" type="number" step="0.1" value="0" min="0">
+                </label>
+                <label>
+                    <input id="freeze" type="checkbox"> Фиксировать положение
+                </label>
+                <input type="reset" value="Сбросить">
+            </details>
         </form>
     </div>
 
@@ -69,6 +72,6 @@
     </div>
 
 </div>
-<script type="module" src="script.js"></script>
+<script type="module" src="scripts/index.js"></script>
 </body>
 </html>
