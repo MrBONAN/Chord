@@ -11,6 +11,7 @@ export function validate(tokens) {
         return `${msg} возле ${near} (index ${i})`;
     };
 
+    let resultString = '';
     for (let i = 0; i < tokens.length; i++) {
         const t = tokens[i];
 
@@ -25,6 +26,7 @@ export function validate(tokens) {
                         message: err(i, 'Ожидался оператор')
                     };
                 }
+                resultString += ' ' + t.value;
                 expectingOperand = false;
                 break;
 
@@ -43,6 +45,7 @@ export function validate(tokens) {
                         message: err(i, `Функция '${t.value}' должна сопровождаться '('`)
                     };
                 }
+                resultString += ' ' + t.value;
                 expectingOperand = true;
                 break;
 
@@ -54,6 +57,7 @@ export function validate(tokens) {
                         message: err(i, "Ожидался оператор перед '('")
                     };
                 }
+                resultString += ' ' + t.value;
                 parenStack.push('(');
                 expectingOperand = true;
                 break;
@@ -73,14 +77,16 @@ export function validate(tokens) {
                         message: err(i, "Лишняя ')'")
                     };
                 }
+                resultString += ' )';
                 parenStack.pop();
                 expectingOperand = false;
                 break;
 
-            case TokenType.UNAR:
+            case TokenType.UNARY:
                 if (!expectingOperand) {
                     expectingOperand = true;
                 }
+                resultString += ' ' + t.value;
                 break;
 
             case TokenType.OPERATOR:
@@ -92,6 +98,11 @@ export function validate(tokens) {
                     };
                 }
                 expectingOperand = true;
+                if (t.value === '^') {
+                    resultString += ' **';
+                } else {
+                    resultString += ' ' + t.value;
+                }
                 break;
 
             default:
@@ -120,12 +131,8 @@ export function validate(tokens) {
     }
 
     return {
-        func: "",
+        func: resultString,
         status: true,
         message: 'Функция прошла валидацию'
     }
 }
-
-const tokens = Tokenizer.tokenize('2 * sin(PI/4) - x^2');
-console.log(tokens);
-console.log(validate(tokens)); // true

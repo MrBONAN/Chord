@@ -1,14 +1,14 @@
 "use strict";
 
 export const TokenType = {
-    NUMBER:     'NUMBER',
-    IDENT:      'IDENT',
-    CONSTANT:   'CONSTANT',
-    FUNCTION:   'FUNCTION',
-    UNAR:       'UNAR',  // Нужен, так как может быть унарным
-    OPERATOR:   'OPERATOR',
-    LPAREN:     'LPAREN',
-    RPAREN:     'RPAREN',
+    NUMBER: 'NUMBER',
+    IDENT: 'IDENT',
+    CONSTANT: 'CONSTANT',
+    FUNCTION: 'FUNCTION',
+    UNARY: 'UNARY',  // Нужен, так как может быть унарным
+    OPERATOR: 'OPERATOR',
+    LPAREN: 'LPAREN',
+    RPAREN: 'RPAREN',
 };
 
 const tokenSpecs = [
@@ -16,8 +16,8 @@ const tokenSpecs = [
     {type: 'NUMBER', regex: /^\d+(?:\.\d+)?/},
     {type: 'IDENT', regex: /^[a-zA-Z_]\w*/},
 
-    {type: 'UNAR', regex: /^\+/},
-    {type: 'UNAR', regex: /^\-/},
+    {type: 'UNARY', regex: /^\+/},
+    {type: 'UNARY', regex: /^\-/},
     {type: 'OPERATOR', regex: /^\*/},
     {type: 'OPERATOR', regex: /^\//},
     {type: 'OPERATOR', regex: /^\^/},
@@ -32,7 +32,7 @@ export class Tokenizer {
      * @param {RegExp} regex - Регулярное выражение для поиска токена.
      */
     static addTokenType(type, regex) {
-        tokenSpecs.unshift({ type, regex: new RegExp('^(' + regex.source + ')') });
+        tokenSpecs.unshift({type, regex: new RegExp('^(' + regex.source + ')')});
     }
 
     /**
@@ -72,5 +72,5 @@ export class Tokenizer {
     }
 }
 
-Tokenizer.addTokenType('PI', /PI/);
-Tokenizer.addTokenType('e', /e/);
+Tokenizer.addTokenType('CONSTANT', /PI/);
+Tokenizer.addTokenType('CONSTANT', /e/);
