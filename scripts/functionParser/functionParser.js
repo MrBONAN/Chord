@@ -1,6 +1,6 @@
 "use strict";
 
-import {Tokenizer, TokenType} from "./Tokenizer.js";
+import {Tokenizer} from "./Tokenizer.js";
 import {validate} from "./validator.js";
 
 const constantTokens = new Map ([
@@ -41,7 +41,7 @@ for (const [token, value] of constantTokens) {
 /**
  * @param {string} func - Строковое представление функции
  **/
-function parseFunction(func) {
+export function parseFunction(func) {
     const tokens = Tokenizer.tokenize(func);
     if (tokens.some(token => token.value === 'UNKNOWN')) {
         return {func: undefined, success: false};

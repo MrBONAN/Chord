@@ -1,6 +1,6 @@
 "use strict";
 
-import {Tokenizer, TokenType} from "./Tokenizer.js";
+import {TokenType} from "./Tokenizer.js";
 
 export function validate(tokens) {
     const parenStack = [];
@@ -85,6 +85,8 @@ export function validate(tokens) {
             case TokenType.UNARY:
                 if (!expectingOperand) {
                     expectingOperand = true;
+                } else {
+                    resultString += ' ' + 0;
                 }
                 resultString += ' ' + t.value;
                 break;
