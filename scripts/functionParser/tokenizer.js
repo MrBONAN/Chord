@@ -27,18 +27,10 @@ const tokenSpecs = [
 ];
 
 export class Tokenizer {
-    /**
-     * @param {string} type - Тип токена.
-     * @param {RegExp} regex - Регулярное выражение для поиска токена.
-     */
     static addTokenType(type, regex) {
         tokenSpecs.unshift({type, regex: new RegExp('^(' + regex.source + ')')});
     }
 
-    /**
-     * @param {string} input - Входная строка для токенизации.
-     * @returns {{type: string, value: string}[]} Массив токенов.
-     */
     static tokenize(input) {
         const tokens = [];
 
@@ -71,6 +63,3 @@ export class Tokenizer {
         return tokens;
     }
 }
-
-Tokenizer.addTokenType('CONSTANT', /PI/);
-Tokenizer.addTokenType('CONSTANT', /e/);

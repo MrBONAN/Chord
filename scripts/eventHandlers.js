@@ -40,12 +40,19 @@ applyBtn.addEventListener("click", () => {
 
     const posFunction = parseFunction(document.getElementById("posFunc").value);
     const speedFunction = parseFunction(document.getElementById("speedFunc").value);
+
     if (posFunction.success) {
         state.setPositionFunction(posFunction.func);
+    } else {
+        console.error(posFunction.message);
     }
+
     if (speedFunction.success) {
         state.setSpeedFunction(speedFunction.func);
+    } else {
+        console.error(speedFunction.message);
     }
+
     state.resetTime();
 });
 

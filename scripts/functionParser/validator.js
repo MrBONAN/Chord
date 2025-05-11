@@ -134,7 +134,6 @@ export function validate(tokens) {
 
     return {
         func: resultString,
-        status: true,
-        message: 'Функция прошла валидацию'
+        status: true
     }
 }

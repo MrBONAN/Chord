@@ -1,9 +1,9 @@
 "use strict";
 
-import {Tokenizer} from "./Tokenizer.js";
+import {Tokenizer, TokenType} from "./Tokenizer.js";
 import {validate} from "./validator.js";
 
-const constantTokens = new Map ([
+const constantTokens = new Map([
     ['PI', 'Math.PI'],
     ['E', 'Math.E']
 ]);
@@ -38,18 +38,20 @@ for (const [token, value] of constantTokens) {
     Tokenizer.addTokenType('CONSTANT', RegExp('^' + token));
 }
 
-/**
- * @param {string} func - Строковое представление функции
- **/
 export function parseFunction(func) {
     const tokens = Tokenizer.tokenize(func);
-    if (tokens.some(token => token.value === 'UNKNOWN')) {
-        return {func: undefined, success: false};
+    for (const token of tokens) {
+        if (token.value === 'UNKNOWN') {
+            return {success: false, message: `Найден неожиданный символ: ${token.value}`};
+        }
+        if (token.type === TokenType.IDENT && token.value !== 'x') {
+            return {success: false, message: `В функции присутствует переменная кроме X: ${token.value}`};
+        }
     }
 
     const result = validate(tokens);
     if (!result.status) {
-        return {func: undefined, success: false};
+        return {success: false, message: result.message};
     }
 
     let preprocessedFunction = result.func;
