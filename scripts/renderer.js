@@ -8,7 +8,7 @@ const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
 const timeEl = document.getElementById("timeDisplay");
 
-const clip = {
+State.clip = {
     left: 0,
     right: ctx.canvas.width,
     top: 0,
@@ -27,10 +27,10 @@ function frame(tMs) {
         GUI.clearCanvas(ctx);
 
         GUI.drawString(ctx, State.getStringFunction(), "rgba(100,100,100,0.5)",
-            State.getStartTime(), State.getPointsCount(), State.getBounds(), clip, false);
+            State.getStartTime(), State.getPointsCount(), State.getBounds(), State.clip, false);
 
         GUI.drawString(ctx, State.getStringFunction(), "red",
-            State.getCurrentTime(), State.getPointsCount(), State.getBounds(), clip, false);
+            State.getCurrentTime(), State.getPointsCount(), State.getBounds(), State.clip, false);
 
         timeEl.textContent = State.getCurrentTime().toFixed(2);
     } else {

@@ -1,5 +1,7 @@
 "use strict";
 
+import {State} from "./state.js";
+
 export class Drawer {
     constructor(gui, canvas, context) {
         this.gui = gui;
@@ -8,39 +10,98 @@ export class Drawer {
 
         this.isDrawingMode = false;
         this.isDrawing = false;
+        this.isPanning = false;
+
         this.points = new Array(canvas.width).fill(0);
         this.lastPos = null;
+        this.panLast = null;
+
+        this.zoom = 1; // Изначальное значение зума
 
         canvas.addEventListener('mousedown', (e) => {
-            if (!this.isDrawingMode) return;
-            this.isDrawing = true;
-            const pos = this.getCanvasCoordinates(e);
-            this.addPoint(pos.x, pos.y);
-            this.lastPos = pos;
+            if (!this.isDrawingMode) {
+                this.isPanning = true;
+                this.panLast = { x: e.clientX, y: e.clientY };
+            } else {
+                this.isDrawing = true;
+                const pos = this.getCanvasCoordinates(e);
+                this.addPoint(pos.x, pos.y);
+                this.lastPos = pos;
+            }
         });
 
         canvas.addEventListener('mousemove', (e) => {
-            if (!this.isDrawingMode || !this.isDrawing) return;
-            const pos = this.getCanvasCoordinates(e);
-            
-            if (this.lastPos) {
-                this.interpolatePoints(this.lastPos, pos);
-            } else {
-                this.addPoint(pos.x, pos.y);
+            if (this.isDrawingMode && this.isDrawing) {
+                const pos = this.getCanvasCoordinates(e);
+                if (this.lastPos) {
+                    this.interpolatePoints(this.lastPos, pos);
+                } else {
+                    this.addPoint(pos.x, pos.y);
+                }
+                this.lastPos = pos;
+            } else if (this.isPanning) {
+                const dx = e.clientX - this.panLast.x;
+                const dy = e.clientY - this.panLast.y;
+
+                // Масштаб перемещения зависит от текущего зума
+                const scaleX = (State.clip.right - State.clip.left) / this.canvas.width;
+                const scaleY = (State.clip.bottom - State.clip.top) / this.canvas.height;
+
+                const factor = 1 / this.zoom;
+
+                State.clip.left   += dx * scaleX * factor;
+                State.clip.right  += dx * scaleX * factor;
+                State.clip.top    += dy * scaleY * factor;
+                State.clip.bottom += dy * scaleY * factor;
+
+                this.panLast = { x: e.clientX, y: e.clientY };
             }
-            
-            this.lastPos = pos;
         });
 
         canvas.addEventListener('mouseup', () => {
             this.isDrawing = false;
+            this.isPanning = false;
             this.lastPos = null;
         });
+
         canvas.addEventListener('mouseout', () => {
             this.isDrawing = false;
+            this.isPanning = false;
             this.lastPos = null;
         });
+
+        canvas.addEventListener('wheel', (e) => {
+            if (this.isDrawingMode) return;
+
+            e.preventDefault();
+
+            const scaleFactor = 1.1;
+            const zoomDelta = e.deltaY < 0 ? 1 / scaleFactor : scaleFactor;
+
+            this.zoom *= zoomDelta;
+
+            const rect = canvas.getBoundingClientRect();
+            const cursorX = (e.clientX - rect.left) / rect.width;
+            const cursorY = (e.clientY - rect.top) / rect.height;
+
+            const clip = State.clip;
+
+            const width = clip.right - clip.left;
+            const height = clip.bottom - clip.top;
+
+            const newWidth = width / zoomDelta;
+            const newHeight = height / zoomDelta;
+
+            const dx = width - newWidth;
+            const dy = height - newHeight;
+
+            clip.left   += dx * cursorX;
+            clip.right  -= dx * (1 - cursorX);
+            clip.top    += dy * cursorY;
+            clip.bottom -= dy * (1 - cursorY);
+        });
     }
+
 
     getCanvasCoordinates(e) {
         const rect = this.canvas.getBoundingClientRect();
@@ -52,6 +113,13 @@ export class Drawer {
         };
     }
 
+    drawInput() {
+        this.gui.clearCanvas(this.context);
+        for (let i = 0; i < this.points.length - 1; i++) {
+            this.drawLine(i, this.toWindowY(this.points[i]), i + 1, this.toWindowY(this.points[i + 1]));
+        }
+    }
+
     toNumY(y) {
         return 2 * y / this.canvas.height - 1;
     }
@@ -61,11 +129,11 @@ export class Drawer {
     }
 
     addPoint(x, y) {
-        this.context.clearRect(x, 0, 1, this.canvas.height);
         this.points[x] = this.toNumY(y);
+        drawInput();
     }
 
-    interpolatePoints(start, end) {
+    addPoints(start, end) {
         const dx = Math.abs(end.x - start.x);
         const dy = Math.abs(end.y - start.y);
         const steps = Math.max(dx, dy);
@@ -73,9 +141,9 @@ export class Drawer {
             const t = steps === 0 ? 0 : i / steps;
             const x = Math.round(start.x + t * (end.x - start.x));
             const y = Math.round(start.y + t * (end.y - start.y));
-            this.addPoint(x, y);
+            this.points[x] = this.toNumY(y);
         }
-        this.drawLine(start.x, start.y, end.x, end.y);
+        drawInput();
     }
 
     drawLine(x1, y1, x2, y2) {

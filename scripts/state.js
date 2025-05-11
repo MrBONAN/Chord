@@ -21,6 +21,13 @@ export class State {
     static stringFunction = undefined;
     static a = 1;
 
+    static clip = {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+    };
+
     static rebuild() {
         State.a = Math.sqrt(State.T0 / State.p);
         State.stringFunction = StringCalculator.getMainStringFunction(
@@ -51,7 +58,6 @@ export class State {
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
     static setStartTime   (newStartTime) {  State.startTime =  State.actualTime = newStartTime; }
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
-
 }
 
 State.rebuild();
