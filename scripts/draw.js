@@ -53,11 +53,11 @@ export class Drawer {
     }
 
     toNumY(y) {
-        return y / this.canvas.height - 0.5;
+        return 2 * y / this.canvas.height - 1;
     }
 
     toWindowY(y) {
-        return Math.round((y + 0.5) * this.canvas.height);
+        return Math.round((y + 1) * this.canvas.height / 2);
     }
 
     addPoint(x, y) {
