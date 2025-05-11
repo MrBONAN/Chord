@@ -3,6 +3,7 @@
 import {GUI} from "./GUI.js";
 import {Drawer} from "./draw.js";
 import * as state from "./state.js";
+import {parseFunction} from "./functionParser/functionParser.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -37,8 +38,20 @@ applyBtn.addEventListener("click", () => {
         +document.getElementById("rightBound").value
     );
 
-    state.setPositionFunction(new Function("x", `return ${document.getElementById("posFunc").value};`));
-    state.setSpeedFunction(new Function("x", `return ${document.getElementById("speedFunc").value};`));
+    const posFunction = parseFunction(document.getElementById("posFunc").value);
+    const speedFunction = parseFunction(document.getElementById("speedFunc").value);
+
+    if (posFunction.success) {
+        state.setPositionFunction(posFunction.func);
+    } else {
+        console.error(posFunction.message);
+    }
+
+    if (speedFunction.success) {
+        state.setSpeedFunction(speedFunction.func);
+    } else {
+        console.error(speedFunction.message);
+    }
 
     state.resetTime();
 });
