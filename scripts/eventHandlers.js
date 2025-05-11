@@ -2,7 +2,7 @@
 
 import {GUI} from "./GUI.js";
 import {Drawer} from "./draw.js";
-import * as state from "./state.js";
+import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
 
 const canvas = GUI.getCanvas("glcanvas");
@@ -20,21 +20,23 @@ toggleBtn.addEventListener("click", () => {
         GUI.clearCanvas(ctx);
         toggleBtn.textContent = "Закончить и сохранить";
         drawer.points = new Array(canvas.width).fill(0);
-        state.resetTime();
+        State.resetTime();
     } else {
-        state.setPositionFunction(
+        State.setPositionFunction(
             drawer.createLinearInterpolator(drawer.points)
         );
         toggleBtn.textContent = "Начать рисование";
-        state.resetTime();
+
+        State.rebuild();
+        State.resetTime();
     }
 });
 
 
 applyBtn.addEventListener("click", () => {
-    state.setDensity(+document.getElementById("density").value);
-    state.setTension(+document.getElementById("tension").value);
-    state.setBounds(+document.getElementById("leftBound").value,
+    State.setDensity(+document.getElementById("density").value);
+    State.setTension(+document.getElementById("tension").value);
+    State.setBounds(+document.getElementById("leftBound").value,
         +document.getElementById("rightBound").value
     );
 
@@ -42,18 +44,19 @@ applyBtn.addEventListener("click", () => {
     const speedFunction = parseFunction(document.getElementById("speedFunc").value);
 
     if (posFunction.success) {
-        state.setPositionFunction(posFunction.func);
+        State.setPositionFunction(posFunction.func);
     } else {
         console.error(posFunction.message);
     }
 
     if (speedFunction.success) {
-        state.setSpeedFunction(speedFunction.func);
+        State.setSpeedFunction(speedFunction.func);
     } else {
         console.error(speedFunction.message);
     }
 
-    state.resetTime();
+    State.rebuild();
+    State.resetTime();
 });
 
 
@@ -94,23 +97,23 @@ document.getElementById("all-params")
 
         switch (el.id) {
             case "dx":
-                state.setDx(+el.value);
+                State.setDx(+el.value);
                 break;
             case "pointsCount":
-                state.setPointsCount(+el.value);
+                State.setPointsCount(+el.value);
                 break;
             case "modes":
-                state.setModes(+el.value);
+                State.setModes(+el.value);
                 break;
             case "timeScale":
-                state.setTimeScale(+el.value);
+                State.setTimeScale(+el.value);
                 break;
             case "startTime":
-                state.setStartTime(+el.value);
+                State.setStartTime(+el.value);
                 break;
         }
     }, true);
 document.getElementById("freeze")
-    .addEventListener("change", e => state.toggleFrozen(e.target.checked));
+    .addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
 export {drawer};
