@@ -11,12 +11,23 @@ export function validate(tokens) {
         return `${msg} возле ${near} (index ${i})`;
     };
 
+    let unaryStack = [];
     let resultString = '';
-    if (tokens[0].type === TokenType.UNARY){
+    if (tokens[0].type === TokenType.UNARY) {
         resultString = '0';
     }
     for (let i = 0; i < tokens.length; i++) {
         const t = tokens[i];
+
+        if (t.type !== TokenType.UNARY && unaryStack.length !== 0) {
+            const minusCount = unaryStack.reduce((cnt, token) => { return cnt + (token === '-' ? 1 : 0) }, 0);
+            if (minusCount % 2 === 1){
+                resultString += ' -';
+            } else {
+                resultString += ' +';
+            }
+            unaryStack = [];
+        }
 
         switch (t.type) {
             case TokenType.NUMBER:
@@ -89,7 +100,7 @@ export function validate(tokens) {
                 if (!expectingOperand) {
                     expectingOperand = true;
                 }
-                resultString += ' ' + t.value;
+                unaryStack.push(t.value);
                 break;
 
             case TokenType.OPERATOR:
