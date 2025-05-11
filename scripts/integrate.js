@@ -1,8 +1,10 @@
 "use strict";
 
+import {State} from "./state.js";
+
 export class StringCalculator {
-    static integrate(heights, dx) {
-        return heights.reduce((sum, height) => sum + height * dx, 0);
+    static integrate(heights) {
+        return heights.reduce((sum, height) => sum + height * State.dx, 0);
     }
 
     static multiplyFunctionHeights(heights1, heights2) {
@@ -15,36 +17,37 @@ export class StringCalculator {
             .map((h1, i) => h1 * heights2[i]);
     }
 
-    static calculateFunctionHeights(func, count, dx) {
+    static calculateFunctionHeights(func, count) {
         let x = 0;
         const heights = [];
         for (let i = 0; i < count; i++) {
             heights.push(func(x));
-            x += dx;
+            x += State.dx;
         }
         return heights;
     }
 
-    static calculateMainIntegral(heights, dx, lambda) {
+    static calculateMainIntegral(heights, lambda) {
         const sinFunc = (x) => Math.sin(x * lambda);
-        const sinHeights = StringCalculator.calculateFunctionHeights(sinFunc, heights.length, dx);
+        const sinHeights = StringCalculator.calculateFunctionHeights(sinFunc, heights.length);
         const functionsCompositionHeights = StringCalculator.multiplyFunctionHeights(heights, sinHeights);
-        return StringCalculator.integrate(functionsCompositionHeights, dx);
+        return StringCalculator.integrate(functionsCompositionHeights);
     }
 
-    static calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx) {
+    static calculateDCoefficients(a, L, lambdas, initialSpeedHeights) {
         const D = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(initialSpeedHeights, dx, lambda);
+            const integral = StringCalculator.calculateMainIntegral(initialSpeedHeights, lambda);
             D.push(2 / (a * lambda * L) * integral);
         }
         return D;
     }
 
-    static calculateECoefficients(a, L, lambdas, initialPositionHeights, dx) {
+    static calculateECoefficients(a, L, lambdas, initialPositionHeights) {
+        console.log(initialPositionHeights);
         const E = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, dx, lambda);
+            const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, lambda);
             E.push(2 / L * integral);
         }
         return E;
@@ -72,15 +75,14 @@ export class StringCalculator {
         };
     }
 
-    static getMainStringFunction(positionFunction, speedFunction, length, a, dx, modes) {
-        const N = modes;
-        const pointsCount = Math.floor(length / dx) + 1;
-        const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / length);
+    static getMainStringFunction(positionFunction, speedFunction, length, a) {
+        const pointsCount = Math.floor(length / State.dx) + 1;
+        const lambdas = new Array(State.modes).fill(0).map((_, index) => Math.PI * (index + 1) / length);
 
-        const initialPositionHeights = StringCalculator.calculateFunctionHeights(positionFunction, pointsCount, dx);
-        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(speedFunction, pointsCount, dx);
-        const D = StringCalculator.calculateDCoefficients(a, length, lambdas, initialSpeedHeights, dx);
-        const E = StringCalculator.calculateECoefficients(a, length, lambdas, initialPositionHeights, dx);
+        const initialPositionHeights = StringCalculator.calculateFunctionHeights(positionFunction, pointsCount);
+        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(speedFunction, pointsCount);
+        const D = StringCalculator.calculateDCoefficients(a, length, lambdas, initialSpeedHeights);
+        const E = StringCalculator.calculateECoefficients(a, length, lambdas, initialPositionHeights);
 
         return StringCalculator.calculateFunction(D, E, lambdas, a);
     }
@@ -96,17 +98,13 @@ export class StringCalculator {
      */
     static createFunctionPoints(func, pointsCount, length, clipBounds) {
         const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
-
         const physicalDx = length / (pointsCount - 1);
-        const clipWidth = xClipMax - xClipMin;
-        const clipHeight = yClipMax - yClipMin;
-
         const coords = [];
 
         for (let i = 0; i < pointsCount; i++) {
             const x = physicalDx * i;
-            const xClipped = x * clipWidth / length + xClipMin;
-            const yClipped = (func(x) + 1) * clipHeight / 2 + yClipMin; // перевод в мужицкие пиксели
+            const xClipped = x * (xClipMax - xClipMin) / length + xClipMin;
+            const yClipped = (func(x) + 1) * (yClipMax - yClipMin) / 2 + yClipMin; // перевод в мужицкие пиксели
             coords.push(xClipped, yClipped);
         }
 

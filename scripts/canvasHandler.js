@@ -17,7 +17,8 @@ export class CanvasHandler {
         this.panLast = null;
 
         const scaleFactor = 1.1;
-        this.zoom = 1;
+        this.zoomX = 1;
+        this.zoomY = 1;
 
         window.addEventListener('resize', () => this.rect = canvas.getBoundingClientRect());
 
@@ -49,12 +50,10 @@ export class CanvasHandler {
                 const scaleX = (State.clip.right - State.clip.left) / this.rect.width;
                 const scaleY = (State.clip.bottom - State.clip.top) / this.rect.height;
 
-                const factor = this.zoom;
-
-                State.clip.left   += dx * scaleX * factor;
-                State.clip.right  += dx * scaleX * factor;
-                State.clip.top    += dy * scaleY * factor;
-                State.clip.bottom += dy * scaleY * factor;
+                State.clip.left   += dx * scaleX * this.zoomX;
+                State.clip.right  += dx * scaleX * this.zoomX;
+                State.clip.top    += dy * scaleY * this.zoomY;
+                State.clip.bottom += dy * scaleY * this.zoomY;
 
                 this.panLast = { x: e.clientX, y: e.clientY };
             }
@@ -79,8 +78,6 @@ export class CanvasHandler {
 
             const zoomDelta = e.deltaY < 0 ? 1 / scaleFactor : scaleFactor;
 
-            this.zoom *= zoomDelta;
-
             const cursorX = (e.clientX - this.rect.left) / this.rect.width;
             const cursorY = (e.clientY - this.rect.top) / this.rect.height;
 
@@ -95,10 +92,15 @@ export class CanvasHandler {
             const dx = width - newWidth;
             const dy = height - newHeight;
 
-            clip.left   += dx * cursorX;
-            clip.right  -= dx * (1 - cursorX);
+            this.zoomY *= zoomDelta;
             clip.top    += dy * cursorY;
             clip.bottom -= dy * (1 - cursorY);
+
+            if (!e.shiftKey) {
+                this.zoomX *= zoomDelta;
+                clip.left   += dx * cursorX;
+                clip.right  -= dx * (1 - cursorX);
+            }
         });
     }
 

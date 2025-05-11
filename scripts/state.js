@@ -31,7 +31,7 @@ export class State {
 
     static rebuild() {
         State.a = Math.sqrt(State.T0 / State.p);
-        State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a, State.dx, State.modes);
+        State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a);
     }
 
     static getStringFunction () { return State.stringFunction; }

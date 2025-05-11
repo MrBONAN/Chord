@@ -22,9 +22,7 @@ toggleBtn.addEventListener("click", () => {
         canvasHandler.points = new Array(canvas.width).fill(0);
         canvasHandler.drawInput();
     } else {
-        State.setPositionFunction(
-            canvasHandler.createLinearInterpolator(canvasHandler.points)
-        );
+        State.setPositionFunction(canvasHandler.createLinearInterpolator(canvasHandler.points));
         toggleBtn.textContent = "Начать рисование";
         State.rebuild();
     }
