@@ -1,6 +1,6 @@
 "use strict";
 
-import { StringFunction } from "./StringFunction.js";
+import {StringFunction} from "./StringFunction.js";
 
 export class StringCalculator {
     static integrate(heights, dx) {
@@ -58,9 +58,20 @@ export class StringCalculator {
             console.error("Неправильное соотношение между количеством коэффициентов для итоговой функции");
             count = Math.min(D.length, E.length, lambdas.length);
         }
-        lambdas = lambdas.slice(0, count);
-        return (t, x) => lambdas.reduce((sum, lambda, i) =>
-            sum + (D[i] * Math.sin(a * lambda * t) + E[i] * Math.cos(a * lambda * t)) * Math.sin(lambda * x), 0);
+        const nonZeroCoefficients = [];
+        const eps = 1e-7;
+        for (let i = 0; i < count; i++) {
+            if (Math.abs(D[i]) > eps || Math.abs(E[i]) > eps) {
+                nonZeroCoefficients.push({D: D[i], E: E[i], lambda: lambdas[i]});
+            }
+        }
+        return (t, x) => {
+            let result = 0;
+            for (let {D, E, lambda} of nonZeroCoefficients) {
+                result += (D * Math.sin(a * lambda * t) + E * Math.cos(a * lambda * t)) * Math.sin(lambda * x);
+            }
+            return result;
+        };
     }
 
     static getMainStringFunction(initialPositionFunction, initialSpeedFunction, leftBorder, rightBorder, a, dx, modes) {
