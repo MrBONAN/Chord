@@ -12,6 +12,9 @@ export function validate(tokens) {
     };
 
     let resultString = '';
+    if (tokens[0].type === TokenType.UNARY){
+        resultString = '0';
+    }
     for (let i = 0; i < tokens.length; i++) {
         const t = tokens[i];
 
@@ -85,8 +88,6 @@ export function validate(tokens) {
             case TokenType.UNARY:
                 if (!expectingOperand) {
                     expectingOperand = true;
-                } else {
-                    resultString += ' ' + 0;
                 }
                 resultString += ' ' + t.value;
                 break;
