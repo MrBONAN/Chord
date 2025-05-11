@@ -1,35 +1,34 @@
 "use strict";
 
 import {GUI} from "./GUI.js";
-import {Drawer} from "./draw.js";
+import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
-const drawer = new Drawer(GUI, canvas, ctx);
+const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
 const applyBtn = document.getElementById("applyParams");
 
 
 toggleBtn.addEventListener("click", () => {
-    drawer.isDrawingMode = !drawer.isDrawingMode;
+    State.toggleDrawingMode();
 
-    if (drawer.isDrawingMode) {
+    if (State.isDrawingMode) {
         GUI.clearCanvas(ctx);
         toggleBtn.textContent = "Закончить и сохранить";
-        drawer.points = new Array(canvas.width).fill(0);
-        State.resetTime();
+        canvasHandler.points = new Array(canvas.width).fill(0);
+        canvasHandler.drawInput();
     } else {
         State.setPositionFunction(
-            drawer.createLinearInterpolator(drawer.points)
+            canvasHandler.createLinearInterpolator(canvasHandler.points)
         );
         toggleBtn.textContent = "Начать рисование";
-
         State.rebuild();
-        State.resetTime();
     }
+    State.resetTime();
 });
 
 
@@ -112,5 +111,3 @@ document.getElementById("all-params")
         }
     }, true);
 document.getElementById("freeze").addEventListener("change", e => State.toggleFrozen(e.target.checked));
-
-export {drawer};

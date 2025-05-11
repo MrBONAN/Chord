@@ -2,14 +2,13 @@
 
 import {State} from "./state.js";
 
-export class Drawer {
+export class CanvasHandler {
     constructor(gui, canvas, context) {
         this.gui = gui;
         this.context = context;
         this.canvas = canvas;
         this.rect = canvas.getBoundingClientRect();
 
-        this.isDrawingMode = false;
         this.isDrawing = false;
         this.isPanning = false;
 
@@ -23,7 +22,7 @@ export class Drawer {
         window.addEventListener('resize', () => this.rect = canvas.getBoundingClientRect());
 
         canvas.addEventListener('mousedown', (e) => {
-            if (!this.isDrawingMode) {
+            if (!State.isDrawingMode) {
                 this.isPanning = true;
                 this.panLast = { x: e.clientX, y: e.clientY };
             } else {
@@ -35,7 +34,7 @@ export class Drawer {
         });
 
         canvas.addEventListener('mousemove', (e) => {
-            if (this.isDrawingMode && this.isDrawing) {
+            if (State.isDrawingMode && this.isDrawing) {
                 const pos = this.getCanvasCoordinates(e);
                 if (this.lastPos) {
                     this.addPoints(this.lastPos, pos);
@@ -74,7 +73,7 @@ export class Drawer {
         });
 
         canvas.addEventListener('wheel', (e) => {
-            if (this.isDrawingMode) return;
+            if (State.isDrawingMode) return;
 
             e.preventDefault();
 

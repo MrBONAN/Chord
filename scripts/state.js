@@ -14,6 +14,8 @@ export class State {
     static startTime = 0;
     static length = 1;
 
+    static isDrawingMode = false;
+
     static positionFunction = x => Math.sin(2 * Math.PI * x);
     static speedFunction    = x => 0;
 
@@ -54,6 +56,7 @@ export class State {
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
     static setStartTime   (newStartTime) {  State.startTime =  State.actualTime = newStartTime; }
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
+    static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 }
 
 State.rebuild();

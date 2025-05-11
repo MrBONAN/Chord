@@ -1,7 +1,6 @@
 "use strict";
 
 import {GUI} from "./GUI.js";
-import {drawer} from "./eventHandlers.js";
 import {State} from "./state.js";
 
 const canvas = GUI.getCanvas("glcanvas");
@@ -21,7 +20,7 @@ function frame(tMs) {
     const dt = tMs - tPrev;
     tPrev = tMs;
 
-    if (!drawer.isDrawingMode) {
+    if (!State.isDrawingMode) {
         if (!State.isFrozenState()) State.advanceTime(dt * 0.001);
 
         GUI.clearCanvas(ctx);
