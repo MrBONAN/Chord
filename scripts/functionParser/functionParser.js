@@ -57,11 +57,11 @@ export function parseFunction(func) {
     let preprocessedFunction = result.func;
 
     for (const [token, value] of functionTokens) {
-        preprocessedFunction = preprocessedFunction.replace(token, value);
+        preprocessedFunction = preprocessedFunction.replaceAll(token, value);
     }
 
     for (const [token, value] of constantTokens) {
-        preprocessedFunction = preprocessedFunction.replace(token, value);
+        preprocessedFunction = preprocessedFunction.replaceAll(token, value);
     }
 
     return {func: new Function("x", `return ${preprocessedFunction};`), success: true};
