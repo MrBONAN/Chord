@@ -5,8 +5,6 @@ import { StringCalculator } from "./integrate.js";
 export class State {
     static p = 1;
     static T0 = 9;
-    static left = 0;
-    static right = 1;
     static dx = 0.0001;
     static pointsCount = 200;
     static modes = 100;
@@ -14,6 +12,7 @@ export class State {
     static isFrozen = false;
     static actualTime = 0;
     static startTime = 0;
+    static length = 1;
 
     static positionFunction = x => Math.sin(2 * Math.PI * x);
     static speedFunction    = x => 0;
@@ -30,16 +29,14 @@ export class State {
 
     static rebuild() {
         State.a = Math.sqrt(State.T0 / State.p);
-        State.stringFunction = StringCalculator.getMainStringFunction(
-            State.positionFunction, State.speedFunction, State.left, State.right, State.a, State.dx, State.modes
-        );
+        State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a, State.dx, State.modes);
     }
 
     static getStringFunction () { return State.stringFunction; }
-    static getBounds         () { return { left: State.left, right: State.right, bottom: -1, top: 1 }; }
     static getPointsCount    () { return State.pointsCount; }
     static getStartTime      () { return State.startTime; }
-    static getCurrentTime    () { return State.actualTime; }
+    static getCurrentTime    () { return State.actualTime % State.getPeriod(); }
+    static getPeriod         () { return 2 * State.length / State.a; }
     static isFrozenState     () { return State.isFrozen; }
 
     static advanceTime  (dt) { State.actualTime += dt * State.timeScale; }
@@ -48,7 +45,6 @@ export class State {
 
     static setDensity          (newP)  {  State.p = newP; };
     static setTension          (newT0) {  State.T0 = newT0; };
-    static setBounds           (l, r) {  State.left = l;  State.right = r; };
     static setPositionFunction (f) {  State.positionFunction = f; }
     static setSpeedFunction    (f) {  State.speedFunction  = f; }
     static setDx       (newDx) {  State.dx = newDx;  State.rebuild(); }

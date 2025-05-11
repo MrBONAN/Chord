@@ -15,15 +15,14 @@ export class GUI {
      * @param {string} color – цвет обводки в формате CSS (например, '#ff0000' или 'rgba(255,0,0,1)').
      * @param {number} time – параметр времени для анимации.
      * @param {number} pointsCount – количество точек для отрисовки.
-     * @param {{left: number, right: number, bottom: number, top: number}} dataBounds – границы области данных для вычисления точек.
+     * @param {number} length
      * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области вывода (проекция).
      * @param {boolean} showOutsideBorders – отображать ли точки за пределами leftBorder..rightBorder.
      * @returns {void}
      */
-    static drawString(context, stringFunction, color, time, pointsCount, dataBounds, clipBounds, showOutsideBorders) {
-        const funcSnapshot = (x) => stringFunction.func(time, x);
-        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount,
-            stringFunction.leftBorder, stringFunction.rightBorder, dataBounds, clipBounds, showOutsideBorders);
+    static drawString(context, stringFunction, color, time, pointsCount, length, clipBounds, showOutsideBorders) {
+        const funcSnapshot = (x) => stringFunction(time, x);
+        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds, showOutsideBorders);
 
         context.strokeStyle = color;
         context.beginPath();

@@ -36,9 +36,7 @@ toggleBtn.addEventListener("click", () => {
 applyBtn.addEventListener("click", () => {
     State.setDensity(+document.getElementById("density").value);
     State.setTension(+document.getElementById("tension").value);
-    State.setBounds(+document.getElementById("leftBound").value,
-        +document.getElementById("rightBound").value
-    );
+    State.length = +document.getElementById("length").value;
 
     const posFunction = parseFunction(document.getElementById("posFunc").value);
     const speedFunction = parseFunction(document.getElementById("speedFunc").value);
@@ -113,7 +111,6 @@ document.getElementById("all-params")
                 break;
         }
     }, true);
-document.getElementById("freeze")
-    .addEventListener("change", e => State.toggleFrozen(e.target.checked));
+document.getElementById("freeze").addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
 export {drawer};

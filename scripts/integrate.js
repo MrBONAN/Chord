@@ -1,7 +1,5 @@
 "use strict";
 
-import {StringFunction} from "./StringFunction.js";
-
 export class StringCalculator {
     static integrate(heights, dx) {
         return heights.reduce((sum, height) => sum + height * dx, 0);
@@ -74,22 +72,17 @@ export class StringCalculator {
         };
     }
 
-    static getMainStringFunction(initialPositionFunction, initialSpeedFunction, leftBorder, rightBorder, a, dx, modes) {
+    static getMainStringFunction(positionFunction, speedFunction, length, a, dx, modes) {
         const N = modes;
-        const L = rightBorder - leftBorder;
-        const pointsCount = Math.floor(L / dx) + 1;
-        const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / L);
+        const pointsCount = Math.floor(length / dx) + 1;
+        const lambdas = new Array(N).fill(0).map((_, index) => Math.PI * (index + 1) / length);
 
-        const shiftedInitialPositionFunction = (x) => initialPositionFunction(x - leftBorder);
-        const shiftedInitialSpeedFunction = (x) => initialSpeedFunction(x - leftBorder);
+        const initialPositionHeights = StringCalculator.calculateFunctionHeights(positionFunction, pointsCount, dx);
+        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(speedFunction, pointsCount, dx);
+        const D = StringCalculator.calculateDCoefficients(a, length, lambdas, initialSpeedHeights, dx);
+        const E = StringCalculator.calculateECoefficients(a, length, lambdas, initialPositionHeights, dx);
 
-        const initialPositionHeights = StringCalculator.calculateFunctionHeights(shiftedInitialPositionFunction, pointsCount, dx);
-        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(shiftedInitialSpeedFunction, pointsCount, dx);
-        const D = StringCalculator.calculateDCoefficients(a, L, lambdas, initialSpeedHeights, dx);
-        const E = StringCalculator.calculateECoefficients(a, L, lambdas, initialPositionHeights, dx);
-
-        const func = StringCalculator.calculateFunction(D, E, lambdas, a);
-        return new StringFunction(func, leftBorder, rightBorder);
+        return StringCalculator.calculateFunction(D, E, lambdas, a);
     }
 
     /**
@@ -97,44 +90,23 @@ export class StringCalculator {
      *
      * @param {function(number): number} func – функция от x (физические координаты), возвращающая y.
      * @param {number} pointsCount – количество точек для выборки.
-     * @param {number} xFuncMin – физический минимум по x, где функция определена.
-     * @param {number} xFuncMax – физический максимум по x, где функция определена.
-     * @param {{left: number, right: number, bottom: number, top: number}} dataBounds – границы области данных (мин/макс по x и y).
+     * @param {number} length
      * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области клиппирования, в которую проецируются координаты.
-     * @param {boolean} showOutsideBorders – включать ли точки вне диапазона [xFuncMin, xFuncMax].
      * @returns {number[]} – плоский массив координат [x1, y1, x2, y2, …] в пределах clipBounds.
      */
-    static createFunctionPoints(
-        func,
-        pointsCount,
-        xFuncMin, xFuncMax,
-        dataBounds,
-        clipBounds,
-        showOutsideBorders
-    ) {
-        const {left: xDataMin, right: xDataMax, bottom: yDataMin, top: yDataMax} = dataBounds;
+    static createFunctionPoints(func, pointsCount, length, clipBounds) {
         const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
 
-        const physicalDx = (xDataMax - xDataMin) / (pointsCount - 1);
-        const dataWidth = xDataMax - xDataMin;
-        const dataHeight = yDataMax - yDataMin;
+        const physicalDx = length / (pointsCount - 1);
         const clipWidth = xClipMax - xClipMin;
         const clipHeight = yClipMax - yClipMin;
-        const eps = 1e-5;
 
         const coords = [];
 
         for (let i = 0; i < pointsCount; i++) {
-            const x = xDataMin + physicalDx * i;
-
-            if (!showOutsideBorders && (x < xFuncMin - eps || x > xFuncMax + eps)) {
-                continue;
-            }
-            // Нормировка x из [xDataMin..xDataMax] в [xClipMin..xClipMax]
-            const xClipped = ((x - xDataMin) / dataWidth) * clipWidth + xClipMin;
-            // Нормировка y из [yDataMin..yDataMax] в [yClipMin..yClipMax]
-            const yClipped = ((func(x) - yDataMin) / dataHeight) * clipHeight + yClipMin;
-
+            const x = physicalDx * i;
+            const xClipped = x * clipWidth / length + xClipMin;
+            const yClipped = (func(x) + 1) * clipHeight / 2 + yClipMin; // перевод в мужицкие пиксели
             coords.push(xClipped, yClipped);
         }
 
