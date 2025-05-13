@@ -4,6 +4,7 @@ import {GUI} from "./GUI.js";
 import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
+import { PeriodSlider } from "./periodSlider.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -52,6 +53,8 @@ applyBtn.addEventListener("click", () => {
 
     State.rebuild();
     State.resetTime();
+
+    PeriodSlider.changePeriod(State.a, State.length);
 });
 
 
@@ -76,36 +79,35 @@ const validators = {
     timeScale: v => isNum(v) && +v >= 1e-3,
     startTime: v => isNum(v) && +v >= 0
 };
-document.getElementById("all-params")
-    .addEventListener("change", e => {
-        const el = e.target;
-        if (!validators[el.id]) return;
+document.getElementById("all-params").addEventListener("change", e => {
+    const el = e.target;
+    if (!validators[el.id]) return;
 
-        if (!validators[el.id](el.value)) {
-            el.value = el.dataset.prev;
-            pulse(el);
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            return;
-        }
-        el.dataset.prev = el.value;
+    if (!validators[el.id](el.value)) {
+        el.value = el.dataset.prev;
+        pulse(el);
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return;
+    }
+    el.dataset.prev = el.value;
 
-        switch (el.id) {
-            case "dx":
-                State.setDx(+el.value);
-                break;
-            case "pointsCount":
-                State.setPointsCount(+el.value);
-                break;
-            case "modes":
-                State.setModes(+el.value);
-                break;
-            case "timeScale":
-                State.setTimeScale(+el.value);
-                break;
-            case "startTime":
-                State.setStartTime(+el.value);
-                break;
-        }
-    }, true);
+    switch (el.id) {
+        case "dx":
+            State.setDx(+el.value);
+            break;
+        case "pointsCount":
+            State.setPointsCount(+el.value);
+            break;
+        case "modes":
+            State.setModes(+el.value);
+            break;
+        case "timeScale":
+            State.setTimeScale(+el.value);
+            break;
+        case "startTime":
+            State.setStartTime(+el.value);
+            break;
+    }
+}, true);
 document.getElementById("freeze").addEventListener("change", e => State.toggleFrozen(e.target.checked));

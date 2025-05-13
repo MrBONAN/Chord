@@ -55,6 +55,7 @@ export class State {
     static setPointsCount (newPointsCount) { State.pointsCount = newPointsCount; }
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
     static setStartTime   (newStartTime) {  State.startTime =  State.actualTime = newStartTime; }
+    static setCurrentTime (newTime) { State.actualTime = newTime; }
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
     static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 }

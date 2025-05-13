@@ -44,7 +44,6 @@ export class StringCalculator {
     }
 
     static calculateECoefficients(a, L, lambdas, initialPositionHeights) {
-        console.log(initialPositionHeights);
         const E = [];
         for (const lambda of lambdas) {
             const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, lambda);

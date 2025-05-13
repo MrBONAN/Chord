@@ -2,6 +2,7 @@
 
 import {GUI} from "./GUI.js";
 import {State} from "./state.js";
+import { PeriodSlider } from "./periodSlider.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -32,6 +33,7 @@ function frame(tMs) {
             State.getCurrentTime(), State.getPointsCount(), State.length, State.clip);
 
         timeEl.textContent = State.getCurrentTime().toFixed(2);
+        PeriodSlider.setValue(State.getCurrentTime());
     } else {
         State.resetTime();
     }
