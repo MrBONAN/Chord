@@ -1,6 +1,54 @@
+/* styles/layout.css */
+
+/* Контейнер приложения: две колонки — боковая панель и основной контент */
 #container {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    margin-top: 20px;
+  display: flex; /* растягиваем на всю высоту окна */
+}
+
+/* Боковая панель: кнопка меню */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100px;      /* фиксированная ширина */
+  height: 100%;     /* растягиваем по высоте контейнера */
+  border-right: 2px solid #ccc; /* разделительная линия справа */
+  background: transparent;
+}
+
+/* Кнопка открытия меню внутри side-panel */
+#openMenuBtn {
+  margin: 15px 0;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Основная панель: формы параметров и зона рисования */
+.main-panel {
+  flex: 1;                   /* сохраняем, что занимает всё оставшееся место */
+  display: flex;             /* включаем флекс */
+  align-items: flex-start;   /* выравнивание по верху */
+  gap: 20px;                 /* расстояние между графиком и формой */
+  padding: 20px;             /* небольшой внутренний отступ со всех сторон */
+  overflow: auto;            /* скролл при необходимости */
+}
+
+#draw-area {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 3. Небольшой отступ для легенды под канвасом */
+#info {
+  margin-top: 10px;
+}
+
+/* 4. #all-params (форма «Параметры струны» + опционально опции) — колонка со «щелью» между формами */
+#all-params {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
