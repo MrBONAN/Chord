@@ -12,7 +12,9 @@ const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
 const applyBtn = document.getElementById("applyParams");
-
+const openBtn    = document.getElementById('openMenuBtn');
+const closeBtn   = document.getElementById('closeMenuBtn');
+const sidebar    = document.getElementById('sidebar');
 
 toggleBtn.addEventListener("click", () => {
     State.toggleDrawingMode();
@@ -57,6 +59,14 @@ applyBtn.addEventListener("click", () => {
     PeriodSlider.changePeriod(State.a, State.length);
 });
 
+openBtn.addEventListener('click', () => {
+  sidebar.classList.add('open');
+});
+
+closeBtn.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  openBtn.style.display  = 'block';
+});
 
 const inputs = document.querySelectorAll('#all-params input');
 inputs.forEach(el => {
