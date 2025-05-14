@@ -1,4 +1,5 @@
 #draw-area {
+    position: relative;
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -21,3 +22,32 @@
 }
 
 #info p { margin: 5px; }
+
+.freeze-control {
+  position: absolute;
+  top: 10px; /* 10px ниже канваса */
+  left: 0;                /* прямо под левой гранью канваса */
+}
+
+/* сама «кнопка» чекбокса */
+.freeze-btn {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 2px solid #6d5eda;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 36px; /* выравнивание иконки по центру */
+  font-size: 20px;
+}
+
+/* иконка «play» для неактивного состояния */
+.freeze-btn::before {
+  content: '\25B6';  /* ▶ */
+}
+
+/* при «checked» отображаем «stop» */
+#freeze:checked + .freeze-btn::before {
+  content: '\25A0';  /* ■ */
+}

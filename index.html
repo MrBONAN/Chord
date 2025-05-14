@@ -37,9 +37,6 @@
             <label>Ф-я нач. скорости
               <input id="speedFunc" type="text" value="0">
             </label>
-            <label>
-              <input id="freeze" type="checkbox"> Фиксировать положение
-            </label>
             <button type="button" id="applyParams">Применить</button>
             <button type="button" id="toggleDraw">Начать рисование</button>
           </fieldset>
@@ -69,6 +66,10 @@
 
       <div id="draw-area">
         <canvas id="glcanvas" width="800" height="600"></canvas>
+        <div class="freeze-control">
+          <input id="freeze" type="checkbox" hidden>
+          <label for="freeze" class="freeze-btn" aria-label="Toggle freeze"></label>
+        </div>
         <div id="info">
           <p><b>Легенда:</b></p>
           <p>Серая линия — начальное положение струны (t = 0).</p>
