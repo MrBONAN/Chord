@@ -12,7 +12,17 @@
     margin-bottom: 10px;
 }
 
-#all-params fieldset { border: none; padding: 0; margin: 0; }
+#all-params fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+#functions label button{
+    display: flex;
+    align-self: center;
+    height: fit-content;
+}
 
 #all-params label {
     display: flex;
@@ -26,7 +36,6 @@
     padding: 4px 6px;
 }
 
-#all-params button {
-    margin-top: 6px;
+#applyParams, #toggleDraw {
     width: 100%;
 }

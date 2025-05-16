@@ -11,6 +11,8 @@ const drawer = new Drawer(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
 const applyBtn = document.getElementById("applyParams");
+const savePosBtn = document.getElementById("savePosFunc");
+const saveSpeedBtn = document.getElementById("saveSpeedFunc");
 
 
 toggleBtn.addEventListener("click", () => {
@@ -32,29 +34,32 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
-
 applyBtn.addEventListener("click", () => {
     State.setDensity(+document.getElementById("density").value);
     State.setTension(+document.getElementById("tension").value);
     State.setBounds(+document.getElementById("leftBound").value,
         +document.getElementById("rightBound").value
     );
+});
 
+savePosBtn.addEventListener("click", () => {
     const posFunction = parseFunction(document.getElementById("posFunc").value);
-    const speedFunction = parseFunction(document.getElementById("speedFunc").value);
-
     if (posFunction.success) {
         State.setPositionFunction(posFunction.func);
     } else {
         console.error(posFunction.message);
     }
+    State.rebuild();
+    State.resetTime();
+});
 
+saveSpeedBtn.addEventListener("click", () => {
+    const speedFunction = parseFunction(document.getElementById("speedFunc").value);
     if (speedFunction.success) {
         State.setSpeedFunction(speedFunction.func);
     } else {
         console.error(speedFunction.message);
     }
-
     State.rebuild();
     State.resetTime();
 });
