@@ -4,6 +4,7 @@ import {GUI} from "./GUI.js";
 import {Drawer} from "./draw.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
+import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -40,12 +41,16 @@ applyBtn.addEventListener("click", () => {
     State.setBounds(+document.getElementById("leftBound").value,
         +document.getElementById("rightBound").value
     );
+
+    State.rebuild();
+    State.resetTime();
 });
 
 savePosBtn.addEventListener("click", () => {
-    const posFunction = parseFunction(document.getElementById("posFunc").value);
+    const strPosFunc = document.getElementById("posFunc").value
+    const posFunction = parseFunction(strPosFunc);
     if (posFunction.success) {
-        State.setPositionFunction(posFunction.func);
+        State.setPositionFunction(posFunction.func, strPosFunc);
     } else {
         console.error(posFunction.message);
     }
@@ -54,9 +59,10 @@ savePosBtn.addEventListener("click", () => {
 });
 
 saveSpeedBtn.addEventListener("click", () => {
-    const speedFunction = parseFunction(document.getElementById("speedFunc").value);
+    const strSpeedFunc = document.getElementById("speedFunc").value;
+    const speedFunction = parseFunction(strSpeedFunc);
     if (speedFunction.success) {
-        State.setSpeedFunction(speedFunction.func);
+        State.setSpeedFunction(speedFunction.func, strSpeedFunc);
     } else {
         console.error(speedFunction.message);
     }
@@ -120,5 +126,41 @@ document.getElementById("all-params")
     }, true);
 document.getElementById("freeze")
     .addEventListener("change", e => State.toggleFrozen(e.target.checked));
+
+const saveBtn = document.getElementById("saveImage");
+saveBtn.addEventListener("click", () => {
+    canvas.toBlob(async (blob) => {
+        const arrayBuffer = await blob.arrayBuffer();
+
+        const metadata = State.dumpData();
+
+        const finalBlob = addMetadataToPng(arrayBuffer, metadata);
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(finalBlob);
+        a.download = 'image_with_metadata.png';
+        a.click();
+    });
+});
+
+const loadBtn = document.getElementById("loadImage");
+const fileInput = document.getElementById("fileInput");
+
+loadBtn.addEventListener("click", () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (file) {
+        try {
+            const metadata = await extractMetadataFromPng(file);
+            State.loadData(metadata);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+});
+
 
 export {drawer};

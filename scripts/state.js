@@ -1,6 +1,7 @@
 "use strict";
 
-import { StringCalculator } from "./integrate.js";
+import {StringCalculator} from "./integrate.js";
+import {parseFunction} from "./functionParser/functionParser.js";
 
 export class State {
     // # - это приватное поле. Костыльный язык xD
@@ -17,7 +18,9 @@ export class State {
     static #startTime = 0;
 
     static #positionFunction = x => Math.sin(2 * Math.PI * x);
-    static #speedFunction    = x => 0;
+    static #speedFunction = x => 0;
+    static #posFuncStr = "sin(2*PI*x)";
+    static #speedFuncStr = "0";
 
     static #stringFunction = undefined;
     static #a = 1;
@@ -43,8 +46,8 @@ export class State {
     static setDensity          (newP)  {  State.#p = newP; };
     static setTension          (newT0) {  State.#T0 = newT0; };
     static setBounds           (l, r) {  State.#left = l;  State.#right = r; };
-    static setPositionFunction (f) {  State.#positionFunction = f; }
-    static setSpeedFunction    (f) {  State.#speedFunction  = f; }
+    static setPositionFunction (f, stringF) { State.#positionFunction = f; State.#posFuncStr = stringF; };
+    static setSpeedFunction    (f, stringF) { State.#speedFunction = f; State.#speedFuncStr = stringF; };
     static setDx       (newDx) {  State.#dx = newDx;  State.rebuild(); }
     static setModes    (newModes) {  State.#modes = newModes;  State.rebuild(); }
 
@@ -53,6 +56,40 @@ export class State {
     static setStartTime   (newStartTime) {  State.#startTime =  State.#actualTime = newStartTime; }
     static toggleFrozen   (newState) {  State.#isFrozen = newState; }
 
+    static dumpData() {
+        return {
+            posFunc: State.#posFuncStr,
+            speedFunc: State.#speedFuncStr,
+            density: State.#p,
+            tension: State.#T0,
+            leftBound: State.#left,
+            rightBound: State.#right,
+            dx: State.#dx,
+            pointsCount: State.#pointsCount,
+            modes: State.#modes
+        };
+    }
+
+    static loadData(data) {
+        const strPosFunc = data.posFunc;
+        const strSpeedFunc = data.speedFunc;
+        State.setPositionFunction(parseFunction(strPosFunc).func, strPosFunc);
+        State.setSpeedFunction(parseFunction(strSpeedFunc).func, strSpeedFunc);
+        State.#p = data.density;
+        State.#T0 = data.tension;
+        State.#left = data.leftBound;
+        State.#right = data.rightBound;
+        State.#dx = data.dx;
+        State.#pointsCount = data.pointsCount;
+        State.#modes = data.modes;
+
+        for (const [key, value] of Object.entries(data)) {
+            document.getElementById(key).value = value;
+        }
+
+        State.rebuild();
+        State.resetTime();
+    }
 }
 
 State.rebuild();
