@@ -4,7 +4,6 @@ import {GUI} from "./GUI.js";
 import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
-import { PeriodSlider } from "./periodSlider.js";
 import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
 
 const canvas = GUI.getCanvas("glcanvas");
@@ -67,8 +66,6 @@ saveSpeedBtn.addEventListener("click", () => {
     }
     State.rebuild();
     State.resetTime();
-
-    PeriodSlider.changePeriod(State.a, State.length);
 });
 
 openBtn.addEventListener('click', () => {

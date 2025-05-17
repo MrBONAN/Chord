@@ -2,6 +2,9 @@
 
 import { StringCalculator } from "./integrate.js";
 import { parseFunction } from "./functionParser/functionParser.js";
+import { PeriodSlider } from "./periodSlider.js";
+
+PeriodSlider.init();
 
 export class State {
     static p = 1;
@@ -35,6 +38,7 @@ export class State {
     static rebuild() {
         State.a = Math.sqrt(State.T0 / State.p);
         State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a);
+        PeriodSlider.changePeriod(State.a, State.length);
     }
 
     static getStringFunction () { return State.stringFunction; }
