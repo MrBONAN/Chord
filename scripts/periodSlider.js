@@ -25,7 +25,7 @@ export class PeriodSlider {
 
     static changePeriod(a, L) {
         if (this.periodSlider) {
-            this.periodSlider.max = 2 * L / a;
+            this.periodSlider.max = 1.9999 * L / a; // TODO крива
         }
         this.periodSlider.step = L / (a * 100);
     }

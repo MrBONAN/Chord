@@ -26,6 +26,8 @@ function frame(tMs) {
 
         GUI.clearCanvas(ctx);
 
+        GUI.drawCoords(ctx, canvas.getBoundingClientRect(), State.clip, State.zoomX, State.zoomY);
+
         GUI.drawString(ctx, State.getStringFunction(), "rgba(100,100,100,0.5)",
             0, State.getPointsCount(), State.length, State.clip);
 

@@ -19,6 +19,8 @@ export class State {
     static length = 1;
 
     static isDrawingMode = false;
+    static zoomX = 1;
+    static zoomY = 1;
 
     static positionFunction = x => Math.sin(2 * Math.PI * x);
     static speedFunction    = x => 0;

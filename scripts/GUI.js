@@ -33,6 +33,68 @@ export class GUI {
         context.stroke();
     }
 
+    static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY) {
+        const { left, right, top, bottom } = clipBounds;
+
+        const width = right - left;
+        const height = bottom - top;
+        const originX = left;
+        const originY = (top + bottom) / 2;
+
+        context.save();
+        context.beginPath();
+        context.rect(left, top, width, height);
+        context.clip();
+
+        context.clearRect(left, top, width, height);
+
+        context.lineWidth = 1;
+        context.strokeStyle = '#e0e0e0';
+        context.font = '10px sans-serif';
+        context.fillStyle = '#666';
+        context.textAlign = 'center';
+        context.textBaseline = 'top';
+
+        const stepX = 50 / zoomX;
+        for (let x = left; x <= right; x += stepX) {
+            context.beginPath();
+            context.moveTo(x, top);
+            context.lineTo(x, bottom);
+            context.stroke();
+
+            const graphX = ((x - originX) * zoomX).toFixed(1);
+            context.fillText(graphX, x, originY + 4);
+        }
+
+        const stepY = 50 / zoomY;
+        for (let y = originY - stepY * 10 /*вот тут надо поменять маленько*/; y <= bottom; y += stepY) {
+            context.beginPath();
+            context.moveTo(left, y);
+            context.lineTo(right, y);
+            context.stroke();
+
+            const graphY = ((originY - y) * zoomY).toFixed(1);
+            if (Math.abs(graphY) > 0.001) {
+                context.fillText(graphY, originX + 20, y);
+            }
+        }
+
+        context.lineWidth = 3;
+        context.strokeStyle = '#000';
+
+        context.beginPath();
+        context.moveTo(left, originY);
+        context.lineTo(right, originY);
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(originX, top);
+        context.lineTo(originX, bottom);
+        context.stroke();
+
+        context.restore();
+    }
+
     static clearCanvas(context) {
         const canvas = context.canvas;
         context.fillStyle = 'white';
