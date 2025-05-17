@@ -20,9 +20,9 @@ export class GUI {
      * @param {boolean} showOutsideBorders – отображать ли точки за пределами leftBorder..rightBorder.
      * @returns {void}
      */
-    static drawString(context, stringFunction, color, time, pointsCount, length, clipBounds, showOutsideBorders) {
+    static drawString(context, stringFunction, color, time, pointsCount, length, clipBounds) {
         const funcSnapshot = (x) => stringFunction(time, x);
-        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds, showOutsideBorders);
+        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds);
 
         context.strokeStyle = color;
         context.beginPath();

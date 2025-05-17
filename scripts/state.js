@@ -39,7 +39,6 @@ export class State {
 
     static getStringFunction () { return State.stringFunction; }
     static getPointsCount    () { return State.pointsCount; }
-    static getStartTime      () { return State.startTime; }
     static getCurrentTime    () { return State.actualTime % State.getPeriod(); }
     static getPeriod         () { return 2 * State.length / State.a; }
     static isFrozenState     () { return State.isFrozen; }
@@ -68,11 +67,16 @@ export class State {
             speedFunc: State.speedFuncStr,
             density: State.p,
             tension: State.T0,
-            leftBound: State.left,
-            rightBound: State.right,
+            length: State.length,
             dx: State.dx,
             pointsCount: State.pointsCount,
-            modes: State.modes
+            modes: State.modes,
+            clip: State.clip,
+
+            timeScale: State.timeScale,
+            isFrozen: State.isFrozen,
+            actualTime: State.actualTime,
+            startTime: State.startTime
         };
     }
 
@@ -83,18 +87,24 @@ export class State {
         State.setSpeedFunction(parseFunction(strSpeedFunc).func, strSpeedFunc);
         State.p = data.density;
         State.T0 = data.tension;
-        State.left = data.leftBound;
-        State.right = data.rightBound;
+        State.length = data.length;
         State.dx = data.dx;
         State.pointsCount = data.pointsCount;
         State.modes = data.modes;
+        State.clip = data.clip
+        State.timeScale = data.timeScale;
+        State.isFrozen = data.isFrozen;
+        State.actualTime = data.actualTime;
+        State.startTime = data.startTime;
 
         for (const [key, value] of Object.entries(data)) {
-            document.getElementById(key).value = value;
+            const element = document.getElementById(key);
+            if (element && value) {
+                element.value = value;
+            }
         }
 
         State.rebuild();
-        State.resetTime();
     }
 }
 

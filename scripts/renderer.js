@@ -27,7 +27,7 @@ function frame(tMs) {
         GUI.clearCanvas(ctx);
 
         GUI.drawString(ctx, State.getStringFunction(), "rgba(100,100,100,0.5)",
-            State.getStartTime(), State.getPointsCount(), State.length, State.clip);
+            0, State.getPointsCount(), State.length, State.clip);
 
         GUI.drawString(ctx, State.getStringFunction(), "red",
             State.getCurrentTime(), State.getPointsCount(), State.length, State.clip);
