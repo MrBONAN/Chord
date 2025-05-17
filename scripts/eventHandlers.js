@@ -5,6 +5,7 @@ import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
 import { PeriodSlider } from "./periodSlider.js";
+import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -15,6 +16,9 @@ const applyBtn = document.getElementById("applyParams");
 const openBtn    = document.getElementById('openMenuBtn');
 const closeBtn   = document.getElementById('closeMenuBtn');
 const sidebar    = document.getElementById('sidebar');
+const savePosBtn = document.getElementById("savePosFunc");
+const saveSpeedBtn = document.getElementById("saveSpeedFunc");
+
 
 toggleBtn.addEventListener("click", () => {
     State.toggleDrawingMode();
@@ -32,27 +36,35 @@ toggleBtn.addEventListener("click", () => {
     State.resetTime();
 });
 
-
 applyBtn.addEventListener("click", () => {
     State.setDensity(+document.getElementById("density").value);
     State.setTension(+document.getElementById("tension").value);
     State.length = +document.getElementById("length").value;
 
-    const posFunction = parseFunction(document.getElementById("posFunc").value);
-    const speedFunction = parseFunction(document.getElementById("speedFunc").value);
+    State.rebuild();
+    State.resetTime();
+});
 
+savePosBtn.addEventListener("click", () => {
+    const strPosFunc = document.getElementById("posFunc").value
+    const posFunction = parseFunction(strPosFunc);
     if (posFunction.success) {
-        State.setPositionFunction(posFunction.func);
+        State.setPositionFunction(posFunction.func, strPosFunc);
     } else {
         console.error(posFunction.message);
     }
+    State.rebuild();
+    State.resetTime();
+});
 
+saveSpeedBtn.addEventListener("click", () => {
+    const strSpeedFunc = document.getElementById("speedFunc").value;
+    const speedFunction = parseFunction(strSpeedFunc);
     if (speedFunction.success) {
-        State.setSpeedFunction(speedFunction.func);
+        State.setSpeedFunction(speedFunction.func, strSpeedFunc);
     } else {
         console.error(speedFunction.message);
     }
-
     State.rebuild();
     State.resetTime();
 
@@ -120,4 +132,41 @@ document.getElementById("all-params").addEventListener("change", e => {
             break;
     }
 }, true);
-document.getElementById("freeze").addEventListener("change", e => State.toggleFrozen(e.target.checked));
+
+document.getElementById("freeze")
+    .addEventListener("change", e => State.toggleFrozen(e.target.checked));
+
+const saveBtn = document.getElementById("saveImage");
+saveBtn.addEventListener("click", () => {
+    canvas.toBlob(async (blob) => {
+        const arrayBuffer = await blob.arrayBuffer();
+
+        const metadata = State.dumpData();
+
+        const finalBlob = addMetadataToPng(arrayBuffer, metadata);
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(finalBlob);
+        a.download = 'image_with_metadata.png';
+        a.click();
+    });
+});
+
+const loadBtn = document.getElementById("loadImage");
+const fileInput = document.getElementById("fileInput");
+
+loadBtn.addEventListener("click", () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (file) {
+        try {
+            const metadata = await extractMetadataFromPng(file);
+            State.loadData(metadata);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+});
