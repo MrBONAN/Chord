@@ -81,7 +81,11 @@ export class State {
 
     static loadData(data) {
         for (const [key, value] of Object.entries(data)) {
-            State[key] = value;
+            if (key === "clip") {
+                State[key] = structuredClone(value);
+            } else {
+                State[key] = value;
+            }
         }
         State.setPositionFunction(parseFunction(data.posFuncStr).func, data.posFuncStr);
         State.setSpeedFunction(parseFunction(data.speedFuncStr).func, data.speedFuncStr);
@@ -107,7 +111,11 @@ export class State {
 
     static loadDataForHistory(data) {
         for (const [key, value] of Object.entries(data)) {
-            State[key] = value;
+            if (key === "clip") {
+                State[key] = structuredClone(value);
+            } else {
+                State[key] = value;
+            }
         }
         PeriodSlider.changePeriod(State.a, State.length);
         State.updateDocument(data);
