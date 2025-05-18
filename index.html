@@ -29,17 +29,17 @@
                 <label>Конец струны (по X)
                     <input id="rightBound" type="number" step="any" value="1">
                 </label>
-                <button type="button" id="applyParams">Применить параметры</button>
+                <button type="button" class="paramsChanger" id="applyParams">Применить параметры</button>
             </fieldset>
         </form>
         <form id="functions">
             <label>Ф-я нач. положения
                 <input id="posFunc" type="text" value="sin(2*PI*x)">
-                <button type="button" id="savePosFunc">Сохранить</button>
+                <button type="button" class="paramsChanger" id="savePosFunc">Сохранить</button>
             </label>
             <label>Ф-я нач. скорости
                 <input id="speedFunc" type="text" value="0">
-                <button type="button" id="saveSpeedFunc">Сохранить</button>
+                <button type="button" class="paramsChanger" id="saveSpeedFunc">Сохранить</button>
             </label>
             <button type="button" id="toggleDraw">Начать рисование</button>
         </form>
@@ -67,7 +67,8 @@
             </details>
         </form>
     </div>
-
+    <button type="button" id="undoButton" disabled>&larr;</button>
+    <button type="button" id="redoButton" disabled>&rarr;</button>
     <div id="draw-area">
         <canvas id="glcanvas" width="800" height="600"></canvas>
         <div id="info">
