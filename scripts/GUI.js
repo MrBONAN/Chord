@@ -34,46 +34,62 @@ export class GUI {
     }
 
     static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY) {
-        const { left, right, top, bottom } = clipBounds;
+        const BASE_STEP = 50;
+        const MIN_PX    = 50;
+        const MAX_PX    = 130;
 
-        const width = right - left;
-        const height = bottom - top;
-        const originX = left;
-        const originY = (top + bottom) / 2;
+        const { left, right, top, bottom} = canvasRect;
+        const originX = clipBounds.left;
+        const originY = (clipBounds.top + clipBounds.bottom) / 2;
+
+        const pickStep = (zoom) => {
+            let step = BASE_STEP;
+            while (step / zoom < MIN_PX) { /* редеем при отдалении */
+                step *= 2;
+            }
+            while (step / zoom > MAX_PX) { /* уплотняем при приближении */
+                step /= 2;
+            }
+            return step / zoom;
+        };
+
+        const fmt = (n) => +n.toFixed(5);
 
         context.save();
         context.beginPath();
-        context.rect(left, top, width, height);
+        context.rect(left, top, right - left, bottom - top);
         context.clip();
 
-        context.clearRect(left, top, width, height);
-
-        context.lineWidth = 1;
-        context.strokeStyle = '#e0e0e0';
-        context.font = '10px sans-serif';
-        context.fillStyle = '#666';
-        context.textAlign = 'center';
+        context.lineWidth   = 1;
+        context.strokeStyle = '#c3c3c3';
+        context.font        = '16px sans-serif';
+        context.fillStyle   = '#000';
+        context.textAlign   = 'center';
         context.textBaseline = 'top';
 
-        const stepX = 50 / zoomX;
-        for (let x = left; x <= right; x += stepX) {
+        const stepX = pickStep(zoomX);
+        let x0 = originX - Math.ceil((originX - left) / stepX) * stepX;
+
+        for (let x = x0; x <= right; x += stepX) {
             context.beginPath();
             context.moveTo(x, top);
             context.lineTo(x, bottom);
             context.stroke();
 
-            const graphX = ((x - originX) * zoomX).toFixed(1);
-            context.fillText(graphX, x, originY + 4);
+            const graphX = fmt((x - originX) * zoomX);
+            if (graphX !== 0) context.fillText(graphX, x, originY + 4);
         }
 
-        const stepY = 50 / zoomY;
-        for (let y = originY - stepY * 10 /*вот тут надо поменять маленько*/; y <= bottom; y += stepY) {
+        const stepY = pickStep(zoomY);
+        let y0 = originY - Math.ceil((originY - top) / stepY) * stepY;
+
+        for (let y = y0; y <= bottom; y += stepY) {
             context.beginPath();
             context.moveTo(left, y);
             context.lineTo(right, y);
             context.stroke();
 
-            const graphY = ((originY - y) * zoomY).toFixed(1);
+            const graphY = fmt((originY - y) * zoomY);
             if (Math.abs(graphY) > 0.001) {
                 context.fillText(graphY, originX + 20, y);
             }
