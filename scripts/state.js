@@ -1,13 +1,14 @@
 "use strict";
 
-import {StringCalculator} from "./integrate.js";
-import {parseFunction} from "./functionParser/functionParser.js";
+import { StringCalculator } from "./integrate.js";
+import { parseFunction } from "./functionParser/functionParser.js";
+import { PeriodSlider } from "./periodSlider.js";
+
+PeriodSlider.init();
 
 export class State {
     static p = 1;
     static T0 = 9;
-    static left = 0;
-    static right = 1;
     static dx = 0.0001;
     static pointsCount = 200;
     static modes = 100;
@@ -15,27 +16,37 @@ export class State {
     static isFrozen = false;
     static actualTime = 0;
     static startTime = 0;
+    static length = 1;
+
+    static isDrawingMode = false;
+    static zoomX = 1;
+    static zoomY = 1;
 
     static positionFunction = x => Math.sin(2 * Math.PI * x);
-    static speedFunction = x => 0;
+    static speedFunction    = x => 0;
     static posFuncStr = "sin(2*PI*x)";
     static speedFuncStr = "0";
 
     static stringFunction = undefined;
     static a = 1;
 
+    static clip = {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+    };
+
     static rebuild() {
         State.a = Math.sqrt(State.T0 / State.p);
-        State.stringFunction = StringCalculator.getMainStringFunction(
-            State.positionFunction, State.speedFunction, State.left, State.right, State.a, State.dx, State.modes
-        );
+        State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a);
+        PeriodSlider.changePeriod(State.a, State.length);
     }
 
     static getStringFunction () { return State.stringFunction; }
-    static getBounds         () { return { left: State.left, right: State.right, bottom: -13, top: 13 }; }
     static getPointsCount    () { return State.pointsCount; }
-    static getStartTime      () { return State.startTime; }
-    static getCurrentTime    () { return State.actualTime; }
+    static getCurrentTime    () { return State.actualTime % State.getPeriod(); }
+    static getPeriod         () { return 2 * State.length / State.a; }
     static isFrozenState     () { return State.isFrozen; }
 
     static advanceTime  (dt) { State.actualTime += dt * State.timeScale; }
@@ -44,7 +55,6 @@ export class State {
 
     static setDensity          (newP)  {  State.p = newP; };
     static setTension          (newT0) {  State.T0 = newT0; };
-    static setBounds           (l, r) {  State.left = l;  State.right = r; };
     static setPositionFunction (f, stringF) { State.positionFunction = f; State.posFuncStr = stringF; };
     static setSpeedFunction    (f, stringF) { State.speedFunction = f; State.speedFuncStr = stringF; };
     static setDx       (newDx) {  State.dx = newDx;  State.rebuild(); }
@@ -53,7 +63,9 @@ export class State {
     static setPointsCount (newPointsCount) { State.pointsCount = newPointsCount; }
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
     static setStartTime   (newStartTime) {  State.startTime =  State.actualTime = newStartTime; }
+    static setCurrentTime (newTime) { State.actualTime = newTime; }
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
+    static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 
     static dumpData() {
         return {
@@ -61,29 +73,44 @@ export class State {
             speedFunc: State.speedFuncStr,
             density: State.p,
             tension: State.T0,
-            leftBound: State.left,
-            rightBound: State.right,
+            length: State.length,
             dx: State.dx,
             pointsCount: State.pointsCount,
-            modes: State.modes
+            modes: State.modes,
+
+            timeScale: State.timeScale,
+            isFrozen: State.isFrozen,
+            actualTime: State.actualTime,
+            startTime: State.startTime,
+
+            clip: State.clip,
+            zoomX: State.zoomX,
+            zoomY: State.zoomY
         };
     }
 
     static loadData(data) {
-        State.setPositionFunction(parseFunction(data.posFunc).func, data.posFunc);
-        State.setSpeedFunction(parseFunction(data.speedFunc).func, data.speedFunc);
-
+        // TODO мб переделать так
         // for (const [key, value] of Object.entries(data)) {
         //     State[key] = value;
         // }
+        const strPosFunc = data.posFunc;
+        const strSpeedFunc = data.speedFunc;
+        State.setPositionFunction(parseFunction(strPosFunc).func, strPosFunc);
+        State.setSpeedFunction(parseFunction(strSpeedFunc).func, strSpeedFunc);
         State.p = data.density;
         State.T0 = data.tension;
-        State.left = data.leftBound;
-        State.right = data.rightBound;
-        // TODO костыль. Лучше переделать на цикл сверху, но тогда надо будет переименовать переменные
-        if (data.dx) State.dx = data.dx;
-        if (data.dx) State.pointsCount = data.pointsCount;
-        if (data.dx) State.modes = data.modes;
+        State.length = data.length;
+        State.dx = data.dx;
+        State.pointsCount = data.pointsCount;
+        State.modes = data.modes;
+        State.clip = data.clip
+        State.timeScale = data.timeScale;
+        State.isFrozen = data.isFrozen;
+        State.actualTime = data.actualTime;
+        State.startTime = data.startTime;
+        State.zoomX = data.zoomX;
+        State.zoomY = data.zoomY;
 
         for (const [key, value] of Object.entries(data)) {
             const element = document.getElementById(key);

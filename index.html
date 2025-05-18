@@ -10,75 +10,94 @@
 </head>
 <body>
 <div id="container">
-    <div id="all-params">
-        <form id="params">
-            <button type="button" id="saveImage">Сохранить изображение</button>
-            <button type="button" id="loadImage">Открыть изображение</button>
-            <input type="file" id="fileInput" accept="image/png" style="display: none;">
-            <fieldset>
-                <legend><b>Параметры струны</b></legend>
-                <label>ρ (плотность)
-                    <input id="density" type="number" step="any" value="1">
-                </label>
-                <label>T₀ (натяжение)
-                    <input id="tension" type="number" step="any" value="9">
-                </label>
-                <label>Начало струны (по X)
-                    <input id="leftBound" type="number" step="any" value="0">
-                </label>
-                <label>Конец струны (по X)
-                    <input id="rightBound" type="number" step="any" value="1">
-                </label>
-                <button type="button" class="paramsChanger" id="applyParams">Применить параметры</button>
-            </fieldset>
-        </form>
-        <form id="functions">
-            <label>Ф-я нач. положения
-                <input id="posFunc" type="text" value="sin(2*PI*x)">
-                <button type="button" class="paramsChanger" id="savePosFunc">Сохранить</button>
-            </label>
-            <label>Ф-я нач. скорости
-                <input id="speedFunc" type="text" value="0">
-                <button type="button" class="paramsChanger" id="saveSpeedFunc">Сохранить</button>
-            </label>
-            <button type="button" id="toggleDraw">Начать рисование</button>
-        </form>
-        <form id="options">
-            <details>
-                <summary><b>Дополнительные настройки</b></summary>
-                <label>dx
-                    <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
-                </label>
-                <label>Количество точек
-                    <input id="pointsCount" type="number" value="200" min="2" max="1e4">
-                </label>
-                <label>Слагаемых ряда (modes)
-                    <input id="modes" type="number" value="100" min="1"></label>
-                <label>Масштаб времени
-                    <input id="timeScale" type="number" step="0.1" value="0.1" min="1e-3">
-                </label>
-                <label>Стартовое время (с)
-                    <input id="startTime" type="number" step="0.1" value="0" min="0">
-                </label>
-                <label>
-                    <input id="freeze" type="checkbox"> Фиксировать положение
-                </label>
-                <input type="reset" value="Сбросить">
-            </details>
-        </form>
+    <!-- Левая панель: кнопка открытия меню -->
+    <div class="side-panel">
+        <button id="openMenuBtn" aria-label="Open menu">☰</button>
     </div>
-    <button type="button" id="undoButton" disabled>&larr;</button>
-    <button type="button" id="redoButton" disabled>&rarr;</button>
-    <div id="draw-area">
-        <canvas id="glcanvas" width="800" height="600"></canvas>
-        <div id="info">
-            <p><b>Легенда:</b></p>
-            <p>Серая линия — начальное положение струны (t = 0).</p>
-            <p>Красная линия — текущее положение струны.</p>
-            <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+
+    <!-- Основная панель: параметры и зона рисования -->
+    <div class="main-panel">
+        <div id="all-params">
+            <form id="params">
+                <button type="button" id="saveImage">Сохранить изображение</button>
+                <button type="button" id="loadImage">Открыть изображение</button>
+                <input type="file" id="fileInput" accept="image/png" style="display: none;">
+                <fieldset>
+                    <legend><b>Параметры струны</b></legend>
+                    <label>ρ (плотность)
+                        <input id="density" type="number" step="any" value="1">
+                    </label>
+                    <label>T₀ (натяжение)
+                        <input id="tension" type="number" step="any" value="9">
+                    </label>
+                    <label>Длина струны
+                        <input id="length" type="number" step="any" value="1">
+                    </label>
+                    <button type="button" class="paramsChanger" id="applyParams">Применить параметры</button>
+                    <label>Линия времени
+                        <input id="periodSlider" type="range" min="0" max="1" value="1" step="0.01">
+                    </label>
+                </fieldset>
+            </form>
+            <form id="functions">
+                <label>Ф-я нач. положения
+                    <input id="posFunc" type="text" value="sin(2*PI*x)">
+                    <button type="button" class="paramsChanger" id="savePosFunc">Сохранить</button>
+                </label>
+                <label>Ф-я нач. скорости
+                    <input id="speedFunc" type="text" value="0">
+                    <button type="button" class="paramsChanger" id="saveSpeedFunc">Сохранить</button>
+                </label>
+                <button type="button" id="toggleDraw">Начать рисование</button>
+            </form>
+            <form id="options">
+                <details>
+                    <summary><b>Дополнительные настройки</b></summary>
+                    <label>dx
+                        <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
+                    </label>
+                    <label>Количество точек
+                        <input id="pointsCount" type="number" value="200" min="2" max="10000">
+                    </label>
+                    <label>Слагаемых ряда (modes)
+                        <input id="modes" type="number" value="100" min="1">
+                    </label>
+                    <label>Масштаб времени
+                        <input id="timeScale" type="number" step="0.1" value="0.1" min="0.001">
+                    </label>
+                    <label>Стартовое время (с)
+                        <input id="startTime" type="number" step="0.1" value="0" min="0">
+                    </label>
+                    <input type="reset" value="Сбросить">
+                </details>
+            </form>
+        </div>
+        <button type="button" id="undoButton" disabled>&larr;</button>
+        <button type="button" id="redoButton" disabled>&rarr;</button>
+        <div id="draw-area">
+            <canvas id="glcanvas" width="800" height="600"></canvas>
+            <div class="freeze-control">
+                <input id="freeze" type="checkbox" hidden>
+                <label for="freeze" class="freeze-btn" aria-label="Toggle freeze"></label>
+            </div>
+            <div id="info">
+                <p><b>Легенда:</b></p>
+                <p>Серая линия — начальное положение струны (t = 0).</p>
+                <p>Красная линия — текущее положение струны.</p>
+                <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+            </div>
         </div>
     </div>
 
+    <!-- Боковое меню -->
+    <div id="sidebar" class="sidebar">
+        <button id="closeMenuBtn" aria-label="Close menu">✕</button>
+        <div class="sidebar-menu">
+            <button class="sidebar-btn">Кнопка 1</button>
+            <button class="sidebar-btn">Кнопка 2</button>
+            <!-- …другие элементы меню… -->
+        </div>
+    </div>
 </div>
 <script type="module" src="scripts/index.js"></script>
 </body>

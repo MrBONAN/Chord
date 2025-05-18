@@ -1,46 +1,44 @@
 "use strict";
 
 import {GUI} from "./GUI.js";
-import {Drawer} from "./draw.js";
+import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
 import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
-const drawer = new Drawer(GUI, canvas, ctx);
+const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
 const applyBtn = document.getElementById("applyParams");
+const openBtn    = document.getElementById('openMenuBtn');
+const closeBtn   = document.getElementById('closeMenuBtn');
+const sidebar    = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
 
 
 toggleBtn.addEventListener("click", () => {
-    drawer.isDrawingMode = !drawer.isDrawingMode;
+    State.toggleDrawingMode();
 
-    if (drawer.isDrawingMode) {
+    if (State.isDrawingMode) {
         GUI.clearCanvas(ctx);
         toggleBtn.textContent = "Закончить и сохранить";
-        drawer.points = new Array(canvas.width).fill(0);
-        State.resetTime();
+        canvasHandler.points = new Array(canvas.width).fill(0);
+        canvasHandler.drawInput();
     } else {
-        State.setPositionFunction(
-            drawer.createLinearInterpolator(drawer.points)
-        );
+        State.setPositionFunction(canvasHandler.createLinearInterpolator(canvasHandler.points));
         toggleBtn.textContent = "Начать рисование";
-
         State.rebuild();
-        State.resetTime();
     }
+    State.resetTime();
 });
 
 applyBtn.addEventListener("click", () => {
     State.setDensity(+document.getElementById("density").value);
     State.setTension(+document.getElementById("tension").value);
-    State.setBounds(+document.getElementById("leftBound").value,
-        +document.getElementById("rightBound").value
-    );
+    State.length = +document.getElementById("length").value;
 
     State.rebuild();
     State.resetTime();
@@ -70,6 +68,14 @@ saveSpeedBtn.addEventListener("click", () => {
     State.resetTime();
 });
 
+openBtn.addEventListener('click', () => {
+  sidebar.classList.add('open');
+});
+
+closeBtn.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  openBtn.style.display  = 'block';
+});
 
 const inputs = document.querySelectorAll('#all-params input');
 inputs.forEach(el => {
@@ -92,38 +98,38 @@ const validators = {
     timeScale: v => isNum(v) && +v >= 1e-3,
     startTime: v => isNum(v) && +v >= 0
 };
-document.getElementById("all-params")
-    .addEventListener("change", e => {
-        const el = e.target;
-        if (!validators[el.id]) return;
+document.getElementById("all-params").addEventListener("change", e => {
+    const el = e.target;
+    if (!validators[el.id]) return;
 
-        if (!validators[el.id](el.value)) {
-            el.value = el.dataset.prev;
-            pulse(el);
-            e.stopImmediatePropagation();
-            e.preventDefault();
-            return;
-        }
-        el.dataset.prev = el.value;
+    if (!validators[el.id](el.value)) {
+        el.value = el.dataset.prev;
+        pulse(el);
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        return;
+    }
+    el.dataset.prev = el.value;
 
-        switch (el.id) {
-            case "dx":
-                State.setDx(+el.value);
-                break;
-            case "pointsCount":
-                State.setPointsCount(+el.value);
-                break;
-            case "modes":
-                State.setModes(+el.value);
-                break;
-            case "timeScale":
-                State.setTimeScale(+el.value);
-                break;
-            case "startTime":
-                State.setStartTime(+el.value);
-                break;
-        }
-    }, true);
+    switch (el.id) {
+        case "dx":
+            State.setDx(+el.value);
+            break;
+        case "pointsCount":
+            State.setPointsCount(+el.value);
+            break;
+        case "modes":
+            State.setModes(+el.value);
+            break;
+        case "timeScale":
+            State.setTimeScale(+el.value);
+            break;
+        case "startTime":
+            State.setStartTime(+el.value);
+            break;
+    }
+}, true);
+
 document.getElementById("freeze")
     .addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
@@ -161,6 +167,3 @@ fileInput.addEventListener("change", async () => {
         }
     }
 });
-
-
-export {drawer};
