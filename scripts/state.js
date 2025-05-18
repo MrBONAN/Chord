@@ -77,12 +77,15 @@ export class State {
             dx: State.dx,
             pointsCount: State.pointsCount,
             modes: State.modes,
-            clip: State.clip,
 
             timeScale: State.timeScale,
             isFrozen: State.isFrozen,
             actualTime: State.actualTime,
-            startTime: State.startTime
+            startTime: State.startTime,
+
+            clip: State.clip,
+            zoomX: State.zoomX,
+            zoomY: State.zoomY
         };
     }
 
@@ -102,6 +105,8 @@ export class State {
         State.isFrozen = data.isFrozen;
         State.actualTime = data.actualTime;
         State.startTime = data.startTime;
+        State.zoomX = data.zoomX;
+        State.zoomY = data.zoomY;
 
         for (const [key, value] of Object.entries(data)) {
             const element = document.getElementById(key);
