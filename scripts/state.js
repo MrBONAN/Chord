@@ -32,9 +32,9 @@ export class State {
 
     static clip = {
         left: 0,
-        right: 0,
+        right: 800,
         top: 0,
-        bottom: 0
+        bottom: 600
     };
 
     static rebuild() {
@@ -68,65 +68,34 @@ export class State {
     static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 
     static dumpData() {
-        return {
-            posFunc: State.posFuncStr,
-            speedFunc: State.speedFuncStr,
-            density: State.p,
-            tension: State.T0,
-            length: State.length,
-            dx: State.dx,
-            pointsCount: State.pointsCount,
-            modes: State.modes,
+        const dataToDump = [ "p",  "T0",  "dx",  "pointsCount",  "modes",  "timeScale",  "isFrozen",
+            "actualTime",  "startTime",  "length",  "zoomX",  "zoomY",  "posFuncStr",  "speedFuncStr",  "clip"
+        ];
+        let dump = {};
+        dataToDump.forEach((d) => {
+            dump[d] = State[d];
+        });
 
-            timeScale: State.timeScale,
-            isFrozen: State.isFrozen,
-            actualTime: State.actualTime,
-            startTime: State.startTime,
-
-            clip: State.clip,
-            zoomX: State.zoomX,
-            zoomY: State.zoomY
-        };
+        return dump;
     }
 
     static loadData(data) {
-        // TODO мб переделать так
-        // for (const [key, value] of Object.entries(data)) {
-        //     State[key] = value;
-        // }
-        const strPosFunc = data.posFunc;
-        const strSpeedFunc = data.speedFunc;
-        State.setPositionFunction(parseFunction(strPosFunc).func, strPosFunc);
-        State.setSpeedFunction(parseFunction(strSpeedFunc).func, strSpeedFunc);
-        State.p = data.density;
-        State.T0 = data.tension;
-        State.length = data.length;
-        State.dx = data.dx;
-        State.pointsCount = data.pointsCount;
-        State.modes = data.modes;
-        State.clip = data.clip
-        State.timeScale = data.timeScale;
-        State.isFrozen = data.isFrozen;
-        State.actualTime = data.actualTime;
-        State.startTime = data.startTime;
-        State.zoomX = data.zoomX;
-        State.zoomY = data.zoomY;
-
         for (const [key, value] of Object.entries(data)) {
-            const element = document.getElementById(key);
-            if (element && value) {
-                element.value = value;
-            }
+            State[key] = value;
         }
+        State.setPositionFunction(parseFunction(data.posFuncStr).func, data.posFuncStr);
+        State.setSpeedFunction(parseFunction(data.speedFuncStr).func, data.speedFuncStr);
+        State.updateDocument(data)
 
         State.rebuild();
-        State.resetTime();
     }
 
     static dumpDataForHistory() {
         const dataToDump = [
-            "p", "T0", "a", "left", "right",
-            "positionFunction", "speedFunction", "posFuncStr", "speedFuncStr", "stringFunction",
+            "p",  "T0",  "a", "dx", "length", "pointsCount",  "modes",
+            "timeScale",  "isFrozen", "actualTime",  "startTime",
+            "posFuncStr",  "speedFuncStr", "positionFunction", "speedFunction", "stringFunction",
+            "clip",  "zoomX",  "zoomY"
         ];
         let dump = {};
         dataToDump.forEach((d) => {
@@ -140,8 +109,17 @@ export class State {
         for (const [key, value] of Object.entries(data)) {
             State[key] = value;
         }
+        PeriodSlider.changePeriod(State.a, State.length);
+        State.updateDocument(data);
+    }
 
-        State.resetTime();
+    static updateDocument(data){
+        for (const [key, value] of Object.entries(data)) {
+            const element = document.getElementById(key);
+            if (element && value) {
+                element.value = value;
+            }
+        }
     }
 }
 

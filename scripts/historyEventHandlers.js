@@ -2,30 +2,19 @@
 
 import {HistoryManager} from "./historyManager.js";
 import {State} from "./state.js";
-import {drawer} from "./eventHandlers.js";
 
 const undoBtn = document.getElementById("undoButton");
 const redoBtn = document.getElementById("redoButton");
 
-// МБ потом понадобится
-const allowedKeys = ['density', 'tension', 'leftBound', 'rightBound', 'posFunc', 'speedFunc'];
-
-function filterParams(data) {
-    return Object.fromEntries(
-        Object.entries(data)
-            .filter(([key]) => allowedKeys.includes(key))
-    );
-}
-
-function updateHistoryButtons() {
+export function updateHistoryButtons() { // похожий функционал есть ещё в eventHandlers
     undoBtn.disabled = !HistoryManager.canUndo;
     redoBtn.disabled = !HistoryManager.canRedo;
 }
 
 function equalityCheck(data1, data2) {
     for (const key of Object.keys(data1)) {
-        if (key !== "stringFunction" && data1[key] !== data2[key] || // TODO костыль. В новой версии нет функции как класса
-            key === "stringFunction" && data1[key].func === data2[key].func) {
+        if (data1[key] !== data2[key] &&
+            key !== "positionFunction" && key !== "speedFunction" && key !== "stringFunction") {
             return false;
         }
     }
@@ -33,29 +22,14 @@ function equalityCheck(data1, data2) {
     return true;
 }
 
-document.querySelectorAll('.paramsChanger')
-    .forEach(el => {
-        el.addEventListener('click', (e) => {
-            const dump = State.dumpDataForHistory();
-            if (equalityCheck(dump, HistoryManager.getState())) {
-                return;
-            }
-            HistoryManager.pushState(dump);
-            updateHistoryButtons();
-        });
-    });
-
-document.getElementById('toggleDraw')
-    .addEventListener('click', () => {
-        if (!drawer.isDrawingMode) {
-            const dump = State.dumpDataForHistory();
-            if (equalityCheck(dump, HistoryManager.getState())) {
-                return;
-            }
-            HistoryManager.pushState(dump);
-            updateHistoryButtons();
-        }
-    });
+export function dumpForHistory() {
+    const dump = State.dumpDataForHistory();
+    if (equalityCheck(dump, HistoryManager.getState())) {
+        return;
+    }
+    HistoryManager.pushState(dump);
+    updateHistoryButtons();
+}
 
 undoBtn.addEventListener("click", e => {
     if (HistoryManager.canUndo) {

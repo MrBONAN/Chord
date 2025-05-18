@@ -5,6 +5,8 @@ import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
 import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
+import {updateHistoryButtons, dumpForHistory} from "./historyEventHandlers.js";
+import {HistoryManager} from "./historyManager.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -31,21 +33,23 @@ toggleBtn.addEventListener("click", () => {
         State.setPositionFunction(canvasHandler.createLinearInterpolator(canvasHandler.points));
         toggleBtn.textContent = "Начать рисование";
         State.rebuild();
+        dumpForHistory();
     }
     State.resetTime();
 });
 
 applyBtn.addEventListener("click", () => {
-    State.setDensity(+document.getElementById("density").value);
-    State.setTension(+document.getElementById("tension").value);
+    State.setDensity(+document.getElementById("p").value);
+    State.setTension(+document.getElementById("T0").value);
     State.length = +document.getElementById("length").value;
 
     State.rebuild();
     State.resetTime();
+    dumpForHistory();
 });
 
 savePosBtn.addEventListener("click", () => {
-    const strPosFunc = document.getElementById("posFunc").value
+    const strPosFunc = document.getElementById("posFuncStr").value
     const posFunction = parseFunction(strPosFunc);
     if (posFunction.success) {
         State.setPositionFunction(posFunction.func, strPosFunc);
@@ -54,10 +58,11 @@ savePosBtn.addEventListener("click", () => {
     }
     State.rebuild();
     State.resetTime();
+    dumpForHistory();
 });
 
 saveSpeedBtn.addEventListener("click", () => {
-    const strSpeedFunc = document.getElementById("speedFunc").value;
+    const strSpeedFunc = document.getElementById("speedFuncStr").value;
     const speedFunction = parseFunction(strSpeedFunc);
     if (speedFunction.success) {
         State.setSpeedFunction(speedFunction.func, strSpeedFunc);
@@ -66,6 +71,7 @@ saveSpeedBtn.addEventListener("click", () => {
     }
     State.rebuild();
     State.resetTime();
+    dumpForHistory();
 });
 
 openBtn.addEventListener('click', () => {
@@ -130,7 +136,7 @@ document.getElementById("all-params").addEventListener("change", e => {
     }
 }, true);
 
-document.getElementById("freeze")
+document.getElementById("isFrozen")
     .addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
 const saveBtn = document.getElementById("saveImage");
@@ -162,6 +168,8 @@ fileInput.addEventListener("change", async () => {
         try {
             const metadata = await extractMetadataFromPng(file);
             State.loadData(metadata);
+            HistoryManager.pushState(State.dumpDataForHistory());
+            updateHistoryButtons();
         } catch (err) {
             console.error(err);
         }

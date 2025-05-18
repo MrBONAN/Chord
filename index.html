@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/params.css">
     <link rel="stylesheet" href="styles/draw.css">
     <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
 </head>
 <body>
 <div id="container">
@@ -25,10 +26,10 @@
                 <fieldset>
                     <legend><b>Параметры струны</b></legend>
                     <label>ρ (плотность)
-                        <input id="density" type="number" step="any" value="1">
+                        <input id="p" type="number" step="any" value="1">
                     </label>
                     <label>T₀ (натяжение)
-                        <input id="tension" type="number" step="any" value="9">
+                        <input id="T0" type="number" step="any" value="9">
                     </label>
                     <label>Длина струны
                         <input id="length" type="number" step="any" value="1">
@@ -41,11 +42,11 @@
             </form>
             <form id="functions">
                 <label>Ф-я нач. положения
-                    <input id="posFunc" type="text" value="sin(2*PI*x)">
+                    <input id="posFuncStr" type="text" value="sin(2*PI*x)">
                     <button type="button" class="paramsChanger" id="savePosFunc">Сохранить</button>
                 </label>
                 <label>Ф-я нач. скорости
-                    <input id="speedFunc" type="text" value="0">
+                    <input id="speedFuncStr" type="text" value="0">
                     <button type="button" class="paramsChanger" id="saveSpeedFunc">Сохранить</button>
                 </label>
                 <button type="button" id="toggleDraw">Начать рисование</button>
@@ -77,8 +78,8 @@
         <div id="draw-area">
             <canvas id="glcanvas" width="800" height="600"></canvas>
             <div class="freeze-control">
-                <input id="freeze" type="checkbox" hidden>
-                <label for="freeze" class="freeze-btn" aria-label="Toggle freeze"></label>
+                <input id="isFrozen" type="checkbox" hidden>
+                <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze"></label>
             </div>
             <div id="info">
                 <p><b>Легенда:</b></p>

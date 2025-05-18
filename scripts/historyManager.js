@@ -18,7 +18,6 @@ export class HistoryManager {
             this.position--;
         }
         this.maxIndex = this.position;
-        console.log(state)
     }
 
     static undo() {
