@@ -95,7 +95,7 @@ export class GUI {
             }
         }
 
-        context.lineWidth = 3;
+        context.lineWidth = 1;
         context.strokeStyle = '#000';
 
         context.beginPath();
