@@ -19,7 +19,7 @@ const closeBtn   = document.getElementById('closeMenuBtn');
 const sidebar    = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
-
+const lengthInput = document.getElementById('length');
 
 toggleBtn.addEventListener("click", () => {
     State.toggleDrawingMode();
@@ -177,5 +177,35 @@ fileInput.addEventListener("change", async () => {
         }
     }
 });
+
+// Для плотности
+const pRange = document.getElementById('p');
+const pNumber = document.getElementById('p-number');
+pRange.addEventListener('input', () => {
+    pNumber.value = pRange.value;
+    applyBtn.click();
+});
+pNumber.addEventListener('input', () => {
+    let v = Math.min(Math.max(+pNumber.value, 0.1), 5);
+    pNumber.value = v;
+    pRange.value = v;
+    applyBtn.click();
+});
+
+// Для натяжения
+const T0Range = document.getElementById('T0');
+const T0Number = document.getElementById('T0-number');
+T0Range.addEventListener('input', () => {
+    T0Number.value = T0Range.value;
+    applyBtn.click();
+});
+T0Number.addEventListener('input', () => {
+    let v = Math.min(Math.max(+T0Number.value, 1), 10);
+    T0Number.value = v;
+    T0Range.value = v;
+    applyBtn.click();
+});
+
+lengthInput.addEventListener('input', () => applyBtn.click());
 
 export {canvasHandler};
