@@ -11,20 +11,29 @@ export function updateHistoryButtons() { // похожий функционал 
     redoBtn.disabled = !HistoryManager.canRedo;
 }
 
-function equalityCheck(data1, data2) {
-    for (const key of Object.keys(data1)) {
-        if (data1[key] !== data2[key] &&
-            key !== "positionFunction" && key !== "speedFunction" && key !== "stringFunction") {
-            return false;
-        }
-    }
+function deepEqual(a, b) {
+    const isComplex = v => (typeof v === 'object' && v !== null) || typeof v === 'function';
+    if (!isComplex(a) && !isComplex(b)) return a === b;
+    if (typeof a === 'function' && typeof b === 'function')
+        return a.toString() === b.toString();
 
+    if (a === undefined || b === undefined) return a === b;
+    if (Array.isArray(a) && Array.isArray(b) && a.length !== b.length) return false;
+
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    if (keysA.length !== keysB.length) return false;
+
+    for (const key of keysA) {
+        if (['positionFunction','speedFunction','stringFunction'].includes(key)) continue;
+        if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+    }
     return true;
 }
 
 export function dumpForHistory() {
     const dump = State.dumpDataForHistory();
-    if (equalityCheck(dump, HistoryManager.getState())) {
+    if (deepEqual(dump, HistoryManager.getState())) {
         return;
     }
     HistoryManager.pushState(dump);

@@ -73,7 +73,7 @@ export class State {
         ];
         let dump = {};
         dataToDump.forEach((d) => {
-            dump[d] = State[d];
+            dump[d] = State.copyValue(State[d]);
         });
 
         return dump;
@@ -81,11 +81,7 @@ export class State {
 
     static loadData(data) {
         for (const [key, value] of Object.entries(data)) {
-            if (key === "clip") {
-                State[key] = structuredClone(value);
-            } else {
-                State[key] = value;
-            }
+            State[key] = State.copyValue(value);
         }
         State.setPositionFunction(parseFunction(data.posFuncStr).func, data.posFuncStr);
         State.setSpeedFunction(parseFunction(data.speedFuncStr).func, data.speedFuncStr);
@@ -103,7 +99,7 @@ export class State {
         ];
         let dump = {};
         dataToDump.forEach((d) => {
-            dump[d] = State[d];
+            dump[d] = State.copyValue(State[d]);
         });
 
         return dump;
@@ -111,11 +107,7 @@ export class State {
 
     static loadDataForHistory(data) {
         for (const [key, value] of Object.entries(data)) {
-            if (key === "clip") {
-                State[key] = structuredClone(value);
-            } else {
-                State[key] = value;
-            }
+            State[key] = State.copyValue(value);
         }
         PeriodSlider.changePeriod(State.a, State.length);
         State.updateDocument(data);
@@ -128,6 +120,13 @@ export class State {
                 element.value = value;
             }
         }
+    }
+
+    static copyValue(value){
+        if (typeof value !== "function") {
+            return structuredClone(value)
+        }
+        return value;
     }
 }
 
