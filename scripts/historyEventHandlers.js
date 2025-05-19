@@ -2,6 +2,7 @@
 
 import {HistoryManager} from "./historyManager.js";
 import {State} from "./state.js";
+import {syncSliderDisplaysFromState} from "./eventHandlers.js";
 
 const undoBtn = document.getElementById("undoButton");
 const redoBtn = document.getElementById("redoButton");
@@ -22,6 +23,7 @@ undoBtn.addEventListener("click", e => {
         HistoryManager.undo();
         State.loadDataForHistory(HistoryManager.getState());
         updateHistoryButtons();
+        syncSliderDisplaysFromState();
     }
 });
 
@@ -30,6 +32,7 @@ redoBtn.addEventListener("click", e => {
         HistoryManager.redo();
         State.loadDataForHistory(HistoryManager.getState());
         updateHistoryButtons();
+        syncSliderDisplaysFromState();
     }
 });
 
