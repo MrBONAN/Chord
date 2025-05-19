@@ -71,7 +71,7 @@
   cursor: pointer;
 }
 .sidebar-btn:hover {
-  background-color: #6d5eda;
+  background-color: #333;
 }
 
 .icon-btn {
@@ -90,6 +90,6 @@
 }
 
 .icon-btn:hover {
-    background: #e8e4fa;
-    color: #6d5eda;
+    background: #c9c9c9;
+    color: #333;
 }
