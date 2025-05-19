@@ -73,3 +73,23 @@
 .sidebar-btn:hover {
   background-color: #6d5eda;
 }
+
+.icon-btn {
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 16px 0 0 15px;   /* отступ сверху и слева, чтобы совпадать с ☰ */
+    font-size: 32px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    transition:  0.15s, color 0.15s;
+    border-radius: 8px;
+    outline: none;
+}
+
+.icon-btn:hover {
+    background: #e8e4fa;
+    color: #6d5eda;
+}

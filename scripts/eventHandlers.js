@@ -13,13 +13,13 @@ const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
-const applyBtn = document.getElementById("applyParams");
+// const applyBtn = document.getElementById("applyParams");
 const openBtn    = document.getElementById('openMenuBtn');
 const closeBtn   = document.getElementById('closeMenuBtn');
 const sidebar    = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
-
+const lengthInput = document.getElementById('length');
 
 toggleBtn.addEventListener("click", () => {
     State.toggleDrawingMode();
@@ -39,15 +39,15 @@ toggleBtn.addEventListener("click", () => {
     State.resetTime();
 });
 
-applyBtn.addEventListener("click", () => {
-    State.setDensity(+document.getElementById("p").value);
-    State.setTension(+document.getElementById("T0").value);
-    State.length = +document.getElementById("length").value;
+// applyBtn.addEventListener("click", () => {
+//     State.setDensity(+document.getElementById("p").value);
+//     State.setTension(+document.getElementById("T0").value);
+//     State.length = +document.getElementById("length").value;
 
-    State.rebuild();
-    State.resetTime();
-    dumpForHistory();
-});
+//     State.rebuild();
+//     State.resetTime();
+//     dumpForHistory();
+// });
 
 savePosBtn.addEventListener("click", () => {
     const strPosFunc = document.getElementById("posFuncStr").value
@@ -177,5 +177,102 @@ fileInput.addEventListener("change", async () => {
         }
     }
 });
+
+function applyParams() {
+    State.setDensity(+document.getElementById("p").value);
+    State.setTension(+document.getElementById("T0").value);
+    State.length = +document.getElementById("length").value;
+
+    State.rebuild();
+    State.resetTime();
+    dumpForHistory();
+}
+
+// Для плотности
+// const pRange = document.getElementById('p');
+// const pNumber = document.getElementById('p-number');
+// pRange.addEventListener('input', () => {
+//     pNumber.value = pRange.value;
+//     applyParams();
+// });
+// pNumber.addEventListener('input', () => {
+//     let v = Math.min(Math.max(+pNumber.value, 0.1), 5);
+//     pNumber.value = v;
+//     pRange.value = v;
+//     applyParams();
+// });
+
+// Для натяжения
+// const T0Range = document.getElementById('T0');
+// const T0Number = document.getElementById('T0-number');
+// T0Range.addEventListener('input', () => {
+//     T0Number.value = T0Range.value;
+//     applyParams();
+// });
+// T0Number.addEventListener('input', () => {
+//     let v = Math.min(Math.max(+T0Number.value, 1), 10);
+//     T0Number.value = v;
+//     T0Range.value = v;
+//     applyParams();
+// });
+
+
+// SLIDERS WEEEEEEEEEEEEEEEEEEEE
+
+// Плотность
+const pSlider = document.getElementById('p');
+const pValue = document.getElementById('p-value');
+pSlider.addEventListener('change', () => {
+    pValue.textContent = (+pSlider.value).toFixed(2);
+    applyParams();
+});
+
+// Натяжение
+const T0Slider = document.getElementById('T0');
+const T0Value = document.getElementById('T0-value');
+T0Slider.addEventListener('change', () => {
+    T0Value.textContent = (+T0Slider.value).toFixed(2);
+    applyParams();
+});
+// Длина
+const lengthSlider = document.getElementById('length');
+const lengthValue = document.getElementById('length-value');
+
+// Обновление текста в реальном времени
+lengthSlider.addEventListener('input', () => {
+    lengthValue.textContent = parseInt(lengthSlider.value, 10);
+});
+
+// Применять только когда отпустили слайдер
+lengthSlider.addEventListener('change', () => {
+    lengthValue.textContent = parseInt(lengthSlider.value, 10);
+    applyParams();
+});
+
+
+export function syncSliderDisplaysFromState() {
+    // Для плотности
+    const pSlider = document.getElementById('p');
+    const pValue = document.getElementById('p-value');
+    pSlider.value = State.p;
+    pValue.textContent = (+State.p).toFixed(2);
+
+    // Для натяжения
+    const T0Slider = document.getElementById('T0');
+    const T0Value = document.getElementById('T0-value');
+    T0Slider.value = State.T0;
+    T0Value.textContent = (+State.T0).toFixed(2);
+
+    // Для длины струны
+    const lenSlider = document.getElementById('length');
+    const lenValue = document.getElementById('length-value');
+    lenSlider.value = State.length;
+    lenValue.textContent = (+State.length).toFixed(0);
+
+    // Добавь сюда остальные параметры по аналогии
+}
+
+
+lengthInput.addEventListener('change', () => applyParams());
 
 export {canvasHandler};

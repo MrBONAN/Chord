@@ -39,3 +39,56 @@
 #applyParams, #toggleDraw {
     width: 100%;
 }
+
+
+/* #params label {
+    align-items: center;
+    gap: 10px;
+}
+#params input[type="range"] {
+    width: 140px;
+    margin-right: 8px;
+}
+#params input[type="number"] {
+    width: 70px;
+    padding: 4px 6px;
+} */
+
+.slider-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.slider-caption {
+    color: #222;
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: -10px;
+    /* убери лишние отступы если есть */
+}
+
+.slider-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0px;
+    width: 100%;
+}
+
+input[type="range"] {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
+.slider-value {
+    min-width: 36px;
+    font-size: 18px;
+    color: #111;
+    text-align: right;
+    padding-left: 4px;
+}
+
+
