@@ -13,7 +13,7 @@
   justify-content: flex-start;
   width: 60px;      /* фиксированная ширина */
   height: 100%;     /* растягиваем по высоте контейнера */
-  border-right: 2px solid #ccc; /* разделительная линия справа */
+  /* border-right: 2px solid #ccc;  */
   background: transparent;
 }
 

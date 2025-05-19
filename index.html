@@ -13,9 +13,11 @@
 <div id="container">
     <!-- Левая панель: кнопка открытия меню -->
     <div class="side-panel">
-        <button id="openMenuBtn" aria-label="Open menu">☰</button>
+        <button id="openMenuBtn" class="icon-btn" aria-label="Открыть меню">☰</button>
+        <button id="saveImage" class="icon-btn" title="Сохранить изображение">&#8681;</button>
+        <button id="loadImage" class="icon-btn" title="Открыть изображение">&#8679;</button>
+        <input type="file" id="fileInput" accept="image/png" style="display: none;">
     </div>
-
     <!-- Основная панель: параметры и зона рисования -->
     <div class="main-panel">
         <div id="draw-area">
@@ -43,9 +45,6 @@
         </div>        
         <div id="all-params">
             <form id="params">
-                <button type="button" id="saveImage">Сохранить изображение</button>
-                <button type="button" id="loadImage">Открыть изображение</button>
-                <input type="file" id="fileInput" accept="image/png" style="display: none;">
                 <fieldset>
                     <legend><b>Параметры струны</b></legend>
                     <label>ρ (плотность)
