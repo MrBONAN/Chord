@@ -68,14 +68,12 @@
     font-size: 20px;
 }
 
-/* иконка «play» для неактивного состояния */
 .freeze-btn::before {
-  content: '\25B6';  /* ▶ */
+  content: '\23F8'; /* ⏸ — две палочки (пауза) */
 }
 
-/* при «checked» отображаем «stop» */
-#freeze:checked + .freeze-btn::before {
-  content: '\25A0';  /* ■ */
+#isFrozen:checked + .freeze-btn::before {
+  content: '\25B6'; /* ▶ — play */
 }
 
 
