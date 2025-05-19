@@ -76,11 +76,13 @@
         <button type="button" id="undoButton" disabled>&larr;</button>
         <button type="button" id="redoButton" disabled>&rarr;</button>
         <div id="draw-area">
-            <canvas id="glcanvas" width="800" height="600"></canvas>
+            <div id="canvas-wrap">
+                <canvas id="glcanvas" width="800" height="600"></canvas>
+            </div>
             <div class="freeze-control">
                 <input id="isFrozen" type="checkbox" hidden>
                 <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze"></label>
-            </div>
+            </div>            
             <div id="info">
                 <p><b>Легенда:</b></p>
                 <p>Серая линия — начальное положение струны (t = 0).</p>
@@ -89,7 +91,6 @@
             </div>
         </div>
     </div>
-
     <!-- Боковое меню -->
     <div id="sidebar" class="sidebar">
         <button id="closeMenuBtn" aria-label="Close menu">✕</button>

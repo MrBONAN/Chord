@@ -21,13 +21,24 @@
     background-color: #fff;
 }
 
+#canvas-wrap {
+    position: relative;
+    width: fit-content;
+    display: inline-block;
+}
+
 #info p { margin: 5px; }
 
 .freeze-control {
-  position: absolute;
-  top: 10px; /* 10px ниже канваса */
-  left: 0;                /* прямо под левой гранью канваса */
+    position: absolute;
+    left: 10px;
+    bottom: 70px;         /* Прижать к низу */
+    z-index: 10;
+    /* Можно добавить небольшой отступ от границы, если нужно: */
+    margin: 10px;
 }
+
+
 
 /* сама «кнопка» чекбокса */
 .freeze-btn {
