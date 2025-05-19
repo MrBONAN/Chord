@@ -13,7 +13,7 @@ const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
-const applyBtn = document.getElementById("applyParams");
+// const applyBtn = document.getElementById("applyParams");
 const openBtn    = document.getElementById('openMenuBtn');
 const closeBtn   = document.getElementById('closeMenuBtn');
 const sidebar    = document.getElementById('sidebar');
@@ -39,15 +39,15 @@ toggleBtn.addEventListener("click", () => {
     State.resetTime();
 });
 
-applyBtn.addEventListener("click", () => {
-    State.setDensity(+document.getElementById("p").value);
-    State.setTension(+document.getElementById("T0").value);
-    State.length = +document.getElementById("length").value;
+// applyBtn.addEventListener("click", () => {
+//     State.setDensity(+document.getElementById("p").value);
+//     State.setTension(+document.getElementById("T0").value);
+//     State.length = +document.getElementById("length").value;
 
-    State.rebuild();
-    State.resetTime();
-    dumpForHistory();
-});
+//     State.rebuild();
+//     State.resetTime();
+//     dumpForHistory();
+// });
 
 savePosBtn.addEventListener("click", () => {
     const strPosFunc = document.getElementById("posFuncStr").value
@@ -178,18 +178,28 @@ fileInput.addEventListener("change", async () => {
     }
 });
 
+function applyParams() {
+    State.setDensity(+document.getElementById("p").value);
+    State.setTension(+document.getElementById("T0").value);
+    State.length = +document.getElementById("length").value;
+
+    State.rebuild();
+    State.resetTime();
+    dumpForHistory();
+}
+
 // Для плотности
 const pRange = document.getElementById('p');
 const pNumber = document.getElementById('p-number');
 pRange.addEventListener('input', () => {
     pNumber.value = pRange.value;
-    applyBtn.click();
+    applyParams();
 });
 pNumber.addEventListener('input', () => {
     let v = Math.min(Math.max(+pNumber.value, 0.1), 5);
     pNumber.value = v;
     pRange.value = v;
-    applyBtn.click();
+    applyParams();
 });
 
 // Для натяжения
@@ -197,15 +207,15 @@ const T0Range = document.getElementById('T0');
 const T0Number = document.getElementById('T0-number');
 T0Range.addEventListener('input', () => {
     T0Number.value = T0Range.value;
-    applyBtn.click();
+    applyParams();
 });
 T0Number.addEventListener('input', () => {
     let v = Math.min(Math.max(+T0Number.value, 1), 10);
     T0Number.value = v;
     T0Range.value = v;
-    applyBtn.click();
+    applyParams();
 });
 
-lengthInput.addEventListener('input', () => applyBtn.click());
+lengthInput.addEventListener('input', () => applyParams());
 
 export {canvasHandler};
