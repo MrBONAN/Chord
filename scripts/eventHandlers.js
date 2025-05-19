@@ -30,7 +30,8 @@ toggleBtn.addEventListener("click", () => {
         canvasHandler.points = new Array(canvas.width).fill(0);
         canvasHandler.drawInput();
     } else {
-        State.setPositionFunction(canvasHandler.createLinearInterpolator(canvasHandler.points));
+        State.drawnPoints = canvasHandler.points.slice();
+        State.setPositionFunction(canvasHandler.createLinearInterpolator(State.drawnPoints), "0");
         toggleBtn.textContent = "Начать рисование";
         State.rebuild();
         dumpForHistory();
@@ -53,6 +54,7 @@ savePosBtn.addEventListener("click", () => {
     const posFunction = parseFunction(strPosFunc);
     if (posFunction.success) {
         State.setPositionFunction(posFunction.func, strPosFunc);
+        State.drawnPoints = [];
     } else {
         console.error(posFunction.message);
     }
@@ -175,3 +177,5 @@ fileInput.addEventListener("change", async () => {
         }
     }
 });
+
+export {canvasHandler};
