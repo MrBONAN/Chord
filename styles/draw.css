@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* вместо center, чтобы было слева */
+    align-items: flex-start;
 }
 
 #glcanvas {
@@ -25,11 +25,11 @@
 #canvas-wrap {
     display: inline-flex;
     flex-direction: column;
-    align-items: stretch; /* чтобы дети растягивались по ширине самого широкого */
+    align-items: stretch;
 }
 
 .canvas-bottom-bar {
-    width: 100%;  /* всегда ширина #canvas-wrap, т.е. ширина канваса */
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -41,7 +41,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 16px; /* отступ между freeze и history */
+    gap: 16px;
 }
 
 .canvas-bottom-bar > * {
@@ -55,47 +55,69 @@
     margin: 0;
 }
 
-/* Кнопка фриза */
+/* ====== Кнопка freeze-btn (play/pause) ====== */
 .freeze-btn {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border: 2px solid #000000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #000;
     border-radius: 4px;
     cursor: pointer;
-    text-align: center;
-    line-height: 36px;
-    font-size: 20px;
+    background: #fff;
+    transition: background 0.15s, border-color 0.15s;
+    padding: 0;
+}
+.freeze-btn .svg-play { display: inline; }
+.freeze-btn .svg-pause { display: none; }
+#isFrozen:checked + .freeze-btn .svg-play { display: none; }
+#isFrozen:checked + .freeze-btn .svg-pause { display: inline; }
+.freeze-btn .svg-icon {
+    width: 24px;
+    height: 24px;
+    margin-top: 3px;
 }
 
-.freeze-btn::before {
-  content: '\23F8'; /* ⏸ — две палочки (пауза) */
+.freeze-btn:hover {
+    background: #ededed; 
+    /* Можно темнее: #ececec или #e5e5e5 — подбери на вкус */
 }
 
-#isFrozen:checked + .freeze-btn::before {
-  content: '\25B6'; /* ▶ — play */
-}
-
-
+/* ====== Кнопки истории (undo/redo) — отдельный скин ====== */
 .history-controls {
     display: flex;
     align-items: center;
-    gap: 10px; /* между кнопками */
+    gap: 10px;
+    margin-left: 25px;
 }
 
-#undoButton, #redoButton {
-    width: 36px;
-    height: 36px;
-    font-size: 20px;
-    border-radius: 4px;
-    border: 2px solid black;
+.history-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: #fff;
+    border: 2px solid #000;
+    border-radius: 4px;
     cursor: pointer;
-    margin: 0;
-    transition: 0.15s;
+    transition:  0.15s, border-color 0.15s;
+    padding: 0;
 }
-#undoButton:disabled, #redoButton:disabled {
+.history-btn .svg-icon {
+    width: 24px;
+    height: 24px;
+}
+.history-btn:hover:enabled {
+    background: #ededed;    /* Серый hover */
+    border-color: #888;
+}
+.history-btn:disabled {
     color: #ccc;
     border-color: #eee;
     cursor: default;
+    background: #fafafa;
 }
+
+/* Если нужны иконки внутри кнопок через <img> или inline SVG — они подстроятся под .svg-icon */
