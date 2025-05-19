@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 100px;      /* фиксированная ширина */
+  width: 60px;      /* фиксированная ширина */
   height: 100%;     /* растягиваем по высоте контейнера */
   border-right: 2px solid #ccc; /* разделительная линия справа */
   background: transparent;
@@ -28,12 +28,13 @@
 
 /* Основная панель: формы параметров и зона рисования */
 .main-panel {
-  flex: 1;                   /* сохраняем, что занимает всё оставшееся место */
-  display: flex;             /* включаем флекс */
-  align-items: flex-start;   /* выравнивание по верху */
-  gap: 20px;                 /* расстояние между графиком и формой */
-  padding: 20px;             /* небольшой внутренний отступ со всех сторон */
-  overflow: auto;            /* скролл при необходимости */
+    flex: 1;
+    display: flex;
+    align-items: flex-start; /* выравнивание по ВЕРХУ */
+    justify-content: flex-start; /* выравнивание по ЛЕВОМУ краю */
+    gap: 40px; /* регулирует расстояние между draw-area и all-params */
+    padding: 20px; /* внутренние отступы вокруг всего содержимого */
+    overflow: auto;
 }
 
 #draw-area {

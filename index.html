@@ -21,24 +21,23 @@
         <div id="draw-area">
             <div id="canvas-wrap">
                 <canvas id="glcanvas" width="800" height="600"></canvas>
-                <!-- Новый общий flex-контейнер для нижней панели -->
-            </div>
-            <div class="canvas-bottom-bar">
-                <div class="control-group">
-                    <div class="freeze-control">
+                <div class="canvas-bottom-bar">
+                    <div class="control-group">
+                        <div class="freeze-control">
                         <input id="isFrozen" type="checkbox" hidden>
                         <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze"></label>
-                    </div>
+                        </div>
                     <div class="history-controls">
                         <button type="button" id="undoButton" disabled>&larr;</button>
                         <button type="button" id="redoButton" disabled>&rarr;</button>
                     </div>
-                </div>
-                <div id="info">
-                    <p><b>Легенда:</b></p>
-                    <p>Серая линия — начальное положение струны (t = 0).</p>
-                    <p>Красная линия — текущее положение струны.</p>
-                    <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+                    </div>
+                    <div id="info">
+                        <p><b>Легенда:</b></p>
+                        <p>Серая линия — начальное положение струны (t = 0).</p>
+                        <p>Красная линия — текущее положение струны.</p>
+                        <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+                    </div>
                 </div>
             </div>
         </div>        
