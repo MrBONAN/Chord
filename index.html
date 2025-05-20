@@ -7,70 +7,144 @@
     <link rel="stylesheet" href="styles/params.css">
     <link rel="stylesheet" href="styles/draw.css">
     <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/icons.css">
 </head>
 <body>
 <div id="container">
-    <div id="all-params">
-        <form id="params">
-            <fieldset>
-                <legend><b>Параметры струны</b></legend>
-                <label>ρ (плотность)
-                    <input id="density" type="number" step="any" value="1">
-                </label>
-                <label>T₀ (натяжение)
-                    <input id="tension" type="number" step="any" value="9">
-                </label>
-                <label>Начало струны (по X)
-                    <input id="leftBound" type="number" step="any" value="0">
-                </label>
-                <label>Конец струны (по X)
-                    <input id="rightBound" type="number" step="any" value="1">
-                </label>
-                <label>Ф-я нач. положения
-                    <input id="posFunc" type="text" value="sin(2*PI*x)">
-                </label>
-                <label>Ф-я нач. скорости
-                    <input id="speedFunc" type="text" value="0">
-                </label>
-                <button type="button" id="applyParams">Применить</button>
-                <button type="button" id="toggleDraw">Начать рисование</button>
-            </fieldset>
-        </form>
-        <form id="options">
-            <details>
-                <summary><b>Дополнительные настройки</b></summary>
-                <label>dx
-                    <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
-                </label>
-                <label>Количество точек
-                    <input id="pointsCount" type="number" value="200" min="2" max="1e4">
-                </label>
-                <label>Слагаемых ряда (modes)
-                    <input id="modes" type="number" value="100" min="1"></label>
-                <label>Масштаб времени
-                    <input id="timeScale" type="number" step="0.1" value="0.1" min="1e-3">
-                </label>
-                <label>Стартовое время (с)
-                    <input id="startTime" type="number" step="0.1" value="0" min="0">
-                </label>
-                <label>
-                    <input id="freeze" type="checkbox"> Фиксировать положение
-                </label>
-                <input type="reset" value="Сбросить">
-            </details>
-        </form>
+    <!-- Левая панель: кнопка открытия меню -->
+    <div class="side-panel">
+        <button id="openMenuBtn" class="side-btn" aria-label="Открыть меню">
+            <img src="./icons/bars-solid.svg" alt="Open Menu" class="svg-icon" />
+        </button>
+        <button id="loadImage" class="side-btn" title="Открыть изображение">
+            <img src="./icons/load_btn.svg" alt="Save" class="svg-icon" />
+        </button>
+        <button id="saveImage" class="side-btn" title="Сохранить изображение">
+            <img src="./icons/save_btn.svg" alt="Upload" class="svg-icon" />
+        </button>
+        <input type="file" id="fileInput" accept="image/png" style="display: none;">
     </div>
-
-    <div id="draw-area">
-        <canvas id="glcanvas" width="800" height="600"></canvas>
-        <div id="info">
-            <p><b>Легенда:</b></p>
-            <p>Серая линия — начальное положение струны (t = 0).</p>
-            <p>Красная линия — текущее положение струны.</p>
-            <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+    <!-- Основная панель: параметры и зона рисования -->
+    <div class="main-panel">
+        <div id="draw-area">
+            <div id="canvas-wrap">
+                <canvas id="glcanvas" width="800" height="600"></canvas>
+                <div class="canvas-bottom-bar">
+                    <div class="control-group">
+                        <div class="freeze-control">
+                            <input id="isFrozen" type="checkbox" hidden>
+                            <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
+                                <span class="svg-play">
+                                <!-- SVG "play" -->
+                                    <img src="./icons/pause-solid.svg" alt="Open Menu" class="svg-icon" />
+                                </span>
+                                <span class="svg-pause">
+                                <!-- SVG "pause" -->
+                                    <img src="./icons/play-solid.svg" alt="Open Menu" class="svg-icon" />
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="history-controls">
+                        <button type="button" id="undoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
+                        </button>
+                        <button type="button" id="redoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
+                        </button>
+                    </div>     
+                    <div id="info">
+                        <p><b>Легенда:</b></p>
+                        <p>Серая линия — начальное положение струны (t = 0).</p>
+                        <p>Красная линия — текущее положение струны.</p>
+                        <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div id="all-params">
+            <form id="params">
+                <fieldset>
+                    <legend><b>Параметры струны</b></legend>
+                    <label class="slider-block">
+                        <span class="slider-caption">ρ (плотность)</span>
+                        <div class="slider-row">
+                            <input id="p" type="range" min="0.1" max="5" step="0.01" value="1">
+                            <span id="p-value" class="slider-value">1</span>
+                        </div>
+                    </label>
+                    <label class="slider-block">
+                        <span class="slider-caption">T₀ (натяжение)</span>
+                        <div class="slider-row">
+                            <input id="T0" type="range" min="1" max="10" step="0.01" value="9">
+                            <span id="T0-value" class="slider-value">9.00</span>
+                        </div>
+                    </label>
+                    <label class="slider-block">
+                        <span class="slider-caption">Длина струны</span>
+                        <div class="slider-row">
+                            <input id="length" type="range" min="1" max="10" step="1" value="1">
+                            <span id="length-value" class="slider-value">1</span>
+                        </div>
+                    </label>
+                    <label class="slider-block">
+                        <span class="slider-caption">Линия времени</span>
+                        <div class="slider-row">
+                            <input id="periodSlider" type="range" min="0" max="1" value="1" step="0.01">
+                        </div>
+                    </label>
+                </fieldset>
+            </form>
+            <form id="functions">
+                <label class="function-row">
+                    <span class="function-caption">Ф-я нач. положения</span>
+                    <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                    </button>
+                </label>
+                <label class="function-row">
+                    <span class="function-caption">Ф-я нач. скорости</span>
+                    <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                    </button>
+                </label>
+                <button type="button" id="toggleDraw" class="paramsChanger">Начать рисование</button>
+            </form>
+            <form id="options">
+                <details>
+                    <summary><b>Дополнительные настройки</b></summary>
+                    <label>dx
+                        <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
+                    </label>
+                    <label>Количество точек
+                        <input id="pointsCount" type="number" value="200" min="2" max="10000">
+                    </label>
+                    <label>Слагаемых ряда (modes)
+                        <input id="modes" type="number" value="100" min="1">
+                    </label>
+                    <label>Масштаб времени
+                        <input id="timeScale" type="number" step="0.1" value="0.1" min="0.001">
+                    </label>
+                    <label>Стартовое время (с)
+                        <input id="startTime" type="number" step="0.1" value="0" min="0">
+                    </label>
+                    <input type="reset" value="Сбросить">
+                </details>
+            </form>
         </div>
     </div>
-
+    <!-- Боковое меню -->
+    <div id="sidebar" class="sidebar">
+        <button id="closeMenuBtn" aria-label="Close menu">✕</button>
+        <div class="sidebar-menu">
+            <button class="sidebar-btn">Кнопка 1</button>
+            <button class="sidebar-btn">Кнопка 2</button>
+            <!-- …другие элементы меню… -->
+        </div>
+    </div>
 </div>
 <script type="module" src="scripts/index.js"></script>
 </body>

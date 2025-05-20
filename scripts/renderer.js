@@ -1,19 +1,21 @@
 "use strict";
 
-import { GUI }   from "./GUI.js";
-import { drawer } from "./eventHandlers.js";
-import * as state    from "./state.js";
+import {GUI} from "./GUI.js";
+import {State} from "./state.js";
+import { PeriodSlider } from "./periodSlider.js";
 
 const canvas = GUI.getCanvas("glcanvas");
-const ctx    = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 const timeEl = document.getElementById("timeDisplay");
 
-const clip = {
-    left:   0,
-    right:  ctx.canvas.width,
-    top:    0,
+State.clip = {
+    left: 0,
+    right: ctx.canvas.width,
+    top: 0,
     bottom: ctx.canvas.height
 };
+
+const canvasBoundRect = structuredClone(State.clip);
 
 let tPrev = performance.now();
 
@@ -21,21 +23,25 @@ function frame(tMs) {
     const dt = tMs - tPrev;
     tPrev = tMs;
 
-    if (!drawer.isDrawingMode) {
-        if (!state.isFrozenState()) state.advanceTime(dt * 0.001);
+    if (!State.isDrawingMode) {
+        if (!State.isFrozenState()) State.advanceTime(dt * 0.001);
 
         GUI.clearCanvas(ctx);
 
-        GUI.drawString(ctx, state.getStringFunction(), "rgba(100,100,100,0.5)",
-            state.getStartTime(), state.getPointsCount(), state.getBounds(), clip, false);
+        GUI.drawCoords(ctx, canvasBoundRect, State.clip, State.zoomX, State.zoomY);
 
-        GUI.drawString(ctx, state.getStringFunction(), "red",
-            state.getCurrentTime(), state.getPointsCount(), state.getBounds(), clip, false);
+        GUI.drawString(ctx, State.getStringFunction(), "rgba(100,100,100,0.5)",
+            0, State.getPointsCount(), State.length, State.clip);
 
-        timeEl.textContent = state.getCurrentTime().toFixed(2);
+        GUI.drawString(ctx, State.getStringFunction(), "red",
+            State.getCurrentTime(), State.getPointsCount(), State.length, State.clip);
+
+        timeEl.textContent = State.getCurrentTime().toFixed(2);
+        PeriodSlider.setValue(State.getCurrentTime());
     } else {
-        state.resetTime();
+        State.resetTime();
     }
     requestAnimationFrame(frame);
 }
+
 requestAnimationFrame(frame);
