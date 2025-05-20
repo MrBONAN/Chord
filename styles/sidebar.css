@@ -6,11 +6,35 @@
   width: 250px;
   height: 100%;
   background: #f4f4f4;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+  box-shadow: 2px 0 8px 2px rgba(0,0,0,0.07);
   transition: left 0.3s ease;
   z-index: 1000;
   padding-top: 60px;      /* отступ под кнопку закрытия */
+  /* Дальше всё как у тебя */
+  /* ... */
+  /* Псевдоэлемент для выразительного разделителя */
+  position: fixed;
 }
+
+.sidebar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px; /* ширина разделителя — можно увеличить до 10-12px для WOW-эффекта */
+  height: 100%;
+  /* Градиентный или сплошной стиль: */
+  background: linear-gradient(to right, #cacaca 60%, #888 100%);
+  /* Если нужен "глянцевый" стиль: */
+  /* background: linear-gradient(to right, #cacaca 40%, #b3b3b3 80%, #888 100%); */
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  /* небольшая тень для дополнительного рельефа */
+  box-shadow: 3px 0 10px 0 rgba(0,0,0,0.12);
+  pointer-events: none; /* не мешает кликам */
+  z-index: 1010;
+}
+
 
 /* при открытии */
 .sidebar.open {
@@ -90,6 +114,6 @@
 }
 
 .icon-btn:hover {
-    background: #c9c9c9;
+    background: #cacaca;
     color: #333;
 }

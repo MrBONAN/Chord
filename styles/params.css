@@ -1,17 +1,21 @@
+/* === Основная панель параметров === */
 #all-params {
-    width: 430px;
-    background: #fcfcfc;
-    border: 2px solid #333;
-    border-radius: 7px;
-    box-shadow: 0 2px 10px 0 rgba(60,60,100,0.045);
-    padding: 22px 26px 20px 26px;
+    height: 100%;
+    min-width: 430px;
+    background: #fafbfc;
+    border: 2px solid #e2e2e6;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px 0 rgba(130,130,150,0.07);
+    padding: 28px 28px 18px 28px;
     font-size: 17px;
     font-family: inherit;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 22px;
+    box-sizing: border-box;
 }
 
+/* Поле для группы параметров */
 #all-params fieldset {
     border: none;
     margin: 0;
@@ -30,15 +34,16 @@
     padding-left: 2px;
 }
 
+/* === Слайдеры и подписи === */
 .slider-block {
     background: #f5f5f5;
-    border-radius: 5px;
-    box-shadow: 0 1px 2.5px 0 rgba(90,90,120,0.04);
+    border-radius: 7px;
+    box-shadow: 0 1px 2.5px 0 rgba(90,90,120,0.06);
     padding: 8px 12px 8px 12px;
-    margin-bottom: 2px;
     display: flex;
     flex-direction: column;
     gap: 2px;
+    margin-bottom: 2px;
 }
 
 .slider-caption {
@@ -66,19 +71,6 @@ input[type="range"] {
     outline: none;
 }
 
-input[type="number"] {
-    width: 60px;
-    font-size: 16px;
-    border: 1.5px solid #d2d2d2;
-    border-radius: 5px;
-    padding: 2px 7px;
-    background: #fff;
-    color: #232324;
-    outline: none;
-    margin-left: 9px;
-    box-shadow: 0 0.5px 2px 0 rgba(100,100,100,0.04);
-}
-
 .slider-value {
     min-width: 44px;
     font-size: 15.6px;
@@ -92,6 +84,7 @@ input[type="number"] {
     margin-left: 7px;
 }
 
+/* === Кнопки параметров и "Начать рисование" === */
 .paramsChanger,
 #toggleDraw {
     width: 100%;
@@ -114,39 +107,7 @@ input[type="number"] {
     border-color: #888;
 }
 
-#options details {
-    margin-top: 8px;
-    background: #f5f5f5;
-    border-radius: 5px;
-    padding: 6px 8px 0 8px;
-}
-
-#options summary {
-    font-weight: 600;
-    color: #232324;
-    cursor: pointer;
-    font-size: 1.04em;
-}
-
-#options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    margin: 7px 0 2px 0;
-}
-
-#options input[type="number"] {
-    width: 68px;
-    border-radius: 5px;
-    border: 1.2px solid #d2d2d2;
-    padding: 2px 8px;
-    background: #fff;
-    font-size: 15px;
-    color: #232324;
-}
-
-
+/* === Форма для функций начальных условий === */
 #functions {
     display: flex;
     flex-direction: column;
@@ -204,7 +165,7 @@ input[type="number"] {
 }
 
 .func-save-icon {
-    width: 24px;  /* увеличь до нужного размера, напр. 28px или 32px */
+    width: 24px;
     height: 24px;
     display: block;
     pointer-events: none;
@@ -218,4 +179,37 @@ input[type="number"] {
 .func-save-btn:active {
     background: #dddddd;
     border-color: #888;
+}
+
+/* === Опции === */
+#options details {
+    margin-top: 8px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    padding: 6px 8px 0 8px;
+}
+
+#options summary {
+    font-weight: 600;
+    color: #232324;
+    cursor: pointer;
+    font-size: 1.04em;
+}
+
+#options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    margin: 7px 0 2px 0;
+}
+
+#options input[type="number"] {
+    width: 68px;
+    border-radius: 5px;
+    border: 1.2px solid #d2d2d2;
+    padding: 2px 8px;
+    background: #fff;
+    font-size: 15px;
+    color: #232324;
 }

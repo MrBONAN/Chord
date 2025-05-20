@@ -30,16 +30,28 @@
 .main-panel {
     flex: 1;
     display: flex;
-    align-items: flex-start; /* выравнивание по ВЕРХУ */
-    justify-content: flex-start; /* выравнивание по ЛЕВОМУ краю */
-    gap: 40px; /* регулирует расстояние между draw-area и all-params */
-    padding: 20px; /* внутренние отступы вокруг всего содержимого */
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 40px;
+    padding: 20px;
     overflow: auto;
+    height: 100%;
+    /* Чуть затемним фон для контраста */
+    background: #f4f4f6;
+    box-sizing: border-box;
 }
 
 #draw-area {
-  display: flex;
-  flex-direction: column;
+    background: #fcfcfc;
+    border: 2px solid #dedede;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px 0 rgba(130,130,150,0.07);
+    padding: 18px 20px 0 20px;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 820px; /* чтобы канвас влезал полностью */
+    /* Можно добавить min-height по вкусу */
 }
 
 /* 3. Небольшой отступ для легенды под канвасом */
@@ -49,7 +61,31 @@
 
 /* 4. #all-params (форма «Параметры струны» + опционально опции) — колонка со «щелью» между формами */
 #all-params {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    background: #fafbfc;
+    border: 2px solid #e2e2e6;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px 0 rgba(130,130,150,0.07);
+    padding: 28px 28px 18px 28px;
+    font-size: 17px;
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 430px;
+    min-height: 100px;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 60px;
+    height: 100%;
+    background: transparent;
+    border-right: 2.5px solid #dadada;
+    box-shadow: 2px 0 8px 0 rgba(100,100,120,0.07);
+    z-index: 2;
 }
