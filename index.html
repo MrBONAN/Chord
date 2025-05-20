@@ -8,14 +8,21 @@
     <link rel="stylesheet" href="styles/draw.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/icons.css">
 </head>
 <body>
 <div id="container">
     <!-- Левая панель: кнопка открытия меню -->
     <div class="side-panel">
-        <button id="openMenuBtn" class="icon-btn" aria-label="Открыть меню">☰</button>
-        <button id="saveImage" class="icon-btn" title="Сохранить изображение">&#8681;</button>
-        <button id="loadImage" class="icon-btn" title="Открыть изображение">&#8679;</button>
+        <button id="openMenuBtn" class="side-btn" aria-label="Открыть меню">
+            <img src="./icons/bars-solid.svg" alt="Open Menu" class="svg-icon" />
+        </button>
+        <button id="loadImage" class="side-btn" title="Открыть изображение">
+            <img src="./icons/load_btn.svg" alt="Save" class="svg-icon" />
+        </button>
+        <button id="saveImage" class="side-btn" title="Сохранить изображение">
+            <img src="./icons/save_btn.svg" alt="Upload" class="svg-icon" />
+        </button>
         <input type="file" id="fileInput" accept="image/png" style="display: none;">
     </div>
     <!-- Основная панель: параметры и зона рисования -->
@@ -26,14 +33,27 @@
                 <div class="canvas-bottom-bar">
                     <div class="control-group">
                         <div class="freeze-control">
-                        <input id="isFrozen" type="checkbox" hidden>
-                        <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze"></label>
+                            <input id="isFrozen" type="checkbox" hidden>
+                            <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
+                                <span class="svg-play">
+                                <!-- SVG "play" -->
+                                    <img src="./icons/pause-solid.svg" alt="Open Menu" class="svg-icon" />
+                                </span>
+                                <span class="svg-pause">
+                                <!-- SVG "pause" -->
+                                    <img src="./icons/play-solid.svg" alt="Open Menu" class="svg-icon" />
+                                </span>
+                            </label>
                         </div>
+                    </div>
                     <div class="history-controls">
-                        <button type="button" id="undoButton" disabled>&larr;</button>
-                        <button type="button" id="redoButton" disabled>&rarr;</button>
-                    </div>
-                    </div>
+                        <button type="button" id="undoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
+                        </button>
+                        <button type="button" id="redoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
+                        </button>
+                    </div>     
                     <div id="info">
                         <p><b>Легенда:</b></p>
                         <p>Серая линия — начальное положение струны (t = 0).</p>
@@ -68,22 +88,30 @@
                             <span id="length-value" class="slider-value">1</span>
                         </div>
                     </label>
-                    <button type="button" class="paramsChanger" id="applyParams">Применить параметры</button>
-                    <label>Линия времени
-                        <input id="periodSlider" type="range" min="0" max="1" value="1" step="0.01">
+                    <label class="slider-block">
+                        <span class="slider-caption">Линия времени</span>
+                        <div class="slider-row">
+                            <input id="periodSlider" type="range" min="0" max="1" value="1" step="0.01">
+                        </div>
                     </label>
                 </fieldset>
             </form>
             <form id="functions">
-                <label>Ф-я нач. положения
-                    <input id="posFuncStr" type="text" value="sin(2*PI*x)">
-                    <button type="button" class="paramsChanger" id="savePosFunc">Сохранить</button>
+                <label class="function-row">
+                    <span class="function-caption">Ф-я нач. положения</span>
+                    <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                    </button>
                 </label>
-                <label>Ф-я нач. скорости
-                    <input id="speedFuncStr" type="text" value="0">
-                    <button type="button" class="paramsChanger" id="saveSpeedFunc">Сохранить</button>
+                <label class="function-row">
+                    <span class="function-caption">Ф-я нач. скорости</span>
+                    <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                    </button>
                 </label>
-                <button type="button" id="toggleDraw">Начать рисование</button>
+                <button type="button" id="toggleDraw" class="paramsChanger">Начать рисование</button>
             </form>
             <form id="options">
                 <details>
