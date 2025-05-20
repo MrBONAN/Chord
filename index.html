@@ -12,7 +12,6 @@
 </head>
 <body>
 <div id="container">
-    <!-- Левая панель: кнопка открытия меню -->
     <div class="side-panel">
         <button id="openMenuBtn" class="side-btn" aria-label="Открыть меню">
             <img src="./icons/bars-solid.svg" alt="Open Menu" class="svg-icon" />
@@ -25,7 +24,6 @@
         </button>
         <input type="file" id="fileInput" accept="image/png" style="display: none;">
     </div>
-    <!-- Основная панель: параметры и зона рисования -->
     <div class="main-panel">
         <div id="draw-area">
             <div id="canvas-wrap">
@@ -36,11 +34,9 @@
                             <input id="isFrozen" type="checkbox" hidden>
                             <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
                                 <span class="svg-play">
-                                <!-- SVG "play" -->
                                     <img src="./icons/pause-solid.svg" alt="Open Menu" class="svg-icon" />
                                 </span>
                                 <span class="svg-pause">
-                                <!-- SVG "pause" -->
                                     <img src="./icons/play-solid.svg" alt="Open Menu" class="svg-icon" />
                                 </span>
                             </label>
@@ -136,13 +132,11 @@
             </form>
         </div>
     </div>
-    <!-- Боковое меню -->
     <div id="sidebar" class="sidebar">
         <button id="closeMenuBtn" aria-label="Close menu">✕</button>
         <div class="sidebar-menu">
             <button class="sidebar-btn">Кнопка 1</button>
             <button class="sidebar-btn">Кнопка 2</button>
-            <!-- …другие элементы меню… -->
         </div>
     </div>
 </div>

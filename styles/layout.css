@@ -1,6 +1,4 @@
-/* styles/layout.css */
 
-/* Контейнер приложения: две колонки — боковая панель и основной контент */
 html, body {
     margin: 0;
     padding: 0;
@@ -15,9 +13,6 @@ html, body {
     height: 100vh;
 }
 
-/* Боковая панель: кнопка меню */
-
-/* Кнопка открытия меню внутри side-panel */
 #openMenuBtn {
   margin: 15px 0;
   font-size: 24px;
@@ -26,7 +21,6 @@ html, body {
   cursor: pointer;
 }
 
-/* Основная панель: формы параметров и зона рисования */
 .main-panel {
     flex: 1;
     height: 100vh;
@@ -49,16 +43,13 @@ html, body {
     margin-bottom: 0;
     display: flex;
     flex-direction: column;
-    min-width: 820px; /* чтобы канвас влезал полностью */
-    /* Можно добавить min-height по вкусу */
+    min-width: 820px;
 }
 
-/* 3. Небольшой отступ для легенды под канвасом */
 #info {
   margin-top: 10px;
 }
 
-/* 4. #all-params (форма «Параметры струны» + опционально опции) — колонка со «щелью» между формами */
 #all-params {
     background: #fafbfc;
     border: 2px solid #e2e2e6;

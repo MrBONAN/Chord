@@ -220,56 +220,51 @@ function applyParams() {
 // SLIDERS WEEEEEEEEEEEEEEEEEEEE
 
 // Плотность
-const pSlider = document.getElementById('p');
-const pValue = document.getElementById('p-value');
-pSlider.addEventListener('change', () => {
-    pValue.textContent = (+pSlider.value).toFixed(2);
-    applyParams();
-});
+// const pSlider = document.getElementById('p');
+// const pValue = document.getElementById('p-value');
+// pSlider.addEventListener('change', () => {
+//     pValue.textContent = (+pSlider.value).toFixed(2);
+//     applyParams();
+// });
 
-// Натяжение
-const T0Slider = document.getElementById('T0');
-const T0Value = document.getElementById('T0-value');
-T0Slider.addEventListener('change', () => {
-    T0Value.textContent = (+T0Slider.value).toFixed(2);
-    applyParams();
-});
-// Длина
-const lengthSlider = document.getElementById('length');
-const lengthValue = document.getElementById('length-value');
+// // Натяжение
+// const T0Slider = document.getElementById('T0');
+// const T0Value = document.getElementById('T0-value');
+// T0Slider.addEventListener('change', () => {
+//     T0Value.textContent = (+T0Slider.value).toFixed(2);
+//     applyParams();
+// });
+// // Длина
+// const lengthSlider = document.getElementById('length');
+// const lengthValue = document.getElementById('length-value');
 
-// Обновление текста в реальном времени
-lengthSlider.addEventListener('input', () => {
-    lengthValue.textContent = parseInt(lengthSlider.value, 10);
-});
+// // Обновление текста в реальном времени
+// lengthSlider.addEventListener('input', () => {
+//     lengthValue.textContent = parseInt(lengthSlider.value, 10);
+// });
 
-// Применять только когда отпустили слайдер
-lengthSlider.addEventListener('change', () => {
-    lengthValue.textContent = parseInt(lengthSlider.value, 10);
-    applyParams();
-});
+// // Применять только когда отпустили слайдер
+// lengthSlider.addEventListener('change', () => {
+//     lengthValue.textContent = parseInt(lengthSlider.value, 10);
+//     applyParams();
+// });
 
 
 export function syncSliderDisplaysFromState() {
-    // Для плотности
     const pSlider = document.getElementById('p');
     const pValue = document.getElementById('p-value');
     pSlider.value = State.p;
     pValue.textContent = (+State.p).toFixed(2);
-
-    // Для натяжения
     const T0Slider = document.getElementById('T0');
     const T0Value = document.getElementById('T0-value');
     T0Slider.value = State.T0;
     T0Value.textContent = (+State.T0).toFixed(2);
 
-    // Для длины струны
     const lenSlider = document.getElementById('length');
     const lenValue = document.getElementById('length-value');
     lenSlider.value = State.length;
     lenValue.textContent = (+State.length).toFixed(0);
 
-    // Добавь сюда остальные параметры по аналогии
 }
 
 

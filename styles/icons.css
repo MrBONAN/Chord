@@ -1,7 +1,7 @@
 .icon-btn .svg-icon {
-    width: 28px;      /* размер по ширине */
-    height: 28px;     /* размер по высоте */
+    width: 28px;      
+    height: 28px;    
     display: block;
     margin: 0 auto;
-    pointer-events: none; /* чтобы клики шли на кнопку, а не на img */
+    pointer-events: none;
 }
