@@ -1,21 +1,21 @@
 /* styles/layout.css */
 
 /* Контейнер приложения: две колонки — боковая панель и основной контент */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
 #container {
-  display: flex; /* растягиваем на всю высоту окна */
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
 }
 
 /* Боковая панель: кнопка меню */
-.side-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 60px;      /* фиксированная ширина */
-  height: 100%;     /* растягиваем по высоте контейнера */
-  /* border-right: 2px solid #ccc;  */
-  background: transparent;
-}
 
 /* Кнопка открытия меню внутри side-panel */
 #openMenuBtn {
@@ -29,19 +29,18 @@
 /* Основная панель: формы параметров и зона рисования */
 .main-panel {
     flex: 1;
+    height: 100vh;
+    background: #f4f4f6;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
     gap: 40px;
-    padding: 20px;
-    overflow: auto;
-    height: 100%;
-    /* Чуть затемним фон для контраста */
-    background: #f4f4f6;
+    padding: 24px 32px;
     box-sizing: border-box;
 }
 
 #draw-area {
+    height: 660px;
     background: #fcfcfc;
     border: 2px solid #dedede;
     border-radius: 14px;
@@ -78,14 +77,15 @@
 }
 
 .side-panel {
+    width: 80px !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: 60px;
     height: 100%;
     background: transparent;
     border-right: 2.5px solid #dadada;
     box-shadow: 2px 0 8px 0 rgba(100,100,120,0.07);
     z-index: 2;
+    gap: 16px;
 }
