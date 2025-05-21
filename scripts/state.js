@@ -147,9 +147,13 @@ export class State {
 
     static updateDocument(data){
         for (const [key, value] of Object.entries(data)) {
-            const element = document.getElementById(key);
-            if (element && value) {
-                element.value = value;
+            const slider = document.getElementById(key);
+            if (slider && value) {
+                slider.value = value;
+            }
+            const sliderValue = document.getElementById(key + "-value");
+            if (sliderValue && value) {
+                sliderValue.value = value;
             }
         }
     }

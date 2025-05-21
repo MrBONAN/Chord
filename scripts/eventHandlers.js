@@ -14,9 +14,9 @@ const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
 // const applyBtn = document.getElementById("applyParams");
-const openBtn    = document.getElementById('openMenuBtn');
-const closeBtn   = document.getElementById('closeMenuBtn');
-const sidebar    = document.getElementById('sidebar');
+const openBtn = document.getElementById('openMenuBtn');
+const closeBtn = document.getElementById('closeMenuBtn');
+const sidebar = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
 const lengthInput = document.getElementById('length');
@@ -77,12 +77,12 @@ saveSpeedBtn.addEventListener("click", () => {
 });
 
 openBtn.addEventListener('click', () => {
-  sidebar.classList.add('open');
+    sidebar.classList.add('open');
 });
 
 closeBtn.addEventListener('click', () => {
-  sidebar.classList.remove('open');
-  openBtn.style.display  = 'block';
+    sidebar.classList.remove('open');
+    openBtn.style.display = 'block';
 });
 
 const inputs = document.querySelectorAll('#all-params input');
@@ -104,7 +104,10 @@ const validators = {
     pointsCount: v => isNum(v) && +v >= 2 && +v <= 1e4,
     modes: v => isNum(v) && +v > 0,
     timeScale: v => isNum(v) && +v >= 1e-3,
-    startTime: v => isNum(v) && +v >= 0
+    startTime: v => isNum(v) && +v >= 0,
+    "p-value": v => isNum(v) && +v >= 1e-3,
+    "T0-value": v => isNum(v) && +v >= 1e-3,
+    "length-value": v => isNum(v) && +v >= 0.1
 };
 document.getElementById("all-params").addEventListener("change", e => {
     const el = e.target;
@@ -180,9 +183,9 @@ fileInput.addEventListener("change", async () => {
 });
 
 function applyParams() {
-    State.setDensity(+document.getElementById("p").value);
-    State.setTension(+document.getElementById("T0").value);
-    State.length = +document.getElementById("length").value;
+    State.setDensity(+document.getElementById("p-value").value);
+    State.setTension(+document.getElementById("T0-value").value);
+    State.length = +document.getElementById("length-value").value;
 
     State.rebuild();
     State.resetTime();
@@ -220,34 +223,24 @@ function applyParams() {
 
 // SLIDERS WEEEEEEEEEEEEEEEEEEEE
 
-// Плотность
-const pSlider = document.getElementById('p');
-const pValue = document.getElementById('p-value');
-pSlider.addEventListener('change', () => {
-    pValue.textContent = (+pSlider.value).toFixed(2);
-    applyParams();
-});
-
-// Натяжение
-const T0Slider = document.getElementById('T0');
-const T0Value = document.getElementById('T0-value');
-T0Slider.addEventListener('change', () => {
-    T0Value.textContent = (+T0Slider.value).toFixed(2);
-    applyParams();
-});
-// Длина
-const lengthSlider = document.getElementById('length');
-const lengthValue = document.getElementById('length-value');
-
-// Обновление текста в реальном времени
-lengthSlider.addEventListener('input', () => {
-    lengthValue.textContent = parseInt(lengthSlider.value, 10);
-});
-
-// Применять только когда отпустили слайдер
-lengthSlider.addEventListener('change', () => {
-    lengthValue.textContent = parseInt(lengthSlider.value, 10);
-    applyParams();
+const slidersNames = ["p", "T0", "length"];
+slidersNames.forEach(name => {
+    const slider = document.getElementById(name);
+    const value = document.getElementById(name + "-value");
+    if (!slider || !value) {
+        return;
+    }
+    slider.addEventListener("input", () => {
+        value.value = Number((+slider.value).toFixed(2));
+    });
+    slider.addEventListener('change', () => {
+        value.value = Number((+slider.value).toFixed(2));
+        applyParams();
+    });
+    value.addEventListener('change', () => {
+        slider.value = value.value;
+        applyParams();
+    });
 });
 
 
