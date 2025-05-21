@@ -33,14 +33,16 @@ export class GUI {
         context.stroke();
     }
 
-    static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY) {
+    static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY, length) {
         const BASE_STEP = 50;
         const MIN_PX    = 50;
         const MAX_PX    = 130;
 
-        const { left, right, top, bottom} = canvasRect;
+        const { left, right, top, bottom } = canvasRect;
         const originX = clipBounds.left;
         const originY = (clipBounds.top + clipBounds.bottom) / 2;
+        const width = right - left;
+        const height = bottom - top;
 
         const pickStep = (zoom) => {
             let step = BASE_STEP;
@@ -53,11 +55,11 @@ export class GUI {
             return step / zoom;
         };
 
-        const fmt = (n) => +n.toFixed(5);
+        const fmt = (n) => +n.toFixed(2);
 
         context.save();
         context.beginPath();
-        context.rect(left, top, right - left, bottom - top);
+        context.rect(left, top, width, height);
         context.clip();
 
         context.lineWidth   = 1;
@@ -76,7 +78,7 @@ export class GUI {
             context.lineTo(x, bottom);
             context.stroke();
 
-            const graphX = fmt((x - originX) * zoomX);
+            const graphX = fmt((x - originX) * length * zoomX / width);
             if (graphX !== 0) context.fillText(graphX, x, originY + 4);
         }
 
@@ -89,7 +91,7 @@ export class GUI {
             context.lineTo(right, y);
             context.stroke();
 
-            const graphY = fmt((originY - y) * zoomY);
+            const graphY = fmt((originY - y) * length * zoomY / height);
             if (Math.abs(graphY) > 0.001) {
                 context.fillText(graphY, originX + 20, y);
             }
