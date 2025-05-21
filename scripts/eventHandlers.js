@@ -166,15 +166,16 @@ loadBtn.addEventListener("click", () => {
 
 fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
-    if (file) {
-        try {
-            const metadata = await extractMetadataFromPng(file);
-            State.loadData(metadata);
-            HistoryManager.pushState(State.dumpDataForHistory());
-            updateHistoryButtons();
-        } catch (err) {
-            console.error(err);
-        }
+    if (!file || file.type !== "image/png") return;
+    try {
+        const metadata = await extractMetadataFromPng(file);
+        State.loadData(metadata);
+        HistoryManager.pushState(State.dumpDataForHistory());
+        updateHistoryButtons();
+    } catch (err) {
+        console.error(err);
+    } finally {
+        fileInput.value = "";
     }
 });
 
