@@ -220,34 +220,34 @@ function applyParams() {
 // SLIDERS WEEEEEEEEEEEEEEEEEEEE
 
 // Плотность
-// const pSlider = document.getElementById('p');
-// const pValue = document.getElementById('p-value');
-// pSlider.addEventListener('change', () => {
-//     pValue.textContent = (+pSlider.value).toFixed(2);
-//     applyParams();
-// });
+const pSlider = document.getElementById('p');
+const pValue = document.getElementById('p-value');
+pSlider.addEventListener('change', () => {
+    pValue.textContent = (+pSlider.value).toFixed(2);
+    applyParams();
+});
 
-// // Натяжение
-// const T0Slider = document.getElementById('T0');
-// const T0Value = document.getElementById('T0-value');
-// T0Slider.addEventListener('change', () => {
-//     T0Value.textContent = (+T0Slider.value).toFixed(2);
-//     applyParams();
-// });
-// // Длина
-// const lengthSlider = document.getElementById('length');
-// const lengthValue = document.getElementById('length-value');
+// Натяжение
+const T0Slider = document.getElementById('T0');
+const T0Value = document.getElementById('T0-value');
+T0Slider.addEventListener('change', () => {
+    T0Value.textContent = (+T0Slider.value).toFixed(2);
+    applyParams();
+});
+// Длина
+const lengthSlider = document.getElementById('length');
+const lengthValue = document.getElementById('length-value');
 
-// // Обновление текста в реальном времени
-// lengthSlider.addEventListener('input', () => {
-//     lengthValue.textContent = parseInt(lengthSlider.value, 10);
-// });
+// Обновление текста в реальном времени
+lengthSlider.addEventListener('input', () => {
+    lengthValue.textContent = parseInt(lengthSlider.value, 10);
+});
 
-// // Применять только когда отпустили слайдер
-// lengthSlider.addEventListener('change', () => {
-//     lengthValue.textContent = parseInt(lengthSlider.value, 10);
-//     applyParams();
-// });
+// Применять только когда отпустили слайдер
+lengthSlider.addEventListener('change', () => {
+    lengthValue.textContent = parseInt(lengthSlider.value, 10);
+    applyParams();
+});
 
 
 export function syncSliderDisplaysFromState() {
