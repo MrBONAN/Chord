@@ -8,12 +8,7 @@ const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
 const timeEl = document.getElementById("timeDisplay");
 
-State.clip = {
-    left: 0,
-    right: ctx.canvas.width,
-    top: 0,
-    bottom: ctx.canvas.height
-};
+State.resetClip();
 
 const canvasBoundRect = structuredClone(State.clip);
 
