@@ -81,6 +81,18 @@ export class State {
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
     static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 
+    static resetClip() {
+        const ctx = canvasHandler.context;
+        State.clip = {
+            left: 0,
+            right: ctx.canvas.width,
+            top: 0,
+            bottom: ctx.canvas.height
+        };
+        State.zoomX = 1;
+        State.zoomY = 1;
+    }
+
     static dumpData() {
         const dataToDump = [ "p",  "T0",  "dx",  "pointsCount",  "modes",
             "timeScale",  "isFrozen", "actualTime",  "startTime",

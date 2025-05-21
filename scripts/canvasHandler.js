@@ -71,20 +71,34 @@ export class CanvasHandler {
             e.preventDefault();
 
             const zoomDelta = e.deltaY < 0 ? scaleFactor : 1 / scaleFactor;
-            const clip = State.clip;
-                State.zoomY /= zoomDelta;
             if (e.shiftKey) {
-                const midY = (clip.top + clip.bottom) / 2;
-                clip.top = midY - (midY - clip.top) * zoomDelta;
-                clip.bottom = midY + (clip.bottom - midY) * zoomDelta;
+                this.zoomToCenterByY(zoomDelta);
             } else {
+                const clip = State.clip;
                 State.zoomX /= zoomDelta;
+                State.zoomY /= zoomDelta;
                 clip.top -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.top);
                 clip.bottom -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.bottom);
                 clip.left -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.left);
                 clip.right -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.right);
             }
         });
+    }
+
+    zoomToCenterByY(zoomDelta){
+        const clip = State.clip;
+        State.zoomY /= zoomDelta;
+        const midY = (clip.top + clip.bottom) / 2;
+        clip.top = midY - (midY - clip.top) * zoomDelta;
+        clip.bottom = midY + (clip.bottom - midY) * zoomDelta;
+    }
+
+    zoomToCenterByX(zoomDelta){
+        const clip = State.clip;
+        State.zoomX /= zoomDelta;
+        const midX = (clip.left + clip.right) / 2;
+        clip.left = midX - (midX - clip.left) * zoomDelta;
+        clip.right = midX + (clip.right - midX) * zoomDelta;
     }
 
     getCanvasCoordinates(e) {

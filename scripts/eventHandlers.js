@@ -271,4 +271,32 @@ export function syncSliderDisplaysFromState() {
 
 lengthInput.addEventListener('change', () => applyParams());
 
+// Настройки зума
+const zoomInBtn = document.getElementById("zoomInButton");
+const zoomOutBtn = document.getElementById("zoomOutButton");
+const resetViewBtn = document.getElementById("resetViewButton");
+const zoomDelta = 1.2;
+
+zoomInBtn.addEventListener("click", (e) => {
+    if (State.isDrawingMode) return;
+    canvasHandler.zoomToCenterByY(zoomDelta);
+    if (!e.shiftKey) {
+        canvasHandler.zoomToCenterByX(zoomDelta);
+    }
+});
+
+zoomOutBtn.addEventListener("click", (e) => {
+    if (State.isDrawingMode) return;
+    canvasHandler.zoomToCenterByY(1 / zoomDelta);
+    if (!e.shiftKey) {
+        canvasHandler.zoomToCenterByX(1 / zoomDelta);
+    }
+});
+
+resetViewBtn.addEventListener("click", (e) => {
+    if (State.isDrawingMode) return;
+    State.resetClip();
+});
+
+
 export {canvasHandler};
