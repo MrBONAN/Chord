@@ -20,6 +20,7 @@ export class CanvasHandler {
         const scaleFactor = 1.1;
 
         window.addEventListener('resize', () => this.rect = canvas.getBoundingClientRect());
+        window.addEventListener('scroll', () => this.rect = canvas.getBoundingClientRect());
 
         canvas.addEventListener('mousedown', (e) => {
             if (!State.isDrawingMode) {
