@@ -1,6 +1,6 @@
 "use strict";
 
-import {TokenType} from "./Tokenizer.js";
+import {TokenType} from "./tokenizer.js";
 
 export function validate(tokens) {
     const parenStack = [];
