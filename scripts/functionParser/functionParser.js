@@ -1,6 +1,6 @@
 "use strict";
 
-import {Tokenizer, TokenType} from "./Tokenizer.js";
+import {Tokenizer, TokenType} from "./tokenizer.js";
 import {validate} from "./validator.js";
 
 const constantTokens = new Map([
