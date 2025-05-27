@@ -3,8 +3,10 @@
 import { StringCalculator } from "./integrate.js";
 import { parseFunction } from "./functionParser/functionParser.js";
 import { PeriodSlider } from "./periodSlider.js";
-import {canvasHandler} from "./eventHandlers.js";
-import {HistoryManager} from "./historyManager.js";
+import { canvasHandler } from "./eventHandlers.js";
+import { HistoryManager } from "./historyManager.js";
+
+const mod = (a, b) => ((a % b) + b) % b;
 
 PeriodSlider.init();
 function deepCopy(val) {
@@ -17,7 +19,6 @@ function deepCopy(val) {
     for (const k in val) if (Object.hasOwn(val, k)) out[k] = deepCopy(val[k]);
     return out;
 }
-
 
 export class State {
     static p = 1;
@@ -59,7 +60,7 @@ export class State {
 
     static getStringFunction () { return State.stringFunction; }
     static getPointsCount    () { return State.pointsCount; }
-    static getCurrentTime    () { return State.actualTime % State.getPeriod(); }
+    static getCurrentTime    () { return mod(State.actualTime - State.startTime, State.getPeriod()); }
     static getPeriod         () { return 2 * State.length / State.a; }
     static isFrozenState     () { return State.isFrozen; }
 
@@ -76,8 +77,8 @@ export class State {
 
     static setPointsCount (newPointsCount) { State.pointsCount = newPointsCount; }
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
-    static setStartTime   (newStartTime) {  State.startTime =  State.actualTime = newStartTime; }
-    static setCurrentTime (newTime) { State.actualTime = newTime; }
+    static setStartTime   (newStartTime) { State.startTime = newStartTime; }
+    static setCurrentTime (newTime) { State.actualTime = newTime + State.startTime; }
     static toggleFrozen   (newState) {  State.isFrozen = newState; }
     static toggleDrawingMode () { State.isDrawingMode = !State.isDrawingMode; }
 

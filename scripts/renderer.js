@@ -26,13 +26,13 @@ function frame(tMs) {
         GUI.drawCoords(ctx, canvasBoundRect, State.clip, State.zoomX, State.zoomY, State.length);
 
         GUI.drawString(ctx, State.getStringFunction(), "rgba(100,100,100,0.5)",
-            0, State.getPointsCount(), State.length, State.clip);
+            State.startTime, State.getPointsCount(), State.length, State.clip);
 
         GUI.drawString(ctx, State.getStringFunction(), "red",
-            State.getCurrentTime(), State.getPointsCount(), State.length, State.clip);
+            State.getCurrentTime() + State.startTime, State.getPointsCount(), State.length, State.clip);
 
         timeEl.textContent = State.getCurrentTime().toFixed(2);
-        PeriodSlider.setValue(State.getCurrentTime());
+        PeriodSlider.setPeriodValue(State.getCurrentTime());
     } else {
         State.resetTime();
     }
