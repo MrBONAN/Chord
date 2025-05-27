@@ -4,9 +4,9 @@ import {GUI} from "./GUI.js";
 import {CanvasHandler} from "./canvasHandler.js";
 import {State} from "./state.js";
 import {parseFunction} from "./functionParser/functionParser.js";
-import {addMetadataToPng, extractMetadataFromPng} from "./imageSaver.js";
 import {updateHistoryButtons, dumpForHistory} from "./historyEventHandlers.js";
 import {HistoryManager} from "./historyManager.js";
+import {ImageSaver} from "./imageSaver.js";
 
 const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
@@ -132,28 +132,26 @@ document.getElementById("all-params").addEventListener("change", e => {
         case "timeScale":
             State.setTimeScale(+el.value);
             break;
-        case "startTime":
-            State.setStartTime(+el.value);
-            break;
     }
 }, true);
 
 document.getElementById("isFrozen").addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
+const imageSaver = new ImageSaver(canvas);
+
 const saveBtn = document.getElementById("saveImage");
-saveBtn.addEventListener("click", () => {
-    canvas.toBlob(async (blob) => {
-        const arrayBuffer = await blob.arrayBuffer();
-
+saveBtn.addEventListener("click", async () => {
+    try {
         const metadata = State.dumpData();
-
-        const finalBlob = addMetadataToPng(arrayBuffer, metadata);
-
+        const finalBlob = await imageSaver.saveImage(metadata);
+        
         const a = document.createElement('a');
         a.href = URL.createObjectURL(finalBlob);
         a.download = 'image_with_metadata.png';
         a.click();
-    });
+    } catch (err) {
+        console.error('Error saving image:', err);
+    }
 });
 
 const loadBtn = document.getElementById("loadImage");
@@ -165,9 +163,8 @@ loadBtn.addEventListener("click", () => {
 
 fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
-    if (!file || file.type !== "image/png") return;
     try {
-        const metadata = await extractMetadataFromPng(file);
+        const metadata = await imageSaver.loadImage(file);
         State.loadData(metadata);
         HistoryManager.pushState(State.dumpDataForHistory());
         updateHistoryButtons();
