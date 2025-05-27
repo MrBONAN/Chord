@@ -13,7 +13,6 @@ const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
-// const applyBtn = document.getElementById("applyParams");
 const openBtn = document.getElementById('openMenuBtn');
 const closeBtn = document.getElementById('closeMenuBtn');
 const sidebar = document.getElementById('sidebar');
@@ -38,16 +37,6 @@ toggleBtn.addEventListener("click", () => {
     }
     State.resetTime();
 });
-
-// applyBtn.addEventListener("click", () => {
-//     State.setDensity(+document.getElementById("p").value);
-//     State.setTension(+document.getElementById("T0").value);
-//     State.length = +document.getElementById("length").value;
-
-//     State.rebuild();
-//     State.resetTime();
-//     dumpForHistory();
-// });
 
 savePosBtn.addEventListener("click", () => {
     const strPosFunc = document.getElementById("posFuncStr").value
@@ -101,6 +90,7 @@ const isNum = v => v.trim() !== "" && Number.isFinite(+v);
 
 const validators = {
     dx: v => isNum(v) && +v >= 1e-6 && +v <= 0.1,
+    n: v => isNum(v) && +v >= 10 && +v <= 1000000,
     pointsCount: v => isNum(v) && +v >= 2 && +v <= 1e4,
     modes: v => isNum(v) && +v > 0,
     timeScale: v => isNum(v) && +v > 0,
@@ -126,6 +116,9 @@ document.getElementById("all-params").addEventListener("change", e => {
         case "dx":
             State.setDx(+el.value);
             break;
+        case "n":
+            State.setN(+el.value);
+            break;
         case "pointsCount":
             const newPointsCount = Math.round(+el.value);
             el.value = newPointsCount === 0? 1 : newPointsCount;
@@ -145,8 +138,7 @@ document.getElementById("all-params").addEventListener("change", e => {
     }
 }, true);
 
-document.getElementById("isFrozen")
-    .addEventListener("change", e => State.toggleFrozen(e.target.checked));
+document.getElementById("isFrozen").addEventListener("change", e => State.toggleFrozen(e.target.checked));
 
 const saveBtn = document.getElementById("saveImage");
 saveBtn.addEventListener("click", () => {
@@ -189,41 +181,12 @@ fileInput.addEventListener("change", async () => {
 function applyParams() {
     State.setDensity(+document.getElementById("p-value").value);
     State.setTension(+document.getElementById("T0-value").value);
-    State.length = +document.getElementById("length-value").value;
+    State.setLength(+document.getElementById("length-value").value);
 
     State.rebuild();
     State.resetTime();
     dumpForHistory();
 }
-
-// Для плотности
-// const pRange = document.getElementById('p');
-// const pNumber = document.getElementById('p-number');
-// pRange.addEventListener('input', () => {
-//     pNumber.value = pRange.value;
-//     applyParams();
-// });
-// pNumber.addEventListener('input', () => {
-//     let v = Math.min(Math.max(+pNumber.value, 0.1), 5);
-//     pNumber.value = v;
-//     pRange.value = v;
-//     applyParams();
-// });
-
-// Для натяжения
-// const T0Range = document.getElementById('T0');
-// const T0Number = document.getElementById('T0-number');
-// T0Range.addEventListener('input', () => {
-//     T0Number.value = T0Range.value;
-//     applyParams();
-// });
-// T0Number.addEventListener('input', () => {
-//     let v = Math.min(Math.max(+T0Number.value, 1), 10);
-//     T0Number.value = v;
-//     T0Range.value = v;
-//     applyParams();
-// });
-
 
 // SLIDERS WEEEEEEEEEEEEEEEEEEEE
 

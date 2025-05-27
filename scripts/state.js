@@ -24,6 +24,7 @@ export class State {
     static p = 1;
     static T0 = 9;
     static dx = 0.0001;
+    static n = 10000;
     static pointsCount = 200;
     static modes = 100;
     static timeScale = 0.1;
@@ -53,6 +54,7 @@ export class State {
     };
 
     static rebuild() {
+        State.updateInputs();
         State.a = Math.sqrt(State.T0 / State.p);
         State.stringFunction = StringCalculator.getMainStringFunction(State.positionFunction, State.speedFunction, State.length, State.a);
         PeriodSlider.changePeriod(State.a, State.length);
@@ -72,8 +74,11 @@ export class State {
     static setTension          (newT0) {  State.T0 = newT0; };
     static setPositionFunction (f, stringF) { State.positionFunction = f; State.posFuncStr = stringF; };
     static setSpeedFunction    (f, stringF) { State.speedFunction = f; State.speedFuncStr = stringF; };
-    static setDx       (newDx) {  State.dx = newDx;  State.rebuild(); }
     static setModes    (newModes) {  State.modes = newModes;  State.rebuild(); }
+    
+    static setLength   (newLength) { State.length = newLength; State.dx = State.length / State.n; }
+    static setDx       (newDx)     { State.dx = newDx; State.n = Math.round(State.length / State.dx); State.rebuild(); }
+    static setN        (newN)      { State.n = newN;  State.dx = State.length / State.n; State.rebuild(); }
 
     static setPointsCount (newPointsCount) { State.pointsCount = newPointsCount; }
     static setTimeScale   (newTimeScale) {  State.timeScale   = newTimeScale; }
@@ -95,7 +100,7 @@ export class State {
     }
 
     static dumpData() {
-        const dataToDump = [ "p",  "T0",  "dx",  "pointsCount",  "modes",
+        const dataToDump = [ "p",  "T0",  "dx", "n",  "pointsCount",  "modes",
             "timeScale",  "isFrozen", "actualTime",  "startTime",
             "length",  "posFuncStr",  "speedFuncStr",
             "zoomX",  "zoomY",  "clip", "drawnPoints"
@@ -125,7 +130,7 @@ export class State {
 
     static dumpDataForHistory() {
         const dataToDump = [
-            "p",  "T0",  "a", "dx", "length", "pointsCount",  "modes",
+            "p",  "T0",  "a", "dx", "n", "length", "pointsCount",  "modes",
             "timeScale",  "isFrozen", "actualTime",  "startTime",
             "posFuncStr",  "speedFuncStr", "positionFunction", "speedFunction", "stringFunction",
             "clip",  "zoomX",  "zoomY", "drawnPoints"
@@ -166,6 +171,11 @@ export class State {
     static postLoadHousekeeping() {
         State.updateDocument(State.dumpDataForHistory());
         State.rebuild();
+    }
+
+    static updateInputs() {
+        document.getElementById("dx").value = State.dx;
+        document.getElementById("n").value = State.n;
     }
 }
 
