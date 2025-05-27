@@ -4,7 +4,7 @@ import {State} from "./state.js";
 
 export class StringCalculator {
     static integrate(heights) {
-        return heights.reduce((sum, height) => sum + height * State.dx, 0);
+        return heights.reduce((sum, height) => sum + height, 0) * State.dx;
     }
 
     static multiplyFunctionHeights(heights1, heights2) {

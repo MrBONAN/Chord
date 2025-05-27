@@ -103,10 +103,10 @@ const validators = {
     dx: v => isNum(v) && +v >= 1e-6 && +v <= 0.1,
     pointsCount: v => isNum(v) && +v >= 2 && +v <= 1e4,
     modes: v => isNum(v) && +v > 0,
-    timeScale: v => isNum(v) && +v >= 1e-3,
+    timeScale: v => isNum(v) && +v > 0,
     startTime: v => isNum(v) && +v >= 0,
-    "p-value": v => isNum(v) && +v >= 1e-3,
-    "T0-value": v => isNum(v) && +v >= 1e-3,
+    "p-value": v => isNum(v) && +v > 0,
+    "T0-value": v => isNum(v) && +v > 0,
     "length-value": v => isNum(v) && +v >= 0.1
 };
 document.getElementById("all-params").addEventListener("change", e => {
@@ -127,9 +127,13 @@ document.getElementById("all-params").addEventListener("change", e => {
             State.setDx(+el.value);
             break;
         case "pointsCount":
+            const newPointsCount = Math.round(+el.value);
+            el.value = newPointsCount === 0? 1 : newPointsCount;
             State.setPointsCount(+el.value);
             break;
         case "modes":
+            const newModes = Math.round(+el.value);
+            el.value = newModes === 0? 1 : newModes;
             State.setModes(+el.value);
             break;
         case "timeScale":
