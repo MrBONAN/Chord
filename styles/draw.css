@@ -19,19 +19,19 @@
     border: 2px solid #333;
     border-radius: 7px;
     box-shadow: 0 2px 10px 0 rgba(60,60,100,0.045);
-    padding: 13px 22px 11px 22px; /* чуть уменьшено */
+    padding: 13px 22px 11px 22px;
     width: 430px;
-    margin-left: auto;
-    margin-top: 8px;
+    margin-left: 0;        /* теперь всегда у левого края */
     margin-bottom: 12px;
-    font-size: 17px;              /* больше чем было */
+    font-size: 17px;
     color: #232324;
     font-family: inherit;
     display: flex;
     flex-direction: column;
-    gap: 4px;                     /* уменьшен */
+    gap: 4px;
     position: relative;
 }
+
 
 #info b {
     font-size: 20px;
@@ -228,9 +228,8 @@
     align-items: center;
     width: 800px;
     height: 48px;
-    margin: 0 auto;
+    margin: 10px auto 30px auto;  /* сверху и снизу по 10px */
     box-sizing: border-box;
-    /* можно добавить padding: 0 10px; если хочется зазоры по бокам */
 }
 
 .left-controls,
@@ -253,8 +252,11 @@
 }
 
 .right-controls {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
     width: 155px;
     min-width: 155px;
     max-width: 155px;
+    gap: 10px; /* вот этот отступ между кнопками */
 }

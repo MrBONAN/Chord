@@ -12,18 +12,18 @@
 </head>
 <body>
 <div id="container">
-    <div class="side-panel">
+    <!-- <div class="side-panel">
         <button id="openMenuBtn" class="side-btn" aria-label="Открыть меню">
             <img src="./icons/bars-solid.svg" alt="Open Menu" class="svg-icon" />
         </button>
-        <button id="loadImage" class="side-btn" title="Открыть изображение">
+        <button id="loadImage1" class="side-btn" title="Открыть изображение">
             <img src="./icons/load_btn.svg" alt="Open" class="svg-icon" />
         </button>
-        <button id="saveImage" class="side-btn" title="Сохранить изображение">
+        <button id="saveImage1" class="side-btn" title="Сохранить изображение">
             <img src="./icons/save_btn.svg" alt="Save" class="svg-icon" />
         </button>
         <input type="file" id="fileInput" accept="image/png" style="display: none;">
-    </div>
+    </div> -->
 
     <div class="main-panel">
         <div id="draw-area">
@@ -43,9 +43,6 @@
                         </button>
                     </div>
                     <div class="center-controls">
-                        <button type="button" id="undoButton" class="history-btn" disabled>
-                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
-                        </button>
                         <input id="isFrozen" type="checkbox" hidden>
                         <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
                             <span class="svg-play">
@@ -54,16 +51,25 @@
                             <span class="svg-pause">
                                 <img src="./icons/play-solid.svg" alt="Воспроизвести" class="svg-icon" />
                             </span>
-                        </label>                        
+                        </label>
+                        <button type="button" id="undoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
+                        </button>
                         <button type="button" id="redoButton" class="history-btn" disabled>
                             <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
                         </button>
                     </div>
-                    <div class="right-controls"></div>
+                    <div class="right-controls">
+                        <button id="loadImage" class="side-btn" title="Открыть изображение">
+                            <img src="./icons/load_btn.svg" alt="Open" class="svg-icon" />
+                        </button>
+                        <button id="saveImage" class="side-btn" title="Сохранить изображение">
+                            <img src="./icons/save_btn.svg" alt="Save" class="svg-icon" />
+                        </button>
+                        <input type="file" id="fileInput" accept="image/png" style="display: none;">
+                    </div>
                 </div>
-                <!-- Инфо-блок теперь ниже! -->
                 <div id="info">
-                    <p><b>Легенда:</b></p>
                     <p>Серая линия — начальное положение струны (t = 0).</p>
                     <p>Красная линия — текущее положение струны.</p>
                     <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
@@ -148,6 +154,8 @@
             </form>
         </div>
     </div>
+
+    <!--
     <div id="sidebar" class="sidebar">
         <button id="closeMenuBtn" aria-label="Close menu">✕</button>
         <div class="sidebar-menu">
@@ -155,6 +163,7 @@
             <button class="sidebar-btn">Кнопка 2</button>
         </div>
     </div>
+    -->
 </div>
 <script type="module" src="scripts/index.js"></script>
 </body>

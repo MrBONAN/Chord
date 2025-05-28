@@ -13,9 +13,9 @@ const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
 const toggleBtn = document.getElementById("toggleDraw");
-const openBtn = document.getElementById('openMenuBtn');
-const closeBtn = document.getElementById('closeMenuBtn');
-const sidebar = document.getElementById('sidebar');
+// const openBtn = document.getElementById('openMenuBtn');
+// const closeBtn = document.getElementById('closeMenuBtn');
+// const sidebar = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
 const lengthInput = document.getElementById('length');
@@ -65,14 +65,14 @@ saveSpeedBtn.addEventListener("click", () => {
     dumpForHistory();
 });
 
-openBtn.addEventListener('click', () => {
-    sidebar.classList.add('open');
-});
+// openBtn.addEventListener('click', () => {
+//     sidebar.classList.add('open');
+// });
 
-closeBtn.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    openBtn.style.display = 'block';
-});
+// closeBtn.addEventListener('click', () => {
+//     sidebar.classList.remove('open');
+//     openBtn.style.display = 'block';
+// });
 
 const inputs = document.querySelectorAll('#all-params input');
 inputs.forEach(el => {
