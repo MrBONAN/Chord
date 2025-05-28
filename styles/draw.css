@@ -260,3 +260,38 @@
     max-width: 155px;
     gap: 10px; /* вот этот отступ между кнопками */
 }
+
+.slider-caption {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    max-width: 260px;
+    background: #29294d;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 7px 11px;
+    position: absolute;
+    z-index: 99;
+    right: 100%;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%) translateX(-16px);
+    transition: opacity 0.25s;
+    font-size: 15px;
+    pointer-events: none;
+    box-shadow: 0 3px 12px 0 rgba(80,80,110,0.12);
+    line-height: 1.35;
+}
+
+.slider-caption:hover .tooltip,
+.slider-caption:focus .tooltip {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}

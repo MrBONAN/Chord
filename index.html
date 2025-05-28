@@ -82,28 +82,36 @@
                 <fieldset>
                     <legend><b>Параметры струны</b></legend>
                     <label class="slider-block">
-                        <span class="slider-caption">ρ (плотность)</span>
+                        <span class="slider-caption">ρ (плотность)
+                            <span class = "tooltip">Линейная плотность струны [кг/м]</span>
+                        </span>
                         <div class="slider-row">
                             <input id="p" type="range" min="0.1" max="5" step="0.01" value="1">
                             <input id="p-value" class="slider-value" type="number" step="0.1" min="0.001" value="1">
                         </div>
                     </label>
                     <label class="slider-block">
-                        <span class="slider-caption">T₀ (натяжение)</span>
+                        <span class="slider-caption">T₀ (натяжение)
+                            <span class = "tooltip">сила натяжения струны [Н]</span>
+                        </span>
                         <div class="slider-row">
                             <input id="T0" type="range" min="1" max="10" step="0.01" value="9">
                             <input id="T0-value" class="slider-value" type="number" step="0.1" min="0.001" value="9">
                         </div>
                     </label>
                     <label class="slider-block">
-                        <span class="slider-caption">Длина струны</span>
+                        <span class="slider-caption">Длина струны
+                            <span class = "tooltip">длина струны [м]</span>
+                        </span>
                         <div class="slider-row">
                             <input id="length" type="range" min="1" max="10" step="1" value="1">
                             <input id="length-value" class="slider-value" type="number" step="0.1" min="0.1" value="1">
                         </div>
                     </label>
                     <label class="slider-block">
-                        <span class="slider-caption">Линия времени</span>
+                        <span class="slider-caption">Линия времени
+                            <span class = "tooltip">Значение времени внутри периода [с]</span>
+                        </span>
                         <div class="slider-row">
                             <input id="periodSlider" type="range" min="0" max="1" step="0.01" value="0">
                             <input id="periodSlider-value" class="slider-value" type="number" step="0.01" min="0" max="1" value="0">
