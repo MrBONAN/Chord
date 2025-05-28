@@ -19,17 +19,17 @@
     border: 2px solid #333;
     border-radius: 7px;
     box-shadow: 0 2px 10px 0 rgba(60,60,100,0.045);
-    padding: 16px 22px 14px 22px;
+    padding: 13px 22px 11px 22px; /* чуть уменьшено */
     width: 430px;
     margin-left: auto;
     margin-top: 8px;
     margin-bottom: 12px;
-    font-size: 16px;
+    font-size: 17px;              /* больше чем было */
     color: #232324;
     font-family: inherit;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;                     /* уменьшен */
     position: relative;
 }
 
@@ -43,10 +43,10 @@
 
 #info p {
     margin: 0;
-    font-size: 16.2px;
+    font-size: 17px;              /* чуть больше шрифт */
     color: #232324;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.19;            /* чуть меньше отступ между строками */
 }
 
 #info span#timeDisplay {
