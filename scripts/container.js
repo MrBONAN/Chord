@@ -272,7 +272,7 @@ export class Container {
         const zoomDelta = 1.2;
         
         zoomInBtn.addEventListener("click", (e) => {
-            if (this.stateisDrawingMode) return;
+            if (this.state.isDrawingMode) return;
             this.canvasHandler.zoomToCenterByY(zoomDelta);
             if (!e.shiftKey) {
                 this.canvasHandler.zoomToCenterByX(zoomDelta);
@@ -280,7 +280,7 @@ export class Container {
         });
         
         zoomOutBtn.addEventListener("click", (e) => {
-            if (this.stateisDrawingMode) return;
+            if (this.state.isDrawingMode) return;
             this.canvasHandler.zoomToCenterByY(1 / zoomDelta);
             if (!e.shiftKey) {
                 this.canvasHandler.zoomToCenterByX(1 / zoomDelta);
@@ -288,8 +288,8 @@ export class Container {
         });
         
         resetViewBtn.addEventListener("click", (e) => {
-            if (this.stateisDrawingMode) return;
-            this.stateresetClip();
+            if (this.state.isDrawingMode) return;
+            this.state.resetClip();
         });
     }
 
@@ -326,8 +326,8 @@ export class Container {
     }
 
     updateHistoryButtons() {
-        this.undoBtn.disabled = !this.historyManager.canUndo;
-        this.redoBtn.disabled = !this.historyManager.canRedo;
+        this.undoBtn.disabled = !this.historyManager.canUndo();
+        this.redoBtn.disabled = !this.historyManager.canRedo();
     }
 
     dumpForHistory() {
@@ -338,7 +338,7 @@ export class Container {
 
     historyEventHandlers() {
         this.undoBtn.addEventListener("click", e => {
-            if (this.historyManager.canUndo) {
+            if (this.historyManager.canUndo()) {
                 this.historyManager.undo();
                 this.state.loadDataForHistory(this.historyManager.getState());
                 this.updateHistoryButtons();

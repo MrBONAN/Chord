@@ -22,7 +22,7 @@ export class HistoryManager {
     }
 
     undo() {
-        if (!this.canUndo) return;
+        if (!this.canUndo()) return;
 
         const inverse = this.past.pop();
         const redo = this.invert(inverse);
@@ -32,7 +32,7 @@ export class HistoryManager {
     }
 
     redo() {
-        if (!this.canRedo) return;
+        if (!this.canRedo()) return;
 
         const diff  = this.future.pop();
         const undo  = this.invert(diff);
