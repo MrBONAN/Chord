@@ -29,8 +29,8 @@
         <div id="draw-area">
             <div id="canvas-wrap">
                 <canvas id="glcanvas" width="800" height="600"></canvas>
-                <div class="canvas-bottom-bar">
-                    <!-- Левая группа кнопок: Zoom -->
+                <!-- Новый блок контролов -->
+                <div class="controls-bar">
                     <div class="left-controls">
                         <button type="button" id="zoomInButton" class="view-btn">
                             <img src="./icons/magnifying-glass-plus-solid.svg" alt="Zoom In" class="svg-icon" />
@@ -42,8 +42,10 @@
                             <img src="./icons/house-solid.svg" alt="Reset View" class="svg-icon" />
                         </button>
                     </div>
-                    <!-- Центральная группа: Freeze, Undo, Redo -->
                     <div class="center-controls">
+                        <button type="button" id="undoButton" class="history-btn" disabled>
+                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
+                        </button>
                         <input id="isFrozen" type="checkbox" hidden>
                         <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
                             <span class="svg-play">
@@ -52,23 +54,19 @@
                             <span class="svg-pause">
                                 <img src="./icons/play-solid.svg" alt="Воспроизвести" class="svg-icon" />
                             </span>
-                        </label>
-                        <button type="button" id="undoButton" class="history-btn" disabled>
-                            <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
-                        </button>
+                        </label>                        
                         <button type="button" id="redoButton" class="history-btn" disabled>
                             <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
                         </button>
                     </div>
-                    <!-- Правая группа: Легенда и текущее время -->
-                    <div class="right-controls">
-                        <div id="info">
-                            <p><b>Легенда:</b></p>
-                            <p>Серая линия — начальное положение струны (t = 0).</p>
-                            <p>Красная линия — текущее положение струны.</p>
-                            <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
-                        </div>
-                    </div>
+                    <div class="right-controls"></div>
+                </div>
+                <!-- Инфо-блок теперь ниже! -->
+                <div id="info">
+                    <p><b>Легенда:</b></p>
+                    <p>Серая линия — начальное положение струны (t = 0).</p>
+                    <p>Красная линия — текущее положение струны.</p>
+                    <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
                 </div>
             </div>
         </div>

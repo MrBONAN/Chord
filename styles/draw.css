@@ -220,3 +220,41 @@
     width: 20px;
     h
 }
+
+.controls-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+    height: 48px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    /* можно добавить padding: 0 10px; если хочется зазоры по бокам */
+}
+
+.left-controls,
+.center-controls,
+.right-controls {
+    display: flex;
+    align-items: center;
+    height: 48px;
+}
+
+.left-controls {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.center-controls {
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.right-controls {
+    justify-content: flex-end;
+    width: 155px;
+    min-width: 155px;
+    max-width: 155px;
+}
