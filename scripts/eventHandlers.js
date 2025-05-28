@@ -12,7 +12,7 @@ const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
-const toggleBtn = document.getElementById("toggleDraw");
+const toggleBtn = document.getElementById("drawModeBtn");
 // const openBtn = document.getElementById('openMenuBtn');
 // const closeBtn = document.getElementById('closeMenuBtn');
 // const sidebar = document.getElementById('sidebar');
@@ -25,13 +25,13 @@ toggleBtn.addEventListener("click", () => {
 
     if (State.isDrawingMode) {
         GUI.clearCanvas(ctx);
-        toggleBtn.textContent = "Закончить и сохранить";
+        // toggleBtn.textContent = "Закончить и сохранить";
         canvasHandler.points = new Array(canvas.width).fill(0);
         canvasHandler.drawInput();
     } else {
         State.drawnPoints = canvasHandler.points.slice();
         State.setPositionFunction(canvasHandler.createLinearInterpolator(State.drawnPoints), "0");
-        toggleBtn.textContent = "Начать рисование";
+        // toggleBtn.textContent = "Начать рисование";
         State.rebuild();
         dumpForHistory();
     }
