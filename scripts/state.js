@@ -100,14 +100,14 @@ export class State {
     }
 
     dumpData() {
-        const dataToDump = [ "p",  "T0",  "dx", "n",  "pointsCount",  "modes",
+        const dataToDump = ["p",  "T0",  "dx", "n",  "pointsCount",  "modes",
             "timeScale",  "isFrozen", "actualTime",  "startTime",
             "length",  "posFuncStr",  "speedFuncStr",
             "zoomX",  "zoomY",  "clip", "drawnPoints"
         ];
         let dump = {};
         dataToDump.forEach((d) => {
-            dump[d] = this.copyValue(State[d]);
+            dump[d] = this.copyValue(this.state[d]);
         });
 
         return dump;
@@ -115,7 +115,7 @@ export class State {
 
     loadData(data) {
         for (const [key, value] of Object.entries(data)) {
-            State[key] = this.copyValue(value);
+            this[key] = this.copyValue(value);
         }
         if (data.drawnPoints.length > 0) {
             this.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.drawnPoints), "0");
@@ -137,7 +137,7 @@ export class State {
         ];
         let dump = {};
         dataToDump.forEach((d) => {
-            dump[d] = this.copyValue(State[d]);
+            dump[d] = this.copyValue(this[d]);
         });
 
         return dump;
@@ -145,9 +145,9 @@ export class State {
 
     loadDataForHistory(data) {
         for (const [key, value] of Object.entries(data)) {
-            State[key] = this.copyValue(value);
+            this[key] = this.copyValue(value);
         }
-        PeriodSlider.changePeriod(this.a, this.length);
+        this.periodSlider.changePeriod(this.a, this.length);
         this.updateDocument(data);
     }
 

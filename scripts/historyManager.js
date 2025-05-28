@@ -18,7 +18,7 @@ export class HistoryManager {
 
         this.past.push(this.invert(diff));
         this.future.length = 0;
-        this.curr = this.statecopyValue(newSnapshot);
+        this.curr = this.state.copyValue(newSnapshot);
     }
 
     undo() {
@@ -47,7 +47,7 @@ export class HistoryManager {
         const out = {};
         for (const key of Object.keys(b)) {
             if (!this.deepEqual(a[key], b[key])) {
-                out[key] = { old: this.statecopyValue(a[key]), new: this.statecopyValue(b[key]) };
+                out[key] = { old: this.state.copyValue(a[key]), new: this.state.copyValue(b[key]) };
             }
         }
         return out;
@@ -56,18 +56,18 @@ export class HistoryManager {
     invert(diff) {
         const inv = {};
         for (const [k, { old, new: nxt }] of Object.entries(diff)) {
-            inv[k] = { old: this.statecopyValue(nxt), new: this.statecopyValue(old) };
+            inv[k] = { old: this.state.copyValue(nxt), new: this.state.copyValue(old) };
         }
         return inv;
     }
 
     apply(diff) {
         for (const [k, { new: value }] of Object.entries(diff)) {
-            State[k] = this.statecopyValue(value);
+            this.state[k] = this.state.copyValue(value);
         }
 
-        this.statepostLoadHousekeeping();
-        this.curr = this.statedumpDataForHistory();
+        this.state.postLoadHousekeeping();
+        this.curr = this.state.dumpDataForHistory();
     }
 
     deepEqual(a, b) {

@@ -33,10 +33,10 @@ export class Container {
         this.historyManager.state = this.state;
         this.periodSlider.state = this.state;
         
-        this.historyManager.curr = this.state.dumpDataForHistory();
 
         this.periodSlider.init();
         this.state.rebuild();
+        this.historyManager.curr = this.state.dumpDataForHistory();
         this.historyEventHandlers();
         this.eventHandlers();
         this.renderer();
