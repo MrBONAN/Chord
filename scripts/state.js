@@ -109,7 +109,7 @@ export class State {
         ];
         let dump = {};
         dataToDump.forEach((d) => {
-            dump[d] = this.copyValue(this.state[d]);
+            dump[d] = this.copyValue(this[d]);
         });
 
         return dump;
