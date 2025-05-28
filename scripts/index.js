@@ -1,4 +1,2 @@
-import "./state.js";
-import "./eventHandlers.js";
-import "./renderer.js";
-import "./historyEventHandlers.js";
+import { Container } from "./container.js";
+var container = new Container();

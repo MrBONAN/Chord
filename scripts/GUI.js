@@ -1,10 +1,9 @@
 "use strict";
 
-import {StringCalculator} from "./integrate.js";
-
 export class GUI {
-    static getCanvas(canvasId) {
-        return document.getElementById(canvasId);
+    constructor(stringCalculator, context) {
+        this.stringCalculator = stringCalculator;
+        this.context = context;
     }
 
     /**
@@ -20,9 +19,9 @@ export class GUI {
      * @param {boolean} showOutsideBorders – отображать ли точки за пределами leftBorder..rightBorder.
      * @returns {void}
      */
-    static drawString(context, stringFunction, color, time, pointsCount, length, clipBounds) {
+    drawString(context, stringFunction, color, time, pointsCount, length, clipBounds) {
         const funcSnapshot = (x) => stringFunction(time, x);
-        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds);
+        const vertices = this.stringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds);
 
         context.strokeStyle = color;
         context.beginPath();
@@ -33,7 +32,7 @@ export class GUI {
         context.stroke();
     }
 
-    static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY, length) {
+    drawCoords(context, canvasRect, clipBounds, zoomX, zoomY, length) {
         const MIN_PX    = 70;
         const MAX_PX    = 130;
 
@@ -118,9 +117,9 @@ export class GUI {
         context.restore();
     }
 
-    static clearCanvas(context) {
-        const canvas = context.canvas;
-        context.fillStyle = 'white';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    clearCanvas() {
+        const canvas = this.context.canvas;
+        this.context.fillStyle = 'white';
+        this.context.fillRect(0, 0, canvas.width, canvas.height);
     }
 }
