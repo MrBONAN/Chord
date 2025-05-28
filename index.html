@@ -17,32 +17,42 @@
             <img src="./icons/bars-solid.svg" alt="Open Menu" class="svg-icon" />
         </button>
         <button id="loadImage" class="side-btn" title="Открыть изображение">
-            <img src="./icons/load_btn.svg" alt="Save" class="svg-icon" />
+            <img src="./icons/load_btn.svg" alt="Open" class="svg-icon" />
         </button>
         <button id="saveImage" class="side-btn" title="Сохранить изображение">
-            <img src="./icons/save_btn.svg" alt="Upload" class="svg-icon" />
+            <img src="./icons/save_btn.svg" alt="Save" class="svg-icon" />
         </button>
         <input type="file" id="fileInput" accept="image/png" style="display: none;">
     </div>
+
     <div class="main-panel">
         <div id="draw-area">
             <div id="canvas-wrap">
                 <canvas id="glcanvas" width="800" height="600"></canvas>
                 <div class="canvas-bottom-bar">
-                    <div class="control-group">
-                        <div class="freeze-control">
-                            <input id="isFrozen" type="checkbox" hidden>
-                            <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
-                                <span class="svg-play">
-                                    <img src="./icons/pause-solid.svg" alt="Open Menu" class="svg-icon" />
-                                </span>
-                                <span class="svg-pause">
-                                    <img src="./icons/play-solid.svg" alt="Open Menu" class="svg-icon" />
-                                </span>
-                            </label>
-                        </div>
+                    <!-- Левая группа кнопок: Zoom -->
+                    <div class="left-controls">
+                        <button type="button" id="zoomInButton" class="view-btn">
+                            <img src="./icons/magnifying-glass-plus-solid.svg" alt="Zoom In" class="svg-icon" />
+                        </button>
+                        <button type="button" id="zoomOutButton" class="view-btn">
+                            <img src="./icons/magnifying-glass-minus-solid.svg" alt="Zoom Out" class="svg-icon" />
+                        </button>
+                        <button type="button" id="resetViewButton" class="view-btn">
+                            <img src="./icons/house-solid.svg" alt="Reset View" class="svg-icon" />
+                        </button>
                     </div>
-                    <div class="history-controls">
+                    <!-- Центральная группа: Freeze, Undo, Redo -->
+                    <div class="center-controls">
+                        <input id="isFrozen" type="checkbox" hidden>
+                        <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
+                            <span class="svg-play">
+                                <img src="./icons/pause-solid.svg" alt="Пауза" class="svg-icon" />
+                            </span>
+                            <span class="svg-pause">
+                                <img src="./icons/play-solid.svg" alt="Воспроизвести" class="svg-icon" />
+                            </span>
+                        </label>
                         <button type="button" id="undoButton" class="history-btn" disabled>
                             <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
                         </button>
@@ -50,20 +60,19 @@
                             <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
                         </button>
                     </div>
-                    <div class="view-controls">
-                        <button type="button" id="zoomInButton">+</button>
-                        <button type="button" id="zoomOutButton">-</button>
-                        <button type="button" id="resetViewButton">home</button>
-                    </div>
-                    <div id="info">
-                        <p><b>Легенда:</b></p>
-                        <p>Серая линия — начальное положение струны (t = 0).</p>
-                        <p>Красная линия — текущее положение струны.</p>
-                        <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+                    <!-- Правая группа: Легенда и текущее время -->
+                    <div class="right-controls">
+                        <div id="info">
+                            <p><b>Легенда:</b></p>
+                            <p>Серая линия — начальное положение струны (t = 0).</p>
+                            <p>Красная линия — текущее положение струны.</p>
+                            <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
+
         <div id="all-params">
             <form id="params">
                 <fieldset>
@@ -92,7 +101,8 @@
                     <label class="slider-block">
                         <span class="slider-caption">Линия времени</span>
                         <div class="slider-row">
-                            <input id="periodSlider" type="range" min="0" max="1" value="0" step="0.01">
+                            <input id="periodSlider" type="range" min="0" max="1" step="0.01" value="0">
+                            <input id="periodSlider-value" class="slider-value" type="number" step="0.01" min="0" max="1" value="0">
                         </div>
                     </label>
                 </fieldset>
@@ -102,14 +112,14 @@
                     <span class="function-caption">Ф-я нач. положения</span>
                     <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
                     <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
-                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                        <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
                 </label>
                 <label class="function-row">
                     <span class="function-caption">Ф-я нач. скорости</span>
                     <input id="speedFuncStr" type="text" value="0" class="func-input">
                     <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
-                        <img src="./icons/check-solid.svg" alt="Open Menu" class="svg-icon" />
+                        <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
                 </label>
                 <button type="button" id="toggleDraw" class="paramsChanger">Начать рисование</button>
@@ -118,22 +128,22 @@
                 <details>
                     <summary><b>Дополнительные настройки</b></summary>
                     <label>Сдвиг времени
-                        <input id="startTimeSlider" type="range" min="0" max="1" value="0" step="0.01">
+                        <input id="startTimeSlider" type="range" min="0" max="1" step="0.01" value="0">
                     </label>
                     <label>Интервал для интеграла
-                        <input id="dx" type="number" step="0.001" value="0.0001" min="1e-6" max="0.1">
+                        <input id="dx" type="number" step="0.001" min="1e-6" max="0.1" value="0.0001">
                     </label>
                     <label>Число точек для интеграла
-                        <input id="n" type="number" step="1" value="10000" min="10" max="1000000">
+                        <input id="n" type="number" step="1" min="10" max="1000000" value="10000">
                     </label>
                     <label>Разрешение
-                        <input id="pointsCount" type="number" value="200" min="2" max="10000">
+                        <input id="pointsCount" type="number" min="2" max="10000" value="200">
                     </label>
                     <label>Слагаемых ряда
-                        <input id="modes" type="number" value="100" min="1">
+                        <input id="modes" type="number" min="1" value="100">
                     </label>
                     <label>Масштаб времени
-                        <input id="timeScale" type="number" step="0.1" value="0.1" min="0.001">
+                        <input id="timeScale" type="number" step="0.1" min="0.001" value="0.1">
                     </label>
                     <input type="reset" value="Сбросить">
                 </details>

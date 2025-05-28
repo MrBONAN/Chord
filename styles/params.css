@@ -208,3 +208,12 @@
     font-size: 15px;
     color: #232324;
 }
+
+.slider-value::-webkit-outer-spin-button,
+.slider-value::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.slider-value {
+    -moz-appearance: textfield;
+}
