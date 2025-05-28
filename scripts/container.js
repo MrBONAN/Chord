@@ -230,7 +230,7 @@ export class Container {
         fileInput.addEventListener("change", async () => {
             const file = fileInput.files[0];
             try {
-                const metadata = this.imageSaver.loadImage(file);
+                const metadata = await this.imageSaver.loadImage(file);
                 this.state.loadData(metadata);
                 this.historyManager.pushState(this.state.dumpDataForHistory());
                 this.updateHistoryButtons();
