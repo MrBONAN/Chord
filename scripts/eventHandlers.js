@@ -236,17 +236,19 @@ const zoomDelta = 1.2;
 
 zoomInBtn.addEventListener("click", (e) => {
     if (State.isDrawingMode) return;
-    canvasHandler.zoomToCenterByY(zoomDelta);
-    if (!e.shiftKey) {
-        canvasHandler.zoomToCenterByX(zoomDelta);
+    if (e.shiftKey) {
+        canvasHandler.zoomToCenterByY(zoomDelta);
+    } else {
+        canvasHandler.zoomToMouse(canvasHandler.rect.width / 2, canvasHandler.rect.height / 2, zoomDelta);
     }
 });
 
 zoomOutBtn.addEventListener("click", (e) => {
     if (State.isDrawingMode) return;
-    canvasHandler.zoomToCenterByY(1 / zoomDelta);
-    if (!e.shiftKey) {
-        canvasHandler.zoomToCenterByX(1 / zoomDelta);
+    if (e.shiftKey) {
+        canvasHandler.zoomToCenterByY(1 / zoomDelta);
+    } else {
+        canvasHandler.zoomToMouse(canvasHandler.rect.width / 2, canvasHandler.rect.height / 2, 1 / zoomDelta);
     }
 });
 

@@ -75,15 +75,21 @@ export class CanvasHandler {
             if (e.shiftKey) {
                 this.zoomToCenterByY(zoomDelta);
             } else {
-                const clip = State.clip;
-                State.zoomX /= zoomDelta;
-                State.zoomY /= zoomDelta;
-                clip.top -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.top);
-                clip.bottom -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.bottom);
-                clip.left -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.left);
-                clip.right -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.right);
+                let x = e.clientX - this.rect.left;
+                let y = e.clientY - this.rect.top;
+                this.zoomToMouse(x, y, zoomDelta);
             }
         });
+    }
+
+    zoomToMouse(x, y, zoomDelta){
+        const clip = State.clip;
+        State.zoomX /= zoomDelta;
+        State.zoomY /= zoomDelta;
+        clip.top -= (zoomDelta - 1) * (y - clip.top);
+        clip.bottom -= (zoomDelta - 1) * (y - clip.bottom);
+        clip.left -= (zoomDelta - 1) * (x - clip.left);
+        clip.right -= (zoomDelta - 1) * (x - clip.right);
     }
 
     zoomToCenterByY(zoomDelta){
