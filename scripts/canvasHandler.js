@@ -6,22 +6,24 @@ export class CanvasHandler {
         this.gui = gui;
         this.context = context;
         this.canvas = canvas;
+    }
 
-        this.rect = canvas.getBoundingClientRect();
+    init() {
+        this.rect = this.canvas.getBoundingClientRect();
         this.isDrawing = false;
         this.isPanning = false;
 
-        this.points = new Array(canvas.width).fill(0);
+        this.points = new Array(this.canvas.width).fill(0);
         this.lastPos = null;
         this.panStart = null;
         this.initialClip = null;
 
         const scaleFactor = 1.1;
 
-        window.addEventListener('resize', () => this.rect = canvas.getBoundingClientRect());
-        window.addEventListener('scroll', () => this.rect = canvas.getBoundingClientRect());
+        window.addEventListener('resize', () => this.rect = this.canvas.getBoundingClientRect());
+        window.addEventListener('scroll', () => this.rect = this.canvas.getBoundingClientRect());
 
-        canvas.addEventListener('mousedown', (e) => {
+        this.canvas.addEventListener('mousedown', (e) => {
             if (!this.state.isDrawingMode) {
                 this.isPanning = true;
                 this.panStart = { x: e.clientX, y: e.clientY };
@@ -34,7 +36,7 @@ export class CanvasHandler {
             }
         });
 
-        canvas.addEventListener('mousemove', (e) => {
+        this.canvas.addEventListener('mousemove', (e) => {
             if (this.state.isDrawingMode && this.isDrawing) {
                 const pos = this.getCanvasCoordinates(e);
                 if (this.lastPos) {
@@ -54,19 +56,19 @@ export class CanvasHandler {
             }
         });
 
-        canvas.addEventListener('mouseup', () => {
+        this.canvas.addEventListener('mouseup', () => {
             this.isDrawing = false;
             this.isPanning = false;
             this.lastPos = null;
         });
 
-        canvas.addEventListener('mouseout', () => {
+        this.canvas.addEventListener('mouseout', () => {
             this.isDrawing = false;
             this.isPanning = false;
             this.lastPos = null;
         });
 
-        canvas.addEventListener('wheel', (e) => {
+        this.canvas.addEventListener('wheel', (e) => {
             if (this.state.isDrawingMode) return;
             e.preventDefault();
 
