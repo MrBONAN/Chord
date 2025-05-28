@@ -82,9 +82,9 @@ export class CanvasHandler {
     }
 
     zoomToMouse(x, y, zoomDelta){
-        const clip = State.clip;
-        State.zoomX /= zoomDelta;
-        State.zoomY /= zoomDelta;
+        const clip = this.state.clip;
+        this.state.zoomX /= zoomDelta;
+        this.state.zoomY /= zoomDelta;
         clip.top -= (zoomDelta - 1) * (y - clip.top);
         clip.bottom -= (zoomDelta - 1) * (y - clip.bottom);
         clip.left -= (zoomDelta - 1) * (x - clip.left);
