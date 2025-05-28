@@ -19,7 +19,9 @@ export class State {
         this.stringCalculator = stringCalculator;
         this.parseFunction = parseFunction;
         this.canvasHandler = canvasHandler;
+    }
 
+    init() {
         this.p = 1;
         this.T0 = 9;
         this.dx = 0.0001;

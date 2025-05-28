@@ -1,7 +1,5 @@
 "use strict";
 
-import {State} from "./state.js";
-
 export class CanvasHandler {
     constructor(state, gui, canvas, context) {
         this.state = state;
