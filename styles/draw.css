@@ -19,19 +19,19 @@
     border: 2px solid #333;
     border-radius: 7px;
     box-shadow: 0 2px 10px 0 rgba(60,60,100,0.045);
-    padding: 16px 22px 14px 22px;
+    padding: 13px 22px 11px 22px;
     width: 430px;
-    margin-left: auto;
-    margin-top: 8px;
+    margin-left: 0;        /* теперь всегда у левого края */
     margin-bottom: 12px;
-    font-size: 16px;
+    font-size: 17px;
     color: #232324;
     font-family: inherit;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     position: relative;
 }
+
 
 #info b {
     font-size: 20px;
@@ -43,10 +43,10 @@
 
 #info p {
     margin: 0;
-    font-size: 16.2px;
+    font-size: 17px;              /* чуть больше шрифт */
     color: #232324;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1.19;            /* чуть меньше отступ между строками */
 }
 
 #info span#timeDisplay {
@@ -61,39 +61,62 @@
     margin-left: 4px;
 }
 
-
 #canvas-wrap {
     display: inline-flex;
     flex-direction: column;
     align-items: stretch;
 }
 
+/* --- Новая компоновка панели под канвасом --- */
 .canvas-bottom-bar {
-    width: 100%;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: flex-start;
+    width: 800px;  /* как у канваса */
+    margin: 0 auto;
     padding: 10px 0 0 0;
     box-sizing: border-box;
 }
 
-.control-group {
+.left-controls,
+.center-controls,
+.right-controls {
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 16px;
-    margin-top: 5px;
+    gap: 10px;
+    min-height: 48px;
 }
 
-.canvas-bottom-bar > * {
-    pointer-events: auto;
+.left-controls {
+    justify-content: flex-start;
+    flex: 0 0 auto;
 }
 
+.center-controls {
+    justify-content: center;
+    flex: 1 1 0;
+}
 
-.freeze-control {
-    position: static;
+.right-controls {
+    justify-content: flex-end;
+    flex: 0 0 auto;
+}
+
+.right-controls #info {
+    width: 330px;
+    min-width: 220px;
+    max-width: 370px;
     margin: 0;
+    padding: 10px 16px 8px 16px;
+    font-size: 15px;
+    box-shadow: none;
+    border: 1.5px solid #aaa;
+    border-radius: 7px;
+    background: #fcfcfc;
 }
+
+/* --- Удалённые старые grid/grid-area/grid-template-columns/grid-template-areas --- */
 
 .freeze-btn {
     display: inline-flex;
@@ -117,7 +140,6 @@
     display: none; 
     opacity: 0.9;
     filter: grayscale(1);
-
 }
 #isFrozen:checked + .freeze-btn .svg-play { display: none; }
 #isFrozen:checked + .freeze-btn .svg-pause { display: inline; }
@@ -128,16 +150,7 @@
 }
 
 .freeze-btn:hover {
-    background: #ededed; 
-    
-}
-
-.history-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-left: 25px;
-    margin-top: 5px;
+    background: #ededed;
 }
 
 .history-btn {
@@ -171,4 +184,114 @@
     opacity: 0.3;
     filter: grayscale(1);
     transition: opacity 0.13s;
+}
+
+/* Сами кнопки */
+.view-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 2px solid #555555;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+/* Hover-состояние */
+.view-btn:hover:enabled {
+    background: #ededed;
+    border-color: #888;
+}
+
+/* Disabled-состояние */
+.view-btn:disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+    background: #fafafa;
+}
+
+/* Иконки внутри кнопок */
+.view-btn .svg-icon {
+    width: 20px;
+    h
+}
+
+.controls-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+    height: 48px;
+    margin: 10px auto 30px auto;  /* сверху и снизу по 10px */
+    box-sizing: border-box;
+}
+
+.left-controls,
+.center-controls,
+.right-controls {
+    display: flex;
+    align-items: center;
+    height: 48px;
+}
+
+.left-controls {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.center-controls {
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.right-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 155px;
+    min-width: 155px;
+    max-width: 155px;
+    gap: 10px; /* вот этот отступ между кнопками */
+}
+
+.slider-caption {
+    position: relative;
+    cursor: help;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    max-width: 260px;
+    background: #29294d;
+    color: #fff;
+    text-align: left;
+    border-radius: 6px;
+    padding: 7px 11px;
+    position: absolute;
+    z-index: 99;
+    right: 100%;
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%) translateX(-16px);
+    transition: opacity 0.25s;
+    font-size: 15px;
+    pointer-events: none;
+    box-shadow: 0 3px 12px 0 rgba(80,80,110,0.12);
+    line-height: 1.35;
+}
+
+.slider-caption:hover .tooltip,
+.slider-caption:focus .tooltip {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
 }
