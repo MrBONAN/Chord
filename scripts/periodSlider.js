@@ -58,6 +58,8 @@ export class PeriodSlider {
     static setPeriodValue(newVal) {
         if (this.periodSlider) {
             this.periodSlider.value = newVal;
+            const numInput = document.getElementById("periodSlider-value");
+            if (numInput) numInput.value = Number(newVal).toFixed(2);
         }
     }
 }

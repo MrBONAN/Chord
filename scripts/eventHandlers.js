@@ -12,10 +12,10 @@ const canvas = GUI.getCanvas("glcanvas");
 const ctx = canvas.getContext("2d");
 const canvasHandler = new CanvasHandler(GUI, canvas, ctx);
 
-const toggleBtn = document.getElementById("toggleDraw");
-const openBtn = document.getElementById('openMenuBtn');
-const closeBtn = document.getElementById('closeMenuBtn');
-const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById("drawModeBtn");
+// const openBtn = document.getElementById('openMenuBtn');
+// const closeBtn = document.getElementById('closeMenuBtn');
+// const sidebar = document.getElementById('sidebar');
 const savePosBtn = document.getElementById("savePosFunc");
 const saveSpeedBtn = document.getElementById("saveSpeedFunc");
 const lengthInput = document.getElementById('length');
@@ -25,13 +25,13 @@ toggleBtn.addEventListener("click", () => {
 
     if (State.isDrawingMode) {
         GUI.clearCanvas(ctx);
-        toggleBtn.textContent = "Закончить и сохранить";
+        // toggleBtn.textContent = "Закончить и сохранить";
         canvasHandler.points = new Array(canvas.width).fill(0);
         canvasHandler.drawInput();
     } else {
         State.drawnPoints = canvasHandler.points.slice();
         State.setPositionFunction(canvasHandler.createLinearInterpolator(State.drawnPoints), "0");
-        toggleBtn.textContent = "Начать рисование";
+        // toggleBtn.textContent = "Начать рисование";
         State.rebuild();
         dumpForHistory();
     }
@@ -65,14 +65,14 @@ saveSpeedBtn.addEventListener("click", () => {
     dumpForHistory();
 });
 
-openBtn.addEventListener('click', () => {
-    sidebar.classList.add('open');
-});
+// openBtn.addEventListener('click', () => {
+//     sidebar.classList.add('open');
+// });
 
-closeBtn.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    openBtn.style.display = 'block';
-});
+// closeBtn.addEventListener('click', () => {
+//     sidebar.classList.remove('open');
+//     openBtn.style.display = 'block';
+// });
 
 const inputs = document.querySelectorAll('#all-params input');
 inputs.forEach(el => {
