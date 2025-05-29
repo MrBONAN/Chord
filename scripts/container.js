@@ -87,10 +87,7 @@ export class Container {
     }
 
     eventHandlers() {
-        const toggleBtn = document.getElementById("toggleDraw");
-        const openBtn = document.getElementById('openMenuBtn');
-        const closeBtn = document.getElementById('closeMenuBtn');
-        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById("drawModeBtn");
         const savePosBtn = document.getElementById("savePosFunc");
         const saveSpeedBtn = document.getElementById("saveSpeedFunc");
         const lengthInput = document.getElementById('length');
@@ -138,15 +135,6 @@ export class Container {
             this.state.rebuild();
             this.state.resetTime();
             this.dumpForHistory();
-        });
-        
-        openBtn.addEventListener('click', () => {
-            sidebar.classList.add('open');
-        });
-        
-        closeBtn.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            openBtn.style.display = 'block';
         });
         
         const inputs = document.querySelectorAll('#all-params input');
