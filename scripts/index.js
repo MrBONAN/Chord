@@ -1,3 +1,4 @@
-import { Container } from "./container.js";
-var container = new Container();
-// vot i vse
+import { Container } from './container.js';
+import { setupExtraOptions } from './extraOptions.js';
+const container = new Container();
+setupExtraOptions(container.state);

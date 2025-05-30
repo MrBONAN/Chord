@@ -56,7 +56,6 @@ export class State {
     }
 
     rebuild() {
-        this.updateInputs();
         this.a = Math.sqrt(this.T0 / this.p);
         this.stringFunction = this.stringCalculator.getMainStringFunction(this.positionFunction, this.speedFunction, this.length, this.a);
         this.periodSlider.changePeriod(this.a, this.length);
@@ -70,7 +69,6 @@ export class State {
 
     advanceTime  (dt) { this.actualTime += dt * this.timeScale; }
     resetTime    () { this.actualTime = this.startTime; }
-
 
     setDensity          (newP)  {  this.p = newP; };
     setTension          (newT0) {  this.T0 = newT0; };
@@ -125,8 +123,6 @@ export class State {
             this.setPositionFunction(this.parseFunction(data.posFuncStr).func, data.posFuncStr);
         }
         this.setSpeedFunction(this.parseFunction(data.speedFuncStr).func, data.speedFuncStr);
-        this.updateDocument(data)
-
         this.rebuild();
     }
 
@@ -150,20 +146,6 @@ export class State {
             this[key] = this.copyValue(value);
         }
         this.periodSlider.changePeriod(this.a, this.length);
-        this.updateDocument(data);
-    }
-
-    updateDocument(data){
-        for (const [key, value] of Object.entries(data)) {
-            const slider = document.getElementById(key);
-            if (slider && value) {
-                slider.value = value;
-            }
-            const sliderValue = document.getElementById(key + "-value");
-            if (sliderValue && value) {
-                sliderValue.value = value;
-            }
-        }
     }
 
     copyValue(value){
@@ -171,12 +153,6 @@ export class State {
     }
 
     postLoadHousekeeping() {
-        this.updateDocument(this.dumpDataForHistory());
         this.rebuild();
-    }
-
-    updateInputs() {
-        document.getElementById("dx").value = this.dx;
-        document.getElementById("n").value = this.n;
     }
 }
