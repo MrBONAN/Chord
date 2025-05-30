@@ -3,9 +3,9 @@
 export class PeriodSlider {
     constructor(state) {
         this.state = state;
-        this.periodSlider = document.getElementById("periodSlider");
-        this.periodSliderValue = document.getElementById("periodSlider-value");
-        this.startTimeSlider = document.getElementById("startTimeSlider");
+        this.periodSlider = document.getElementById("period");
+        this.periodSliderValue = document.getElementById("period-value");
+        this.startTimeSlider = document.getElementById("startTime");
         this.startTimeSliderValue = document.getElementById("startTime-value");
         this.isFrozenBackup = false;
     }

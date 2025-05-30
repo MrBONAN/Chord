@@ -108,8 +108,8 @@
                             <span class="tooltip">Значение времени внутри периода [с]</span>
                         </span>
                         <div class="slider-row">
-                            <input id="periodSlider" type="range" min="0" max="1" step="0.01" value="0">
-                            <input id="periodSlider-value" class="slider-value" type="number" step="0.01" min="0" max="1" value="0">
+                            <input id="period" type="range" min="0" max="1" step="0.01" value="0">
+                            <input id="period-value" class="slider-value" type="number" step="0.01" min="0" max="1" value="0">
                         </div>
                     </label>
                 </fieldset>
@@ -144,42 +144,42 @@
                     <label class="slider-block">
                         <span class="slider-caption">Сдвиг времени</span>
                         <div class="slider-row">
-                            <input id="startTimeSlider" type="range" min="0" max="1" step="0.01" value="0">
+                            <input id="startTime" type="range" min="0" max="1" step="0.01" value="0">
                             <input id="startTime-value" class="slider-value" type="number" step="0.01" min="0" max="1" value="0">
                         </div>
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Интервал для интеграла</span>
                         <div class="slider-row">
-                            <input id="dxSlider" type="range" min="0.0001" max="0.03" step="0.000001" value="0.0001">
+                            <input id="dx" type="range" min="0.0001" max="0.03" step="0.000001" value="0.0001">
                             <input id="dx-value" class="slider-value" type="number" step="0.000001" min="0.000001" max="0.1" value="0.0001">
                         </div>
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Число точек для интеграла</span>
                         <div class="slider-row">
-                            <input id="nSlider" type="range" min="10" max="10000" step="10" value="1000">
+                            <input id="n" type="range" min="10" max="10000" step="10" value="1000">
                             <input id="n-value" class="slider-value" type="number" step="1" min="10" max="1000000" value="1000">
                         </div>
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Разрешение</span>
                         <div class="slider-row">
-                            <input id="pointsCountSlider" type="range" min="3" max="500" step="1" value="200">
+                            <input id="pointsCount" type="range" min="3" max="500" step="1" value="200">
                             <input id="pointsCount-value" class="slider-value" type="number" step="1" min="2" max="1000" value="200">
                         </div>
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Слагаемых ряда</span>
                         <div class="slider-row">
-                            <input id="modesSlider" type="range" min="1" max="1000" step="1" value="100">
+                            <input id="modes" type="range" min="1" max="1000" step="1" value="100">
                             <input id="modes-value" class="slider-value" type="number" step="1" min="1" max="1000" value="100">
                         </div>
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Масштаб времени</span>
                         <div class="slider-row">
-                            <input id="timeScaleSlider" type="range" min="0.001" max="2" step="0.001" value="0.1">
+                            <input id="timeScale" type="range" min="0.001" max="2" step="0.001" value="0.1">
                             <input id="timeScale-value" class="slider-value" type="number" step="0.001" min="0.001" max="2" value="0.1">
                         </div>
                     </label>

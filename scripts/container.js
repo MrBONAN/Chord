@@ -87,20 +87,17 @@ export class Container {
         const toggleBtn = document.getElementById("drawModeBtn");
         const savePosBtn = document.getElementById("savePosFunc");
         const saveSpeedBtn = document.getElementById("saveSpeedFunc");
-        const lengthInput = document.getElementById('length');
         
         toggleBtn.addEventListener("click", () => {
             this.state.toggleDrawingMode();
         
             if (this.state.isDrawingMode) {
                 this.gui.clearCanvas();
-                // toggleBtn.textContent = "Закончить и сохранить";
                 this.canvasHandler.points = new Array(this.canvas.width).fill(0);
                 this.canvasHandler.drawInput();
             } else {
                 this.state.drawnPoints = this.canvasHandler.points.slice();
                 this.state.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.state.drawnPoints), "0");
-                // toggleBtn.textContent = "Начать рисование";
                 this.state.rebuild();
                 this.dumpForHistory();
             }
@@ -139,55 +136,6 @@ export class Container {
             el.dataset.prev = el.value;
             el.addEventListener('animationend', () => el.classList.remove('invalid'));
         });
-        
-        const isNum = v => v.trim() !== "" && Number.isFinite(+v);
-        
-        const validators = {
-            dx: v => isNum(v) && +v >= 1e-6 && +v <= 0.1,
-            n: v => isNum(v) && +v >= 10 && +v <= 1000000,
-            pointsCount: v => isNum(v) && +v >= 2 && +v <= 1e4,
-            modes: v => isNum(v) && +v > 0,
-            timeScale: v => isNum(v) && +v > 0,
-            startTime: v => isNum(v) && +v >= 0,
-            "p-value": v => isNum(v) && +v > 0,
-            "T0-value": v => isNum(v) && +v > 0,
-            "length-value": v => isNum(v) && +v >= 0.1
-        };
-        document.getElementById("all-params").addEventListener("change", e => {
-            const el = e.target;
-            if (!validators[el.id]) return;
-        
-            if (!validators[el.id](el.value)) {
-                el.value = el.dataset.prev;
-                this.pulse(el);
-                e.stopImmediatePropagation();
-                e.preventDefault();
-                return;
-            }
-            el.dataset.prev = el.value;
-        
-            switch (el.id) {
-                case "dx":
-                    this.state.setDx(+el.value);
-                    break;
-                case "n":
-                    this.state.setN(+el.value);
-                    break;
-                case "pointsCount":
-                    const newPointsCount = Math.round(+el.value);
-                    el.value = newPointsCount === 0? 1 : newPointsCount;
-                    this.state.setPointsCount(+el.value);
-                    break;
-                case "modes":
-                    const newModes = Math.round(+el.value);
-                    el.value = newModes === 0? 1 : newModes;
-                    this.state.setModes(+el.value);
-                    break;
-                case "timeScale":
-                    this.state.setTimeScale(+el.value);
-                    break;
-            }
-        }, true);
         
         document.getElementById("isFrozen").addEventListener("change", e => {
             this.state.toggleFrozen(e.target.checked);
@@ -230,31 +178,6 @@ export class Container {
             }
         });
         
-        // SLIDERS WEEEEEEEEEEEEEEEEEEEE
-        
-        const slidersNames = ["p", "T0", "length"];
-        slidersNames.forEach(name => {
-            const slider = document.getElementById(name);
-            const value = document.getElementById(name + "-value");
-            if (!slider || !value) {
-                return;
-            }
-            slider.addEventListener("input", () => {
-                value.value = Number((+slider.value).toFixed(2));
-            });
-            slider.addEventListener('change', () => {
-                value.value = Number((+slider.value).toFixed(2));
-                this.applyParams();
-            });
-            value.addEventListener('change', () => {
-                slider.value = value.value;
-                this.applyParams();
-            });
-        });
-        
-        lengthInput.addEventListener('change', () => this.applyParams());
-        
-        // Настройки зума
         const zoomInBtn = document.getElementById("zoomInButton");
         const zoomOutBtn = document.getElementById("zoomOutButton");
         const resetViewBtn = document.getElementById("resetViewButton");
@@ -282,22 +205,78 @@ export class Container {
             if (this.state.isDrawingMode) return;
             this.state.resetClip();
         });
+
+        const mainParams = [
+            ['p', v => this.state.setDensity(v)],
+            ['T0', v => this.state.setTension(v)],
+            ['length', v => this.state.setLength(v)],
+        ];
+        mainParams.forEach((params) => this.initInput(...params, true, true, true, false));
+        const dopParams = [
+            ['startTime', v => this.state.setStartTime(v), false, false, false, true],
+            ['dx', v => this.state.setDx(v), true, false, false, true],
+            ['n', v => this.state.setN(v), true, false, false, true],
+            ['pointsCount', v => this.state.setPointsCount(v), false, false, false, true],
+            ['modes', v => this.state.setModes(v), true, false, false, true],
+            ['timeScale', v => this.state.setTimeScale(v), false, false, false, true],
+        ];
+        dopParams.forEach((params) => this.initInput(...params));
+        document.getElementById('optionsForm').addEventListener('reset', e => {
+            setTimeout(() => {
+                dopParams.forEach(([rangeId, numId, setter]) => {
+                    const range = document.getElementById(rangeId);
+                    const num = document.getElementById(numId);
+                    if (range && num) {
+                        num.value = range.value;
+                        setter(range.value);
+                    }
+                });
+            });
+        });
     }
 
-    pulse(el) {
-        el.classList.remove('invalid');
-        void el.offsetWidth;
-        el.classList.add('invalid');
-    }
+    initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave, isUpdateOnInput) {
+        const range = document.getElementById(rangeId);
+        const num = document.getElementById(rangeId + "-value");
+        if (!range || !num) return;
 
-    applyParams() {
-        this.state.setDensity(+document.getElementById("p-value").value);
-        this.state.setTension(+document.getElementById("T0-value").value);
-        this.state.setLength(+document.getElementById("length-value").value);
-    
-        this.state.rebuild();
-        this.state.resetTime();
-        this.dumpForHistory();
+        const onChange = (value) => {
+            setter(+value);
+            if (isNeedToRebuild)
+                this.state.rebuild();
+            if (isNeedToReset)
+                this.state.resetTime();
+            if (isNeedToSave)
+                this.dumpForHistory();
+        };
+
+        range.addEventListener("input", () => {
+            num.value = Number((+range.value).toFixed(4));
+            if (isUpdateOnInput) onChange(range.value);
+        });
+        range.addEventListener('change', () => {
+            num.value = parseFloat((+range.value).toFixed(4));
+            onChange(range.value);
+        });
+
+        num.addEventListener('input', () => {
+            let value = parseFloat(num.value);
+            if (num.min && value <= num.min)
+                num.value = parseFloat((+num.min).toFixed(4));
+            if (num.max && value >= num.max)
+                num.value = parseFloat((+num.max).toFixed(4));
+            range.value = parseFloat((+num.value).toFixed(4));
+            if (isUpdateOnInput) onChange(num.value);
+        });
+        num.addEventListener('change', () => {
+            let value = parseFloat(num.value);
+            if (num.min && value <= num.min)
+                num.value = parseFloat((+num.min).toFixed(4));
+            if (num.max && value >= num.max)
+                num.value = parseFloat((+num.max).toFixed(4));
+            range.value = parseFloat((+num.value).toFixed(4));
+            onChange(num.value);
+        });
     }
 
     syncUI() {
@@ -349,5 +328,11 @@ export class Container {
         });
 
         this.syncUI();
+    }
+
+    applyParams() {
+        this.state.rebuild();
+        this.state.resetTime();
+        this.dumpForHistory();
     }
 }

@@ -56,6 +56,7 @@ export class State {
     }
 
     rebuild() {
+        console.log("Rebuilded");
         this.a = Math.sqrt(this.T0 / this.p);
         this.stringFunction = this.stringCalculator.getMainStringFunction(this.positionFunction, this.speedFunction, this.length, this.a);
         this.periodSlider.changePeriod(this.a, this.length);
@@ -73,13 +74,14 @@ export class State {
 
     setDensity          (newP)  {  this.p = newP; };
     setTension          (newT0) {  this.T0 = newT0; };
+    setLength   (newLength) { this.length = newLength; this.dx = this.length / this.n; }
+
     setPositionFunction (f, stringF) { this.positionFunction = f; this.posFuncStr = stringF; };
     setSpeedFunction    (f, stringF) { this.speedFunction = f; this.speedFuncStr = stringF; };
-    setModes    (newModes) {  this.modes = newModes;  this.rebuild(); }
+    setModes    (newModes) {  this.modes = newModes;  }
 
-    setLength   (newLength) { this.length = newLength; this.dx = this.length / this.n; }
-    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); this.rebuild(); }
-    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; this.rebuild(); }
+    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); }
+    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; }
 
     setPointsCount (newPointsCount) { this.pointsCount = newPointsCount; }
     setTimeScale   (newTimeScale) {  this.timeScale   = newTimeScale; }
