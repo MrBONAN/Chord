@@ -25,23 +25,20 @@ export function setupExtraOptions(state) {
         if (!range || !num) return;
 
         range.addEventListener('input', () => {
-            num.value = range.value;
+            num.value = parseFloat((+range.value).toFixed(4));
             setter(range.value);
         });
         num.addEventListener('input', () => {
-            range.value = num.value;
+            let value = parseFloat(num.value);
+            if (value <= num.min)
+                num.value = parseFloat((+num.min).toFixed(4));
+            if (value >= num.max)
+                num.value = parseFloat((+num.max).toFixed(4));
+            range.value = parseFloat((+num.value).toFixed(4));
             setter(num.value);
         });
         num.addEventListener('change', () => setter(num.value));
         range.addEventListener('change', () => setter(range.value));
-
-        num.addEventListener('input', function(e) {
-            let value = parseFloat(e.target.value);
-            if (value < e.target.min)
-                e.target.value = 0;
-            if (value > e.target.max)
-                e.target.value = e.target.max;
-        });
     });
 
     document.getElementById('optionsForm').addEventListener('reset', e => {
