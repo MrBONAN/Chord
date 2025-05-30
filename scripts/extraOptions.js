@@ -1,10 +1,8 @@
-// extraOptions.js
 export function setupExtraOptions(state) {
     const extraBtn = document.getElementById('extraOptionsBtn');
     const popup = document.getElementById('extraOptionsPopup');
     const closeBtn = document.getElementById('closeExtraOptions');
 
-    // --- Открытие/закрытие ---
     extraBtn.addEventListener('click', () => popup.style.display = 'flex');
     closeBtn.addEventListener('click', () => popup.style.display = 'none');
     document.addEventListener('mousedown', e => {
@@ -12,7 +10,6 @@ export function setupExtraOptions(state) {
         if (!popup.contains(e.target) && e.target !== extraBtn) popup.style.display = 'none';
     });
 
-    // --- Пары id: [range, number, stateSetter] ---
     const pairs = [
         ['startTimeSlider', 'startTime-value', v => state.setStartTime(+v)],
         ['dxSlider', 'dx-value', v => state.setDx(+v)],
@@ -27,22 +24,18 @@ export function setupExtraOptions(state) {
         const num = document.getElementById(numId);
         if (!range || !num) return;
 
-        // range -> number
         range.addEventListener('input', () => {
             num.value = range.value;
             setter(range.value);
         });
-        // number -> range
         num.addEventListener('input', () => {
             range.value = num.value;
             setter(num.value);
         });
-        // Применять при потере фокуса/enter
         num.addEventListener('change', () => setter(num.value));
         range.addEventListener('change', () => setter(range.value));
     });
 
-    // Reset: вернуть дефолтные значения и применить их
     document.getElementById('optionsForm').addEventListener('reset', e => {
         setTimeout(() => {
             pairs.forEach(([rangeId, numId, setter]) => {

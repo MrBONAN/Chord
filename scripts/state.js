@@ -21,7 +21,7 @@ export class State {
         this.canvasHandler = canvasHandler;
     }
 
-    init() {
+    init(canvas) {
         this.p = 1;
         this.T0 = 9;
         this.dx = 0.0001;
@@ -49,9 +49,9 @@ export class State {
 
         this.clip = {
             left: 0,
-            right: 800,
+            right: canvas.width,
             top: 0,
-            bottom: 600
+            bottom: canvas.height
         };
     }
 

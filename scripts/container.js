@@ -34,7 +34,7 @@ export class Container {
         this.periodSlider.state = this.state;
         
         this.canvasHandler.init();
-        this.state.init();
+        this.state.init(this.canvas);
         this.periodSlider.init();
         this.state.rebuild();
         this.historyManager.curr = this.state.dumpDataForHistory();
@@ -192,7 +192,10 @@ export class Container {
             }
         }, true);
         
-        document.getElementById("isFrozen").addEventListener("change", e => this.state.toggleFrozen(e.target.checked));
+        document.getElementById("isFrozen").addEventListener("change", e => {
+            this.state.toggleFrozen(e.target.checked);
+            this.syncUI();
+        });
         
         const saveBtn = document.getElementById("saveImage");
         saveBtn.addEventListener("click", async () => {
@@ -222,7 +225,7 @@ export class Container {
                 const metadata = await this.imageSaver.loadImage(file);
                 this.state.loadData(metadata);
                 this.historyManager.pushState(this.state.dumpDataForHistory());
-                this.updateHistoryButtons();
+                this.syncUI();
             } catch (err) {
                 console.error(err);
             } finally {
@@ -300,7 +303,10 @@ export class Container {
         this.dumpForHistory();
     }
 
-    syncSliderDisplaysFromState() {
+    syncUI() {
+        this.undoBtn.disabled = !this.historyManager.canUndo();
+        this.redoBtn.disabled = !this.historyManager.canRedo();
+
         const pSlider = document.getElementById('p');
         const pValue = document.getElementById('p-value');
         pSlider.value = this.state.p;
@@ -314,6 +320,8 @@ export class Container {
         const lenValue = document.getElementById('length-value');
         lenSlider.value = this.state.length;
         lenValue.textContent = (+this.state.length).toFixed(0);
+
+        document.getElementById("isFrozen").checked = this.state.isFrozen;
     }
 
     updateHistoryButtons() {
@@ -322,9 +330,8 @@ export class Container {
     }
 
     dumpForHistory() {
-        const snap = this.state.dumpDataForHistory();
-        this.historyManager.pushState(snap);
-        this.updateHistoryButtons();
+        this.historyManager.pushState(this.state.dumpDataForHistory());
+        this.syncUI();
     }
 
     historyEventHandlers() {
@@ -332,8 +339,7 @@ export class Container {
             if (this.historyManager.canUndo()) {
                 this.historyManager.undo();
                 this.state.loadDataForHistory(this.historyManager.getState());
-                this.updateHistoryButtons();
-                this.syncSliderDisplaysFromState();
+                this.syncUI();
             }
         });
 
@@ -341,11 +347,10 @@ export class Container {
             if (this.historyManager.canRedo) {
                 this.historyManager.redo();
                 this.state.loadDataForHistory(this.historyManager.getState());
-                this.updateHistoryButtons();
-                this.syncSliderDisplaysFromState();
+                this.syncUI();
             }
         });
 
-        this.updateHistoryButtons();
+        this.syncUI();
     }
 }
