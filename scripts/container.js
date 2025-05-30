@@ -213,6 +213,7 @@ export class Container {
         ];
         mainParams.forEach((params) => this.initInput(...params, true, true, true, false));
         const dopParams = [
+            ['period', v => this.state.setCurrentTime(v), false, false, false, true],
             ['startTime', v => this.state.setStartTime(v), false, false, false, true],
             ['dx', v => this.state.setDx(v), true, false, false, true],
             ['n', v => this.state.setN(v), true, false, false, true],
@@ -221,16 +222,15 @@ export class Container {
             ['timeScale', v => this.state.setTimeScale(v), false, false, false, true],
         ];
         dopParams.forEach((params) => this.initInput(...params));
-        document.getElementById('optionsForm').addEventListener('reset', e => {
+        document.getElementById('optionsForm').addEventListener('reset', () => {
             setTimeout(() => {
-                dopParams.forEach(([rangeId, numId, setter]) => {
+                dopParams.forEach(([rangeId, setter]) => {
                     const range = document.getElementById(rangeId);
-                    const num = document.getElementById(numId);
-                    if (range && num) {
-                        num.value = range.value;
-                        setter(range.value);
-                    }
+                    if (!range) return;
+                    setter(+range.value);
+                    console.log(range.value);
                 });
+                this.state.rebuild();
             });
         });
     }
