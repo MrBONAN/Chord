@@ -56,7 +56,6 @@ export class State {
     }
 
     rebuild() {
-        this.updateInputs();
         this.a = Math.sqrt(this.T0 / this.p);
         this.stringFunction = this.stringCalculator.getMainStringFunction(this.positionFunction, this.speedFunction, this.length, this.a);
         this.periodSlider.changePeriod(this.a, this.length);
@@ -173,10 +172,5 @@ export class State {
     postLoadHousekeeping() {
         this.updateDocument(this.dumpDataForHistory());
         this.rebuild();
-    }
-
-    updateInputs() {
-        document.getElementById("dx-value").value = this.dx;
-        document.getElementById("n-value").value = this.n;
     }
 }

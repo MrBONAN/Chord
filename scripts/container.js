@@ -25,7 +25,7 @@ export class Container {
         this.canvasHandler = new CanvasHandler(  undefined  , this.gui, this.canvas, this.ctx);
         this.historyManager = new HistoryManager(  undefined  );
 
-        this.periodSlider = new PeriodSlider(  undefined  , document.getElementById("periodSlider"), document.getElementById("startTimeSlider"));
+        this.periodSlider = new PeriodSlider(  undefined  );
         this.state = new State(this.periodSlider, this.stringCalculator, parseFunction, this.canvasHandler);
 
         this.canvasHandler.state = this.state;
@@ -44,8 +44,6 @@ export class Container {
     }
 
     renderer() {
-        // const timeEl = document.getElementById("timeDisplay");
-
         this.state.resetClip();
 
         const canvasBoundRect = structuredClone(this.state.clip);
@@ -74,7 +72,6 @@ export class Container {
                 gui.drawString(ctx, state.getStringFunction(), "red",
                     state.getCurrentTime() + state.startTime, state.getPointsCount(), state.length, state.clip);
 
-                // timeEl.textContent = state.getCurrentTime().toFixed(2);
                 periodSlider.setPeriodValue(state.getCurrentTime());
             } else {
                 state.resetTime();

@@ -34,6 +34,14 @@ export function setupExtraOptions(state) {
         });
         num.addEventListener('change', () => setter(num.value));
         range.addEventListener('change', () => setter(range.value));
+
+        num.addEventListener('input', function(e) {
+            let value = parseFloat(e.target.value);
+            if (value < e.target.min)
+                e.target.value = 0;
+            if (value > e.target.max)
+                e.target.value = e.target.max;
+        });
     });
 
     document.getElementById('optionsForm').addEventListener('reset', e => {

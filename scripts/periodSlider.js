@@ -1,10 +1,12 @@
 "use strict";
 
 export class PeriodSlider {
-    constructor(state, periodSlider, startTimeSlider) {
+    constructor(state) {
         this.state = state;
-        this.periodSlider = periodSlider;
-        this.startTimeSlider = startTimeSlider;
+        this.periodSlider = document.getElementById("periodSlider");
+        this.periodSliderValue = document.getElementById("periodSlider-value");
+        this.startTimeSlider = document.getElementById("startTimeSlider");
+        this.startTimeSliderValue = document.getElementById("startTime-value");
         this.isFrozenBackup = false;
     }
 
@@ -43,6 +45,8 @@ export class PeriodSlider {
         if (this.periodSlider) {
             this.periodSlider.max = 1.9999 * L / a;
             this.startTimeSlider.max = 1.9999 * L / a;
+            this.periodSliderValue.max = 1.9999 * L / a;
+            this.startTimeSliderValue.max = 1.9999 * L / a;
         }
         this.periodSlider.step = L / (a * 100);
         this.startTimeSlider.step = L / (a * 100);
@@ -59,8 +63,7 @@ export class PeriodSlider {
     setPeriodValue(newVal) {
         if (this.periodSlider) {
             this.periodSlider.value = newVal;
-            const numInput = document.getElementById("periodSlider-value");
-            if (numInput) numInput.value = Number(newVal).toFixed(2);
+            this.periodSliderValue.value = Number(newVal).toFixed(2);
         }
     }
 }
