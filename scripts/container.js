@@ -44,7 +44,7 @@ export class Container {
     }
 
     renderer() {
-        const timeEl = document.getElementById("timeDisplay");
+        // const timeEl = document.getElementById("timeDisplay");
 
         this.state.resetClip();
 
@@ -74,7 +74,7 @@ export class Container {
                 gui.drawString(ctx, state.getStringFunction(), "red",
                     state.getCurrentTime() + state.startTime, state.getPointsCount(), state.length, state.clip);
 
-                timeEl.textContent = state.getCurrentTime().toFixed(2);
+                // timeEl.textContent = state.getCurrentTime().toFixed(2);
                 periodSlider.setPeriodValue(state.getCurrentTime());
             } else {
                 state.resetTime();
@@ -97,13 +97,13 @@ export class Container {
         
             if (this.state.isDrawingMode) {
                 this.gui.clearCanvas();
-                toggleBtn.textContent = "Закончить и сохранить";
+                // toggleBtn.textContent = "Закончить и сохранить";
                 this.canvasHandler.points = new Array(this.canvas.width).fill(0);
                 this.canvasHandler.drawInput();
             } else {
                 this.state.drawnPoints = this.canvasHandler.points.slice();
                 this.state.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.state.drawnPoints), "0");
-                toggleBtn.textContent = "Начать рисование";
+                // toggleBtn.textContent = "Начать рисование";
                 this.state.rebuild();
                 this.dumpForHistory();
             }

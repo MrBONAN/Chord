@@ -28,7 +28,14 @@
     <div class="main-panel">
         <div id="draw-area">
             <div id="canvas-wrap">
-                <canvas id="glcanvas" width="800" height="600"></canvas>
+                <canvas id="glcanvas" width="900" height="550"></canvas>
+                <div id="canvas-info-btn" class="canvas-info-btn">
+                    <img src="./icons/info-solid.svg" alt="Информация" />
+                    <div class="canvas-tooltip">
+                        <div style="white-space: nowrap;"><span style="color:rgb(163, 162, 162);">Серая линия</span> — начальное положение струны.</div>
+                        <div style="white-space: nowrap;"><span style="color:#e74c3c;">Красная линия</span> — текущее положение струны.</div>
+                    </div>
+                </div>
                 <!-- Новый блок контролов -->
                 <div class="controls-bar">
                     <div class="left-controls">
@@ -44,7 +51,7 @@
                     </div>
                     <div class="center-controls">
                         <input id="isFrozen" type="checkbox" hidden>
-                        <label for="isFrozen" class="freeze-btn" aria-label="Toggle freeze">
+                        <label for="isFrozen" class="freeze-btn" title="Остановить время" aria-label="Toggle freeze">
                             <span class="svg-play">
                                 <img src="./icons/pause-solid.svg" alt="Пауза" class="svg-icon" />
                             </span>
@@ -52,15 +59,15 @@
                                 <img src="./icons/play-solid.svg" alt="Воспроизвести" class="svg-icon" />
                             </span>
                         </label>
-                        <button type="button" id="undoButton" class="history-btn" disabled>
+                        <button type="button" id="undoButton" class="history-btn" title="Предыдущий график"  disabled>
                             <img src="./icons/arrow-left-solid.svg" alt="Undo" class="svg-icon" />
                         </button>
-                        <button type="button" id="redoButton" class="history-btn" disabled>
+                        <button type="button" id="redoButton" class="history-btn" title="Следующий график" disabled>
                             <img src="./icons/arrow-right-solid.svg" alt="Redo" class="svg-icon" />
                         </button>
                     </div>
                     <div class="right-controls">
-                        <button id="drawModeBtn" class="side-btn" title="Рисовать на графике">
+                        <button id="drawModeBtn" class="side-btn" title="Нарисовать график">
                             <img src="./icons/paintbrush-solid.svg" alt="Paint" class="svg-icon" />
                         </button>
                         <button id="loadImage" class="side-btn" title="Открыть изображение">
@@ -72,11 +79,11 @@
                         <input type="file" id="fileInput" accept="image/png" style="display: none;">
                     </div>
                 </div>
-                <div id="info">
+                <!-- <div id="info">
                     <p>Серая линия — начальное положение струны (t = 0).</p>
                     <p>Красная линия — текущее положение струны.</p>
                     <p>Время (по модулю замедлённого периода): <span id="timeDisplay">0.00</span> сек.</p>
-                </div>
+                </div> -->
             </div>
         </div>
 
