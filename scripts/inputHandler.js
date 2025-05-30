@@ -35,6 +35,7 @@ export class InputHandler {
         this.redoBtn = document.getElementById("redoButton");
 
         this.drawBtn = document.getElementById("drawModeBtn");
+        this.saveDrawBtn = document.getElementById("saveDrawBtn");
         this.saveBtn = document.getElementById("saveImage");
         this.loadBtn = document.getElementById("loadImage");
         this.fileInput = document.getElementById("fileInput");
@@ -61,13 +62,11 @@ export class InputHandler {
     }
 
     init() {
-        this.historyEventHandlers();
-
+        this.initHistoryEventHandlers();
         this.initPeriodSlider();
         this.initStartTimeSlider();
         this.initDrawing();
         this.initFunctionInputs();
-
         this.initFrozenState();
         this.initImageHandling();
         this.initZoomControls();
@@ -103,17 +102,24 @@ export class InputHandler {
     initDrawing() {
         this.drawBtn.addEventListener("click", () => {
             this.state.toggleDrawingMode();
-        
-            if (this.state.isDrawingMode) {
+            if (!this.state.isDrawingMode) {
+                this.saveDrawBtn.disabled = true;
+            } else {
                 this.gui.clearCanvas();
                 this.canvasHandler.points = new Array(this.canvas.width).fill(0);
                 this.canvasHandler.drawInput();
-            } else {
-                this.state.drawnPoints = this.canvasHandler.points.slice();
-                this.state.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.state.drawnPoints, this.state.length), "0");
-                this.state.rebuild();
-                this.dumpForHistory();
+                this.saveDrawBtn.disabled = false;
             }
+        });
+
+        this.saveDrawBtn.addEventListener("click", () => {
+            if (!this.state.isDrawingMode) return;
+            this.state.drawnPoints = this.canvasHandler.points.slice();
+            this.state.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.state.drawnPoints, this.state.length), "0");
+            this.state.rebuild();
+            this.dumpForHistory();
+            this.state.toggleDrawingMode();
+            this.saveDrawBtn.disabled = true;
             this.state.resetTime();
         });
     }
@@ -189,7 +195,7 @@ export class InputHandler {
     }
 
     initZoomControls() {
-        const zoomDelta = 1.2;
+        const zoomDelta = 1.1;
         
         this.zoomInBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
@@ -307,7 +313,7 @@ export class InputHandler {
         this.syncUI();
     }
 
-    historyEventHandlers() {
+    initHistoryEventHandlers() {
         this.undoBtn.addEventListener("click", e => {
             if (this.historyManager.canUndo()) {
                 this.historyManager.undo();

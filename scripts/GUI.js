@@ -42,24 +42,24 @@ export class GUI {
         const width = right - left;
         const height = bottom - top;
 
-        const ff = function(n, px) {
+        const ff = function(n, px, len) {
             let absn = Math.abs(n);
             let base = ((absn % 3) ** 2 + 1) * 10 ** Math.floor(absn / 3);
-            return (n < 0 ? base : 1 / base) * px / length;
+            return (n < 0 ? base : 1 / base) * px / len;
         }
 
-        const pickStep = (zoom, px) => {
+        const pickStep = (zoom, px, len) => {
             let step = 6;
-            while (ff(step, px) / zoom < MIN_PX) { /* редеем при отдалении */
+            while (ff(step, px, len) / zoom < MIN_PX) { /* редеем при отдалении */
                 step -= 1;
             }
-            while (ff(step, px) / zoom > MAX_PX) { /* уплотняем при приближении */
+            while (ff(step, px, len) / zoom > MAX_PX) { /* уплотняем при приближении */
                 step += 1;
             }
-            return ff(step, px) / zoom;
+            return ff(step, px, len) / zoom;
         };
 
-        const fmt = (n) => +n.toFixed(5);
+        const fmt = (n) => +n.toFixed(6);
 
         context.save();
         context.beginPath();
@@ -73,7 +73,7 @@ export class GUI {
         context.textAlign   = 'center';
         context.textBaseline = 'top';
 
-        const stepX = pickStep(zoomX, width);
+        const stepX = pickStep(zoomX, width, length);
         let x0 = originX - Math.ceil((originX - left) / stepX) * stepX;
 
         for (let x = x0; x <= right; x += stepX) {
@@ -86,7 +86,7 @@ export class GUI {
             if (graphX !== 0) context.fillText(graphX, x, Math.max(Math.min(originY, height - 20), 0) + 4);
         }
 
-        const stepY = pickStep(zoomY, height / 2);
+        const stepY = pickStep(zoomY, height / 2, 1);
         let y0 = originY - Math.ceil((originY - top) / stepY) * stepY;
 
         for (let y = y0; y <= bottom; y += stepY) {

@@ -60,6 +60,9 @@
                         <button id="drawModeBtn" class="side-btn" title="Нарисовать график">
                             <img src="./icons/paintbrush-solid.svg" alt="Paint" class="svg-icon" />
                         </button>
+                        <button id="saveDrawBtn" class="side-btn" title="Сохранить рисунок" disabled>
+                            <img src="./icons/check-solid.svg" alt="Save" class="svg-icon" />
+                        </button>
                         <button id="loadImage" class="side-btn" title="Открыть изображение">
                             <img src="./icons/load_btn.svg" alt="Open" class="svg-icon" />
                         </button>
@@ -166,7 +169,7 @@
                         <span class="slider-caption">Разрешение</span>
                         <div class="slider-row">
                             <input id="pointsCount" type="range" min="3" max="500" step="1" value="200">
-                            <input id="pointsCount-value" class="slider-value" type="number" step="1" min="2" max="1000" value="200">
+                            <input id="pointsCount-value" class="slider-value" type="number" step="1" min="2" max="10000" value="200">
                         </div>
                     </label>
                     <label class="slider-block">

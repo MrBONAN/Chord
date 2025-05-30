@@ -12,9 +12,6 @@ import { InputHandler } from "./inputHandler.js";
 
 export class Container {
     constructor() {
-        this.undoBtn = document.getElementById("undoButton");
-        this.redoBtn = document.getElementById("redoButton");
-
         this.canvas = document.getElementById("glcanvas");
         this.ctx = this.canvas.getContext("2d");
 

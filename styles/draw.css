@@ -344,3 +344,40 @@
     opacity: 1;
     pointer-events: auto;
 }
+
+.side-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 2px solid #555555;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+.side-btn:hover:enabled {
+    background: #ededed;   
+    border-color: #888;
+}
+
+.side-btn:disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+    background: #fafafa;
+}
+
+.side-btn:disabled .svg-icon {
+    opacity: 0.3;
+    filter: grayscale(1);
+    transition: opacity 0.13s;
+}
+
+.side-btn .svg-icon {
+    width: 20px;
+    height: 20px;
+}
