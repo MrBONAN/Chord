@@ -14,8 +14,8 @@ function deepCopy(val) {
 }
 
 export class State {
-    constructor(periodSlider, stringCalculator, parseFunction, canvasHandler) {
-        this.periodSlider = periodSlider;
+    constructor(inputHandler, stringCalculator, parseFunction, canvasHandler) {
+        this.inputHandler = inputHandler;
         this.stringCalculator = stringCalculator;
         this.parseFunction = parseFunction;
         this.canvasHandler = canvasHandler;
@@ -56,10 +56,10 @@ export class State {
     }
 
     rebuild() {
-        console.log("Rebuilded");
         this.a = Math.sqrt(this.T0 / this.p);
         this.stringFunction = this.stringCalculator.getMainStringFunction(this.positionFunction, this.speedFunction, this.length, this.a);
-        this.periodSlider.changePeriod(this.a, this.length);
+        this.inputHandler.changePeriod(this.a, this.length);
+        console.log("Rebuilded");
     }
 
     getStringFunction () { return this.stringFunction; }
@@ -150,7 +150,7 @@ export class State {
         for (const [key, value] of Object.entries(data)) {
             this[key] = this.copyValue(value);
         }
-        this.periodSlider.changePeriod(this.a, this.length);
+        this.inputHandler.changePeriod(this.a, this.length);
         this.updateDocument(data);
     }
 

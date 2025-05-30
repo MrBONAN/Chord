@@ -158,13 +158,11 @@ export class CanvasHandler {
         this.context.stroke();
     }
 
-    createLinearInterpolator(points) {
-        let a = this.canvas.width;
+    createLinearInterpolator(points, length) {
         return function(x) {
-            x = Math.max(0, Math.min(points.length - 1, x)) * a;
+            x = Math.max(0, Math.min(points.length - 1, points.length * x / length));
             const x1 = Math.floor(x);
             const x2 = Math.floor(x);
-            
             const y1 = points[x1];
             const y2 = points[x2];
             return - y1 - (y2 - y1) * (x - x1);
