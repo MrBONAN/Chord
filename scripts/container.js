@@ -262,17 +262,19 @@ export class Container {
         
         zoomInBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
-            this.canvasHandler.zoomToCenterByY(zoomDelta);
-            if (!e.shiftKey) {
-                this.canvasHandler.zoomToCenterByX(zoomDelta);
+            if (e.shiftKey) {
+                this.canvasHandler.zoomToCenterByY(zoomDelta);
+            } else {
+                this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, zoomDelta);
             }
         });
         
         zoomOutBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
-            this.canvasHandler.zoomToCenterByY(1 / zoomDelta);
-            if (!e.shiftKey) {
-                this.canvasHandler.zoomToCenterByX(1 / zoomDelta);
+            if (e.shiftKey) {
+                this.canvasHandler.zoomToCenterByY(1 / zoomDelta);
+            } else {
+                this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, 1 / zoomDelta);
             }
         });
         
