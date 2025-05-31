@@ -227,15 +227,15 @@ export class InputHandler {
             ['T0', v => this.state.setTension(v)],
             ['length', v => this.state.setLength(v)],
         ];
-        mainParams.forEach((params) => this.initInput(...params, true, true, true, false));
+        mainParams.forEach((params) => this.initInput(...params, true, true, true));
         const dopParams = [
-            ['period', v => this.state.setCurrentTime(v), false, false, false, true],
-            ['startTime', v => this.state.setStartTime(v), false, false, false, true],
-            ['dx', v => this.state.setDx(v), true, false, false, true],
-            ['n', v => this.state.setN(v), true, false, false, true],
-            ['pointsCount', v => this.state.setPointsCount(v), false, false, false, true],
-            ['modes', v => this.state.setModes(v), true, false, false, true],
-            ['timeScale', v => this.state.setTimeScale(v), false, false, false, true],
+            ['period', v => this.state.setCurrentTime(v), false, false, false],
+            ['startTime', v => this.state.setStartTime(v), false, false, false],
+            ['dx', v => this.state.setDx(v), true, false, false],
+            ['n', v => this.state.setN(v), true, false, false],
+            ['pointsCount', v => this.state.setPointsCount(v), false, false, false],
+            ['modes', v => this.state.setModes(v), true, false, false],
+            ['timeScale', v => this.state.setTimeScale(v), false, false, false],
         ];
         dopParams.forEach((params) => this.initInput(...params));
         document.getElementById('optionsForm').addEventListener('reset', () => {
@@ -264,7 +264,7 @@ export class InputHandler {
         this.isFrozenCheckbox.checked = this.state.isFrozen;
     }
 
-    initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave, isUpdateOnInput) {
+    initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave) {
         const range = document.getElementById(rangeId);
         const num = document.getElementById(rangeId + "-value");
         if (!range || !num) return;
@@ -279,30 +279,17 @@ export class InputHandler {
                 this.dumpForHistory();
         };
 
-        range.addEventListener("input", () => {
-            num.value = Number((+range.value).toFixed(4));
-            if (isUpdateOnInput) onChange(range.value);
-        });
         range.addEventListener('change', () => {
             num.value = parseFloat((+range.value).toFixed(4));
             onChange(range.value);
         });
 
-        num.addEventListener('input', () => {
-            let value = parseFloat(num.value);
-            if (num.min && value <= num.min)
-                num.value = parseFloat((+num.min).toFixed(4));
-            if (num.max && value >= num.max)
-                num.value = parseFloat((+num.max).toFixed(4));
-            range.value = parseFloat((+num.value).toFixed(4));
-            if (isUpdateOnInput) onChange(num.value);
-        });
         num.addEventListener('change', () => {
             let value = parseFloat(num.value);
             if (num.min && value <= num.min)
-                num.value = parseFloat((+num.min).toFixed(4));
+                num.value = num.min;
             if (num.max && value >= num.max)
-                num.value = parseFloat((+num.max).toFixed(4));
+                num.value = num.max;
             range.value = parseFloat((+num.value).toFixed(4));
             onChange(num.value);
         });
