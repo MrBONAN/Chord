@@ -279,6 +279,10 @@ export class InputHandler {
                 this.dumpForHistory();
         };
 
+        range.addEventListener('input', () => {
+            num.value = parseFloat((+range.value).toFixed(4));
+        });
+
         range.addEventListener('change', () => {
             num.value = parseFloat((+range.value).toFixed(4));
             onChange(range.value);
