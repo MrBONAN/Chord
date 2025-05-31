@@ -121,7 +121,7 @@ export class State {
             this[key] = this.copyValue(value);
         }
         if (data.drawnPoints.length > 0) {
-            this.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.drawnPoints), "0");
+            this.setPositionFunction(this.canvasHandler.createLinearInterpolator(this.drawnPoints, this.length), "0");
         } else {
             this.setPositionFunction(this.parseFunction(data.posFuncStr).func, data.posFuncStr);
         }
