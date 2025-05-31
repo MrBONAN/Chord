@@ -227,15 +227,15 @@ export class InputHandler {
             ['T0', v => this.state.setTension(v)],
             ['length', v => this.state.setLength(v)],
         ];
-        mainParams.forEach((params) => this.initInput(...params, true, true, true));
+        mainParams.forEach((params) => this.initInput(...params, true, true, true, false));
         const dopParams = [
-            ['period', v => this.state.setCurrentTime(v), false, false, false],
-            ['startTime', v => this.state.setStartTime(v), false, false, false],
-            ['dx', v => this.state.setDx(v), true, false, false],
-            ['n', v => this.state.setN(v), true, false, false],
-            ['pointsCount', v => this.state.setPointsCount(v), false, false, false],
-            ['modes', v => this.state.setModes(v), true, false, false],
-            ['timeScale', v => this.state.setTimeScale(v), false, false, false],
+            ['period', v => this.state.setCurrentTime(v), false, false, false, true],
+            ['startTime', v => this.state.setStartTime(v), false, false, false, true],
+            ['dx', v => this.state.setDx(v), true, false, false, true],
+            ['n', v => this.state.setN(v), true, false, false, true],
+            ['pointsCount', v => this.state.setPointsCount(v), false, false, false, true],
+            ['modes', v => this.state.setModes(v), true, false, false, true],
+            ['timeScale', v => this.state.setTimeScale(v), false, false, false, true],
         ];
         dopParams.forEach((params) => this.initInput(...params));
         document.getElementById('optionsForm').addEventListener('reset', () => {
@@ -264,7 +264,7 @@ export class InputHandler {
         this.isFrozenCheckbox.checked = this.state.isFrozen;
     }
 
-    initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave) {
+    initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave, isUpdateOnInput) {
         const range = document.getElementById(rangeId);
         const num = document.getElementById(rangeId + "-value");
         if (!range || !num) return;
@@ -281,6 +281,7 @@ export class InputHandler {
 
         range.addEventListener('input', () => {
             num.value = parseFloat((+range.value).toFixed(4));
+            if (isUpdateOnInput) onChange(range.value);
         });
 
         range.addEventListener('change', () => {
