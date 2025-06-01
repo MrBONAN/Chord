@@ -1,27 +1,28 @@
 "use strict";
 
-import { State } from "./state.js";
-
 export class HistoryManager {
-    static past   = [];
-    static future = [];
-    static curr   = {} //Вообще надо бы вызвать State.dumpDataForHistory();
-    // но State ещё не создан, поэтому curr задаём в файле state.js в самом низу
+    constructor(state) {
+        this.state = state;
 
-    static get canUndo() { return this.past.length  > 0; }
-    static get canRedo() { return this.future.length > 0; }
+        this.past   = [];
+        this.future = [];
+        this.curr   = {}
+    }
 
-    static pushState(newSnapshot) {
+    canUndo() { return this.past.length  > 0; }
+    canRedo() { return this.future.length > 0; }
+
+    pushState(newSnapshot) {
         const diff = this.diff(this.curr, newSnapshot);
         if (Object.keys(diff).length === 0) return;
 
         this.past.push(this.invert(diff));
         this.future.length = 0;
-        this.curr = State.copyValue(newSnapshot);
+        this.curr = this.state.copyValue(newSnapshot);
     }
 
-    static undo() {
-        if (!this.canUndo) return;
+    undo() {
+        if (!this.canUndo()) return;
 
         const inverse = this.past.pop();
         const redo = this.invert(inverse);
@@ -30,8 +31,8 @@ export class HistoryManager {
         this.apply(inverse);
     }
 
-    static redo() {
-        if (!this.canRedo) return;
+    redo() {
+        if (!this.canRedo()) return;
 
         const diff  = this.future.pop();
         const undo  = this.invert(diff);
@@ -40,36 +41,36 @@ export class HistoryManager {
         this.apply(diff);
     }
 
-    static getState() { return this.curr; }
+    getState() { return this.curr; }
 
-    static diff(a, b) {
+    diff(a, b) {
         const out = {};
         for (const key of Object.keys(b)) {
             if (!this.deepEqual(a[key], b[key])) {
-                out[key] = { old: State.copyValue(a[key]), new: State.copyValue(b[key]) };
+                out[key] = { old: this.state.copyValue(a[key]), new: this.state.copyValue(b[key]) };
             }
         }
         return out;
     }
 
-    static invert(diff) {
+    invert(diff) {
         const inv = {};
         for (const [k, { old, new: nxt }] of Object.entries(diff)) {
-            inv[k] = { old: State.copyValue(nxt), new: State.copyValue(old) };
+            inv[k] = { old: this.state.copyValue(nxt), new: this.state.copyValue(old) };
         }
         return inv;
     }
 
-    static apply(diff) {
+    apply(diff) {
         for (const [k, { new: value }] of Object.entries(diff)) {
-            State[k] = State.copyValue(value);
+            this.state[k] = this.state.copyValue(value);
         }
 
-        State.postLoadHousekeeping();
-        this.curr = State.dumpDataForHistory();
+        this.state.postLoadHousekeeping();
+        this.curr = this.state.dumpDataForHistory();
     }
 
-    static deepEqual(a, b) {
+    deepEqual(a, b) {
         const prim = v => (typeof v !== "object" || v === null) && typeof v !== "function";
         if (prim(a) || prim(b)) return a === b;
 

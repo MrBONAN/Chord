@@ -1,10 +1,9 @@
 "use strict";
 
-import {StringCalculator} from "./integrate.js";
-
 export class GUI {
-    static getCanvas(canvasId) {
-        return document.getElementById(canvasId);
+    constructor(stringCalculator, context) {
+        this.stringCalculator = stringCalculator;
+        this.context = context;
     }
 
     /**
@@ -20,9 +19,9 @@ export class GUI {
      * @param {boolean} showOutsideBorders – отображать ли точки за пределами leftBorder..rightBorder.
      * @returns {void}
      */
-    static drawString(context, stringFunction, color, time, pointsCount, length, clipBounds) {
+    drawString(context, stringFunction, color, time, pointsCount, length, clipBounds) {
         const funcSnapshot = (x) => stringFunction(time, x);
-        const vertices = StringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds);
+        const vertices = this.stringCalculator.createFunctionPoints(funcSnapshot, pointsCount, length, clipBounds);
 
         context.strokeStyle = color;
         context.beginPath();
@@ -33,7 +32,7 @@ export class GUI {
         context.stroke();
     }
 
-    static drawCoords(context, canvasRect, clipBounds, zoomX, zoomY, length) {
+    drawCoords(context, canvasRect, clipBounds, zoomX, zoomY, length) {
         const MIN_PX    = 70;
         const MAX_PX    = 130;
 
@@ -43,24 +42,24 @@ export class GUI {
         const width = right - left;
         const height = bottom - top;
 
-        const ff = function(n, px) {
+        const ff = function(n, px, len) {
             let absn = Math.abs(n);
             let base = ((absn % 3) ** 2 + 1) * 10 ** Math.floor(absn / 3);
-            return (n < 0 ? base : 1 / base) * px / length;
+            return (n < 0 ? base : 1 / base) * px / len;
         }
 
-        const pickStep = (zoom, px) => {
+        const pickStep = (zoom, px, len) => {
             let step = 6;
-            while (ff(step, px) / zoom < MIN_PX) { /* редеем при отдалении */
+            while (ff(step, px, len) / zoom < MIN_PX) { /* редеем при отдалении */
                 step -= 1;
             }
-            while (ff(step, px) / zoom > MAX_PX) { /* уплотняем при приближении */
+            while (ff(step, px, len) / zoom > MAX_PX) { /* уплотняем при приближении */
                 step += 1;
             }
-            return ff(step, px) / zoom;
+            return ff(step, px, len) / zoom;
         };
 
-        const fmt = (n) => +n.toFixed(5);
+        const fmt = (n) => +n.toFixed(6);
 
         context.save();
         context.beginPath();
@@ -74,7 +73,7 @@ export class GUI {
         context.textAlign   = 'center';
         context.textBaseline = 'top';
 
-        const stepX = pickStep(zoomX, width);
+        const stepX = pickStep(zoomX, width, length);
         let x0 = originX - Math.ceil((originX - left) / stepX) * stepX;
 
         for (let x = x0; x <= right; x += stepX) {
@@ -87,7 +86,7 @@ export class GUI {
             if (graphX !== 0) context.fillText(graphX, x, Math.max(Math.min(originY, height - 20), 0) + 4);
         }
 
-        const stepY = pickStep(zoomY, height / 2);
+        const stepY = pickStep(zoomY, height / 2, 1);
         let y0 = originY - Math.ceil((originY - top) / stepY) * stepY;
 
         for (let y = y0; y <= bottom; y += stepY) {
@@ -118,9 +117,9 @@ export class GUI {
         context.restore();
     }
 
-    static clearCanvas(context) {
-        const canvas = context.canvas;
-        context.fillStyle = 'white';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+    clearCanvas() {
+        const canvas = this.context.canvas;
+        this.context.fillStyle = 'white';
+        this.context.fillRect(0, 0, canvas.width, canvas.height);
     }
 }

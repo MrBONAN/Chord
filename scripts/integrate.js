@@ -1,13 +1,15 @@
 "use strict";
 
-import {State} from "./state.js";
-
 export class StringCalculator {
-    static integrate(heights) {
-        return heights.reduce((sum, height) => sum + height * State.dx, 0);
+    constructor(state) {
+        this.state = state;
     }
 
-    static multiplyFunctionHeights(heights1, heights2) {
+    integrate(heights) {
+        return heights.reduce((sum, height) => sum + height, 0) * this.state.dx;
+    }
+
+    multiplyFunctionHeights(heights1, heights2) {
         if (heights1.length !== heights2.length) {
             console.error(`Количество точек, в которых вычислены значения функций, должны совпадать: ${heights1.length} != ${heights2.length}`);
         }
@@ -17,42 +19,42 @@ export class StringCalculator {
             .map((h1, i) => h1 * heights2[i]);
     }
 
-    static calculateFunctionHeights(func, count) {
+    calculateFunctionHeights(func, count) {
         let x = 0;
         const heights = [];
         for (let i = 0; i < count; i++) {
             heights.push(func(x));
-            x += State.dx;
+            x += this.state.dx;
         }
         return heights;
     }
 
-    static calculateMainIntegral(heights, lambda) {
+    calculateMainIntegral(heights, lambda) {
         const sinFunc = (x) => Math.sin(x * lambda);
-        const sinHeights = StringCalculator.calculateFunctionHeights(sinFunc, heights.length);
-        const functionsCompositionHeights = StringCalculator.multiplyFunctionHeights(heights, sinHeights);
-        return StringCalculator.integrate(functionsCompositionHeights);
+        const sinHeights = this.calculateFunctionHeights(sinFunc, heights.length);
+        const functionsCompositionHeights = this.multiplyFunctionHeights(heights, sinHeights);
+        return this.integrate(functionsCompositionHeights);
     }
 
-    static calculateDCoefficients(a, L, lambdas, initialSpeedHeights) {
+    calculateDCoefficients(a, L, lambdas, initialSpeedHeights) {
         const D = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(initialSpeedHeights, lambda);
+            const integral = this.calculateMainIntegral(initialSpeedHeights, lambda);
             D.push(2 / (a * lambda * L) * integral);
         }
         return D;
     }
 
-    static calculateECoefficients(a, L, lambdas, initialPositionHeights) {
+    calculateECoefficients(a, L, lambdas, initialPositionHeights) {
         const E = [];
         for (const lambda of lambdas) {
-            const integral = StringCalculator.calculateMainIntegral(initialPositionHeights, lambda);
+            const integral = this.calculateMainIntegral(initialPositionHeights, lambda);
             E.push(2 / L * integral);
         }
         return E;
     }
 
-    static calculateFunction(D, E, lambdas, a) {
+    calculateFunction(D, E, lambdas, a) {
         let count = lambdas.length;
         if (D.length !== E.length || E.length !== lambdas.length) {
             console.error("Неправильное соотношение между количеством коэффициентов для итоговой функции");
@@ -74,16 +76,16 @@ export class StringCalculator {
         };
     }
 
-    static getMainStringFunction(positionFunction, speedFunction, length, a) {
-        const pointsCount = Math.floor(length / State.dx) + 1;
-        const lambdas = new Array(State.modes).fill(0).map((_, index) => Math.PI * (index + 1) / length);
+    getMainStringFunction(positionFunction, speedFunction, length, a) {
+        const pointsCount = Math.floor(length / this.state.dx) + 1;
+        const lambdas = new Array(this.state.modes).fill(0).map((_, index) => Math.PI * (index + 1) / length);
 
-        const initialPositionHeights = StringCalculator.calculateFunctionHeights(positionFunction, pointsCount);
-        const initialSpeedHeights = StringCalculator.calculateFunctionHeights(speedFunction, pointsCount);
-        const D = StringCalculator.calculateDCoefficients(a, length, lambdas, initialSpeedHeights);
-        const E = StringCalculator.calculateECoefficients(a, length, lambdas, initialPositionHeights);
+        const initialPositionHeights = this.calculateFunctionHeights(positionFunction, pointsCount);
+        const initialSpeedHeights = this.calculateFunctionHeights(speedFunction, pointsCount);
+        const D = this.calculateDCoefficients(a, length, lambdas, initialSpeedHeights);
+        const E = this.calculateECoefficients(a, length, lambdas, initialPositionHeights);
 
-        return StringCalculator.calculateFunction(D, E, lambdas, a);
+        return this.calculateFunction(D, E, lambdas, a);
     }
 
     /**
@@ -95,7 +97,7 @@ export class StringCalculator {
      * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области клиппирования, в которую проецируются координаты.
      * @returns {number[]} – плоский массив координат [x1, y1, x2, y2, …] в пределах clipBounds.
      */
-    static createFunctionPoints(func, pointsCount, length, clipBounds) {
+    createFunctionPoints(func, pointsCount, length, clipBounds) {
         const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
         const physicalDx = length / (pointsCount - 1);
         const coords = [];

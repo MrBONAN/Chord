@@ -1,32 +1,33 @@
 "use strict";
 
-import {State} from "./state.js";
-
 export class CanvasHandler {
-    constructor(gui, canvas, context) {
+    constructor(state, gui, canvas, context) {
+        this.state = state;
         this.gui = gui;
         this.context = context;
         this.canvas = canvas;
-        this.rect = canvas.getBoundingClientRect();
+    }
 
+    init() {
+        this.rect = this.canvas.getBoundingClientRect();
         this.isDrawing = false;
         this.isPanning = false;
 
-        this.points = new Array(canvas.width).fill(0);
+        this.points = new Array(this.canvas.width).fill(0);
         this.lastPos = null;
         this.panStart = null;
         this.initialClip = null;
 
         const scaleFactor = 1.1;
 
-        window.addEventListener('resize', () => this.rect = canvas.getBoundingClientRect());
-        window.addEventListener('scroll', () => this.rect = canvas.getBoundingClientRect());
+        window.addEventListener('resize', () => this.rect = this.canvas.getBoundingClientRect());
+        window.addEventListener('scroll', () => this.rect = this.canvas.getBoundingClientRect());
 
-        canvas.addEventListener('mousedown', (e) => {
-            if (!State.isDrawingMode) {
+        this.canvas.addEventListener('mousedown', (e) => {
+            if (!this.state.isDrawingMode) {
                 this.isPanning = true;
                 this.panStart = { x: e.clientX, y: e.clientY };
-                this.initialClip = { ...State.clip };
+                this.initialClip = { ...this.state.clip };
             } else {
                 this.isDrawing = true;
                 const pos = this.getCanvasCoordinates(e);
@@ -35,8 +36,8 @@ export class CanvasHandler {
             }
         });
 
-        canvas.addEventListener('mousemove', (e) => {
-            if (State.isDrawingMode && this.isDrawing) {
+        this.canvas.addEventListener('mousemove', (e) => {
+            if (this.state.isDrawingMode && this.isDrawing) {
                 const pos = this.getCanvasCoordinates(e);
                 if (this.lastPos) {
                     this.addPoints(this.lastPos, pos);
@@ -45,58 +46,64 @@ export class CanvasHandler {
                 }
                 this.lastPos = pos;
             } else if (this.isPanning) {
-                const scaleX = (e.clientX - this.panStart.x) * (State.clip.right - State.clip.left) / this.rect.width;
-                const scaleY = (e.clientY - this.panStart.y) * (State.clip.bottom - State.clip.top) / this.rect.height;
+                const scaleX = (e.clientX - this.panStart.x) * (this.state.clip.right - this.state.clip.left) / this.rect.width;
+                const scaleY = (e.clientY - this.panStart.y) * (this.state.clip.bottom - this.state.clip.top) / this.rect.height;
 
-                State.clip.left = this.initialClip.left + scaleX * State.zoomX;
-                State.clip.right = this.initialClip.right + scaleX * State.zoomX;
-                State.clip.top = this.initialClip.top + scaleY * State.zoomY;
-                State.clip.bottom = this.initialClip.bottom + scaleY * State.zoomY;
+                this.state.clip.left = this.initialClip.left + scaleX * this.state.zoomX;
+                this.state.clip.right = this.initialClip.right + scaleX * this.state.zoomX;
+                this.state.clip.top = this.initialClip.top + scaleY * this.state.zoomY;
+                this.state.clip.bottom = this.initialClip.bottom + scaleY * this.state.zoomY;
             }
         });
 
-        canvas.addEventListener('mouseup', () => {
+        this.canvas.addEventListener('mouseup', () => {
             this.isDrawing = false;
             this.isPanning = false;
             this.lastPos = null;
         });
 
-        canvas.addEventListener('mouseout', () => {
+        this.canvas.addEventListener('mouseout', () => {
             this.isDrawing = false;
             this.isPanning = false;
             this.lastPos = null;
         });
 
-        canvas.addEventListener('wheel', (e) => {
-            if (State.isDrawingMode) return;
+        this.canvas.addEventListener('wheel', (e) => {
+            if (this.state.isDrawingMode) return;
             e.preventDefault();
 
             const zoomDelta = e.deltaY < 0 ? scaleFactor : 1 / scaleFactor;
             if (e.shiftKey) {
                 this.zoomToCenterByY(zoomDelta);
             } else {
-                const clip = State.clip;
-                State.zoomX /= zoomDelta;
-                State.zoomY /= zoomDelta;
-                clip.top -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.top);
-                clip.bottom -= (zoomDelta - 1) * (e.clientY - this.rect.top - clip.bottom);
-                clip.left -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.left);
-                clip.right -= (zoomDelta - 1) * (e.clientX - this.rect.left - clip.right);
+                let x = e.clientX - this.rect.left;
+                let y = e.clientY - this.rect.top;
+                this.zoomToMouse(x, y, zoomDelta);
             }
         });
     }
 
+    zoomToMouse(x, y, zoomDelta){
+        const clip = this.state.clip;
+        this.state.zoomX /= zoomDelta;
+        this.state.zoomY /= zoomDelta;
+        clip.top -= (zoomDelta - 1) * (y - clip.top);
+        clip.bottom -= (zoomDelta - 1) * (y - clip.bottom);
+        clip.left -= (zoomDelta - 1) * (x - clip.left);
+        clip.right -= (zoomDelta - 1) * (x - clip.right);
+    }
+
     zoomToCenterByY(zoomDelta){
-        const clip = State.clip;
-        State.zoomY /= zoomDelta;
+        const clip = this.state.clip;
+        this.state.zoomY /= zoomDelta;
         const midY = (clip.top + clip.bottom) / 2;
         clip.top = midY - (midY - clip.top) * zoomDelta;
         clip.bottom = midY + (clip.bottom - midY) * zoomDelta;
     }
 
     zoomToCenterByX(zoomDelta){
-        const clip = State.clip;
-        State.zoomX /= zoomDelta;
+        const clip = this.state.clip;
+        this.state.zoomX /= zoomDelta;
         const midX = (clip.left + clip.right) / 2;
         clip.left = midX - (midX - clip.left) * zoomDelta;
         clip.right = midX + (clip.right - midX) * zoomDelta;
@@ -151,13 +158,11 @@ export class CanvasHandler {
         this.context.stroke();
     }
 
-    createLinearInterpolator(points) {
-        let a = this.canvas.width;
+    createLinearInterpolator(points, length) {
         return function(x) {
-            x = Math.max(0, Math.min(points.length - 1, x)) * a;
+            x = Math.max(0, Math.min(points.length - 1, points.length * x / length));
             const x1 = Math.floor(x);
             const x2 = Math.floor(x);
-            
             const y1 = points[x1];
             const y2 = points[x2];
             return - y1 - (y2 - y1) * (x - x1);
