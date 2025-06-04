@@ -297,6 +297,25 @@ export class InputHandler {
         const num = document.getElementById(rangeId + "-value");
         if (!range || !num) return;
 
+        // Функция для показа ошибки
+        const showParamError = (input, message) => {
+            let errorDiv = input.parentNode.querySelector('.param-error-tooltip');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'param-error-tooltip';
+                input.parentNode.style.position = "relative";
+                input.parentNode.appendChild(errorDiv);
+            }
+            errorDiv.textContent = message;
+            errorDiv.classList.add('visible');
+            if (errorDiv.hideTimer) clearTimeout(errorDiv.hideTimer);
+            errorDiv.hideTimer = setTimeout(() => {
+                errorDiv.classList.remove('visible');
+                errorDiv.hideTimer = null;
+            }, 2000);
+        };
+
+
         const onChange = (value) => {
             setter(+value);
             if (isNeedToRebuild)
@@ -319,6 +338,7 @@ export class InputHandler {
 
         num.prev = num.value;
         num.addEventListener('animationend', () => num.classList.remove('invalid'));
+
         num.addEventListener('change', () => {
             if (num.value === "") {
                 num.value = num.prev;
@@ -327,16 +347,22 @@ export class InputHandler {
                 num.classList.add('invalid');
                 return;
             }
-            num.prev = num.value;
             const value = parseFloat(num.value);
-            if (num.min && value <= num.min)
-                num.value = num.min;
-            if (num.max && value >= num.max)
-                num.value = num.max;
+            if (value <= 0) {
+                showParamError(num, "В параметрах допустимы только положительные значения");
+                num.value = num.prev;
+                void num.offsetWidth;
+                num.classList.remove('invalid');
+                num.classList.add('invalid');
+                return;
+            }
+            num.prev = num.value;
+
             range.value = parseFloat((+num.value).toFixed(4));
             onChange(num.value);
         });
     }
+
 
     dumpForHistory() {
         this.historyManager.pushState(this.state.dumpDataForHistory());
