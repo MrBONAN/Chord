@@ -289,8 +289,18 @@ export class InputHandler {
             onChange(range.value);
         });
 
+        num.prev = num.value;
+        num.addEventListener('animationend', () => num.classList.remove('invalid'));
         num.addEventListener('change', () => {
-            let value = parseFloat(num.value);
+            if (num.value === "") {
+                num.value = num.prev;
+                num.classList.remove('invalid');
+                void num.offsetWidth;
+                num.classList.add('invalid');
+                return;
+            }
+            num.prev = num.value;
+            const value = parseFloat(num.value);
             if (num.min && value <= num.min)
                 num.value = num.min;
             if (num.max && value >= num.max)
