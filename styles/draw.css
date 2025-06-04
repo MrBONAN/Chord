@@ -267,7 +267,6 @@
 /* Иконки внутри кнопок */
 .view-btn .svg-icon {
     width: 20px;
-    h
 }
 
 .controls-bar {
@@ -380,4 +379,24 @@
 .side-btn .svg-icon {
     width: 20px;
     height: 20px;
+}
+
+
+.left-controls,
+.right-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
+}
+
+.center-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 0;
+    gap: 10px;
 }

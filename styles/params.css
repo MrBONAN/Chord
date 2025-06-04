@@ -313,3 +313,7 @@ input[type="reset"]:active {
     background: #dddddd;
     border-color: #888;
 }
+
+.slider-caption::after {
+    content: none !important;
+}
