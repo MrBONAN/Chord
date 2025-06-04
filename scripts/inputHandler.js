@@ -341,9 +341,9 @@ export class InputHandler {
                 return;
             }
             const value = parseFloat(num.value);
-            if (value < 0) {
-                showParamError(num, "В параметрах недопустимы отрицательные значения");
-                num.value = num.prev; // Оставляем прошлое значение
+            if (value <= 0) {
+                showParamError(num, "В параметрах допустимы только положительные значения");
+                num.value = num.prev;
                 void num.offsetWidth;
                 num.classList.remove('invalid');
                 num.classList.add('invalid');
@@ -351,7 +351,6 @@ export class InputHandler {
             }
             num.prev = num.value;
 
-            // ОТКЛЮЧЕНО автокорректировка на min/max!
             range.value = parseFloat((+num.value).toFixed(4));
             onChange(num.value);
         });
