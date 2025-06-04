@@ -267,7 +267,6 @@ export class InputHandler {
     initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave, isUpdateOnInput) {
         const range = document.getElementById(rangeId);
         const num = document.getElementById(rangeId + "-value");
-        num.prev = num.value;
         if (!range || !num) return;
 
         const onChange = (value) => {
@@ -290,9 +289,14 @@ export class InputHandler {
             onChange(range.value);
         });
 
+        num.prev = num.value;
+        num.addEventListener('animationend', () => num.classList.remove('invalid'));
         num.addEventListener('change', () => {
             if (num.value === "") {
                 num.value = num.prev;
+                num.classList.remove('invalid');
+                void num.offsetWidth;
+                num.classList.add('invalid');
                 return;
             }
             num.prev = num.value;
