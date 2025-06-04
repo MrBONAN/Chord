@@ -130,18 +130,27 @@ export class InputHandler {
         const errorShowTime = 2000;
 
         const funcListener = (funcName, errorDiv, successAction) => {
-            const strFunc = document.getElementById(funcName).value
+            const strFunc = document.getElementById(funcName).value;
             const parsedFunc = this.parseFunction(strFunc);
             if (!parsedFunc.success) {
-                errorDiv.textContent =
-                    parsedFunc.message.replace("Неизвестный тип токена 'UNKNOWN' возле", "Неизвестный символ");
+                if (errorDiv.hideTimer) {
+                    clearTimeout(errorDiv.hideTimer);
+                }
+                if (errorDiv.clearTimer) {
+                    clearTimeout(errorDiv.clearTimer);
+                }
+                errorDiv.textContent = parsedFunc.message
+                    .replace("Неизвестный тип токена 'UNKNOWN' возле", "Неизвестный символ");
                 errorDiv.classList.add("visible");
-                setTimeout(() => {
+                errorDiv.hideTimer = setTimeout(() => {
                     errorDiv.classList.remove("visible");
-                    setTimeout(() => {
+                    errorDiv.clearTimer = setTimeout(() => {
                         errorDiv.textContent = "";
+                        errorDiv.clearTimer = null;
                     }, 500);
+                    errorDiv.hideTimer = null;
                 }, errorShowTime);
+
                 console.error(parsedFunc.message);
                 return;
             }
