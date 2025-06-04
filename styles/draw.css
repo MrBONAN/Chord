@@ -173,7 +173,7 @@
     justify-content: center;
     width: 42px;
     height: 42px;
-    border: 2px solid #9b9b9b;
+    border: 2px solid #555555;
     border-radius: 4px;
     cursor: pointer;
     background: #fff;
@@ -209,7 +209,7 @@
     align-items: center;
     justify-content: center;
     background: #fff;
-    border: 2px solid #9b9b9b;
+    border: 2px solid #555555;
     border-radius: 4px;
     cursor: pointer;
     transition:  0.15s, border-color 0.15s;
