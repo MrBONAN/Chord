@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/params.css">
     <link rel="stylesheet" href="styles/draw.css">
-    <link rel="stylesheet" href="styles/animations.css">
-    <link rel="stylesheet" href="styles/sidebar.css">
     <link rel="stylesheet" href="styles/icons.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/functionError.css">
 </head>
 <body>
 <div id="container">
@@ -80,8 +80,8 @@
                 <fieldset>
                     <legend><b>Параметры струны</b></legend>
                     <label class="slider-block">
-                        <span class="slider-caption">ρ (плотность)
-                            <span class="tooltip">Линейная плотность струны [кг/м]</span>
+                        <span class="slider-caption">Плотность струны
+                            <span class="tooltip">ρ [кг/м]</span>
                         </span>
                         <div class="slider-row">
                             <input id="p" type="range" min="0.1" max="5" step="0.01" value="1">
@@ -89,8 +89,8 @@
                         </div>
                     </label>
                     <label class="slider-block">
-                        <span class="slider-caption">T₀ (натяжение)
-                            <span class="tooltip">сила натяжения струны [Н]</span>
+                        <span class="slider-caption">Натяжение струны
+                            <span class="tooltip">T₀ [Н]</span>
                         </span>
                         <div class="slider-row">
                             <input id="T0" type="range" min="1" max="10" step="0.01" value="9">
@@ -99,7 +99,7 @@
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Длина струны
-                            <span class="tooltip">длина струны [м]</span>
+                            <span class="tooltip">L [м]</span>
                         </span>
                         <div class="slider-row">
                             <input id="length" type="range" min="1" max="10" step="1" value="1">
@@ -108,7 +108,7 @@
                     </label>
                     <label class="slider-block">
                         <span class="slider-caption">Линия времени
-                            <span class="tooltip">Значение времени внутри периода [с]</span>
+                            <span class="tooltip">t [с]</span>
                         </span>
                         <div class="slider-row">
                             <input id="period" type="range" min="0" max="1" step="0.01" value="0">
@@ -120,14 +120,20 @@
             <form id="functions">
                 <label class="function-row">
                     <span class="function-caption">Ф-я нач. положения</span>
-                    <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    <div class="input-wrapper">
+                        <div id="savePosError" class="error-tooltip"></div>
+                        <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    </div>
                     <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
                         <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
                 </label>
                 <label class="function-row">
                     <span class="function-caption">Ф-я нач. скорости</span>
-                    <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    <div class="input-wrapper">
+                        <div id="saveSpeedError" class="error-tooltip"></div>
+                        <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    </div>
                     <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
                         <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
@@ -154,8 +160,8 @@
                     <label class="slider-block">
                         <span class="slider-caption">Интервал для интеграла</span>
                         <div class="slider-row">
-                            <input id="dx" type="range" min="0.0001" max="0.03" step="0.000001" value="0.0001">
-                            <input id="dx-value" class="slider-value" type="number" step="0.000001" min="0.000001" max="0.1" value="0.0001">
+                            <input id="dx" type="range" min="0.0001" max="0.03" step="0.000001" value="0.001">
+                            <input id="dx-value" class="slider-value" type="number" step="0.000001" min="0.000001" max="0.1" value="0.001">
                         </div>
                     </label>
                     <label class="slider-block">

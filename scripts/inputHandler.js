@@ -22,6 +22,8 @@ export class InputHandler {
 
         this.savePosBtn = document.getElementById("savePosFunc");
         this.saveSpeedBtn = document.getElementById("saveSpeedFunc");
+        this.savePosErrorDiv = document.getElementById("savePosError");
+        this.saveSpeedErrorDiv = document.getElementById("saveSpeedError");
 
         this.startTimeSlider = document.getElementById("startTime");
         this.startTimeSliderValue = document.getElementById("startTime-value");
@@ -39,7 +41,7 @@ export class InputHandler {
         this.saveBtn = document.getElementById("saveImage");
         this.loadBtn = document.getElementById("loadImage");
         this.fileInput = document.getElementById("fileInput");
-    
+
         this.isFrozenBackup = false;
     }
 
@@ -125,31 +127,50 @@ export class InputHandler {
     }
 
     initFunctionInputs() {
+        const errorShowTime = 2000;
+
+        const funcListener = (funcName, errorDiv, successAction) => {
+            const strFunc = document.getElementById(funcName).value;
+            const parsedFunc = this.parseFunction(strFunc);
+            if (!parsedFunc.success) {
+                if (errorDiv.hideTimer) {
+                    clearTimeout(errorDiv.hideTimer);
+                }
+                if (errorDiv.clearTimer) {
+                    clearTimeout(errorDiv.clearTimer);
+                }
+                errorDiv.textContent = parsedFunc.message
+                    .replace("Неизвестный тип токена 'UNKNOWN' возле", "Неизвестный символ");
+                errorDiv.classList.add("visible");
+                errorDiv.hideTimer = setTimeout(() => {
+                    errorDiv.classList.remove("visible");
+                    errorDiv.clearTimer = setTimeout(() => {
+                        errorDiv.textContent = "";
+                        errorDiv.clearTimer = null;
+                    }, 500);
+                    errorDiv.hideTimer = null;
+                }, errorShowTime);
+
+                console.error(parsedFunc.message);
+                return;
+            }
+            successAction(parsedFunc, strFunc);
+            this.state.rebuild();
+            this.state.resetTime();
+            this.dumpForHistory();
+        };
+
         this.savePosBtn.addEventListener("click", () => {
-            const strPosFunc = document.getElementById("posFuncStr").value
-            const posFunction = this.parseFunction(strPosFunc);
-            if (posFunction.success) {
+            funcListener("posFuncStr", this.savePosErrorDiv, (posFunction, strPosFunc) => {
                 this.state.setPositionFunction(posFunction.func, strPosFunc);
                 this.state.drawnPoints = [];
-            } else {
-                console.error(posFunction.message);
-            }
-            this.state.rebuild();
-            this.state.resetTime();
-            this.dumpForHistory();
+            });
         });
-        
+
         this.saveSpeedBtn.addEventListener("click", () => {
-            const strSpeedFunc = document.getElementById("speedFuncStr").value;
-            const speedFunction = this.parseFunction(strSpeedFunc);
-            if (speedFunction.success) {
+            funcListener("speedFuncStr", this.saveSpeedErrorDiv, (speedFunction, strSpeedFunc) => {
                 this.state.setSpeedFunction(speedFunction.func, strSpeedFunc);
-            } else {
-                console.error(speedFunction.message);
-            }
-            this.state.rebuild();
-            this.state.resetTime();
-            this.dumpForHistory();
+            });
         });
     }
 
@@ -165,7 +186,7 @@ export class InputHandler {
             try {
                 const metadata = this.state.dumpData();
                 const finalBlob = await this.imageSaver.saveImage(metadata);
-                
+
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(finalBlob);
                 a.download = 'image_with_metadata.png';
@@ -174,11 +195,11 @@ export class InputHandler {
                 console.error('Error saving image:', err);
             }
         });
-        
+
         this.loadBtn.addEventListener("click", () => {
             fileInput.click();
         });
-        
+
         this.fileInput.addEventListener("change", async () => {
             const file = fileInput.files[0];
             try {
@@ -196,7 +217,7 @@ export class InputHandler {
 
     initZoomControls() {
         const zoomDelta = 1.1;
-        
+
         this.zoomInBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             if (e.shiftKey) {
@@ -205,7 +226,7 @@ export class InputHandler {
                 this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, zoomDelta);
             }
         });
-        
+
         this.zoomOutBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             if (e.shiftKey) {
@@ -214,7 +235,7 @@ export class InputHandler {
                 this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, 1 / zoomDelta);
             }
         });
-        
+
         this.resetViewBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             this.state.resetClip();
@@ -250,6 +271,13 @@ export class InputHandler {
         });
     }
 
+    setDxN(dx, n) {
+        document.getElementById('dx').value = dx;
+        document.getElementById('n').value = n;
+        document.getElementById('dx-value').value = dx;
+        document.getElementById('n-value').value = n;
+    }
+
     syncUI() {
         this.undoBtn.disabled = !this.historyManager.canUndo();
         this.redoBtn.disabled = !this.historyManager.canRedo();
@@ -268,6 +296,25 @@ export class InputHandler {
         const range = document.getElementById(rangeId);
         const num = document.getElementById(rangeId + "-value");
         if (!range || !num) return;
+
+        // Функция для показа ошибки
+        const showParamError = (input, message) => {
+            let errorDiv = input.parentNode.querySelector('.param-error-tooltip');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'param-error-tooltip';
+                input.parentNode.style.position = "relative";
+                input.parentNode.appendChild(errorDiv);
+            }
+            errorDiv.textContent = message;
+            errorDiv.classList.add('visible');
+            if (errorDiv.hideTimer) clearTimeout(errorDiv.hideTimer);
+            errorDiv.hideTimer = setTimeout(() => {
+                errorDiv.classList.remove('visible');
+                errorDiv.hideTimer = null;
+            }, 2000);
+        };
+
 
         const onChange = (value) => {
             setter(+value);
@@ -289,16 +336,33 @@ export class InputHandler {
             onChange(range.value);
         });
 
+        num.prev = num.value;
+        num.addEventListener('animationend', () => num.classList.remove('invalid'));
+
         num.addEventListener('change', () => {
-            let value = parseFloat(num.value);
-            if (num.min && value <= num.min)
-                num.value = num.min;
-            if (num.max && value >= num.max)
-                num.value = num.max;
+            if (num.value === "") {
+                num.value = num.prev;
+                num.classList.remove('invalid');
+                void num.offsetWidth;
+                num.classList.add('invalid');
+                return;
+            }
+            const value = parseFloat(num.value);
+            if (value <= 0) {
+                showParamError(num, "В параметрах допустимы только положительные значения");
+                num.value = num.prev;
+                void num.offsetWidth;
+                num.classList.remove('invalid');
+                num.classList.add('invalid');
+                return;
+            }
+            num.prev = num.value;
+
             range.value = parseFloat((+num.value).toFixed(4));
             onChange(num.value);
         });
     }
+
 
     dumpForHistory() {
         this.historyManager.pushState(this.state.dumpDataForHistory());

@@ -24,8 +24,8 @@ export class State {
     init(canvas) {
         this.p = 1;
         this.T0 = 9;
-        this.dx = 0.0001;
-        this.n = 10000;
+        this.dx = 0.001;
+        this.n = 1000;
         this.pointsCount = 200;
         this.modes = 100;
         this.timeScale = 0.1;
@@ -74,14 +74,14 @@ export class State {
 
     setDensity          (newP)  {  this.p = newP; };
     setTension          (newT0) {  this.T0 = newT0; };
-    setLength   (newLength) { this.length = newLength; this.dx = this.length / this.n; }
+    setLength   (newLength) { this.length = newLength; this.dx = this.length / this.n; this.inputHandler.setDxN(this.dx, this.n); }
 
     setPositionFunction (f, stringF) { this.positionFunction = f; this.posFuncStr = stringF; };
     setSpeedFunction    (f, stringF) { this.speedFunction = f; this.speedFuncStr = stringF; };
     setModes    (newModes) {  this.modes = newModes;  }
 
-    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); }
-    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; }
+    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); this.inputHandler.setDxN(this.dx, this.n); }
+    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; this.inputHandler.setDxN(this.dx, this.n); }
 
     setPointsCount (newPointsCount) { this.pointsCount = newPointsCount; }
     setTimeScale   (newTimeScale) {  this.timeScale   = newTimeScale; }

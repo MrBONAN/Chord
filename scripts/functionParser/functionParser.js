@@ -45,7 +45,7 @@ export function parseFunction(func) {
             return {success: false, message: `Найден неожиданный символ: ${token.value}`};
         }
         if (token.type === TokenType.IDENT && token.value !== 'x') {
-            return {success: false, message: `В функции присутствует переменная кроме X: ${token.value}`};
+            return {success: false, message: `В функции присутствует переменная кроме 'x': ${token.value}`};
         }
     }
 

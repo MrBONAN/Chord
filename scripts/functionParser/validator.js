@@ -8,7 +8,7 @@ export function validate(tokens) {
 
     const err = (i, msg) => {
         const near = tokens[i] ? `'${tokens[i].value}'` : 'конец ввода';
-        return `${msg} возле ${near} (index ${i})`;
+        return `${msg} возле ${near}`;
     };
 
     let unaryStack = [];
