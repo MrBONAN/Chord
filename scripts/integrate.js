@@ -23,6 +23,7 @@ export class StringCalculator {
         let x = 0;
         const heights = [];
         for (let i = 0; i < count; i++) {
+            x = Math.min(this.state.length, x);
             heights.push(func(x));
             x += this.state.dx;
         }
