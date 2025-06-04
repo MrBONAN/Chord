@@ -80,8 +80,8 @@ export class State {
     setSpeedFunction    (f, stringF) { this.speedFunction = f; this.speedFuncStr = stringF; };
     setModes    (newModes) {  this.modes = newModes;  }
 
-    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); }
-    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; }
+    setDx       (newDx)     { this.dx = newDx; this.n = Math.round(this.length / this.dx); this.inputHandler.setDxN(this.dx, this.n); }
+    setN        (newN)      { this.n = newN;  this.dx = this.length / this.n; this.inputHandler.setDxN(this.dx, this.n); }
 
     setPointsCount (newPointsCount) { this.pointsCount = newPointsCount; }
     setTimeScale   (newTimeScale) {  this.timeScale   = newTimeScale; }

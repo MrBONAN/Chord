@@ -250,6 +250,13 @@ export class InputHandler {
         });
     }
 
+    setDxN(dx, n) {
+        document.getElementById('dx').value = dx;
+        document.getElementById('n').value = n;
+        document.getElementById('dx-value').value = dx;
+        document.getElementById('n-value').value = n;
+    }
+
     syncUI() {
         this.undoBtn.disabled = !this.historyManager.canUndo();
         this.redoBtn.disabled = !this.historyManager.canRedo();
