@@ -267,6 +267,7 @@ export class InputHandler {
     initInput(rangeId, setter, isNeedToRebuild, isNeedToReset, isNeedToSave, isUpdateOnInput) {
         const range = document.getElementById(rangeId);
         const num = document.getElementById(rangeId + "-value");
+        num.prev = num.value;
         if (!range || !num) return;
 
         const onChange = (value) => {
@@ -290,7 +291,12 @@ export class InputHandler {
         });
 
         num.addEventListener('change', () => {
-            let value = parseFloat(num.value);
+            if (num.value === "") {
+                num.value = num.prev;
+                return;
+            }
+            num.prev = num.value;
+            const value = parseFloat(num.value);
             if (num.min && value <= num.min)
                 num.value = num.min;
             if (num.max && value >= num.max)
