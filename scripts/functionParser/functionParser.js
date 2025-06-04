@@ -9,25 +9,23 @@ const constantTokens = new Map([
 ]);
 
 const functionTokens = new Map([
+    ['asin', 'Math.asin'],
+    ['acos', 'Math.acos'],
+    ['atan', 'Math.atan'],
+
     ['sin', 'Math.sin'],
     ['cos', 'Math.cos'],
     ['tan', 'Math.tan'],
 
-    ['atan', 'Math.atan'],
-    ['asin', 'Math.asin'],
-    ['acos', 'Math.acos'],
-
     ['abs', 'Math.abs'],
     ['sqrt', 'Math.sqrt'],
     ['exp', 'Math.exp'],
-    ['ln', 'Math.log'],
     ['log', 'Math.log10'],
+    ['ln', 'Math.log'],
 
     ['ceil', 'Math.ceil'],
     ['floor', 'Math.floor'],
-    ['round', 'Math.round'],
-    ['max', 'Math.max'],
-    ['min', 'Math.min'],
+    ['round', 'Math.round']
 ]);
 
 for (const [token, value] of functionTokens) {
@@ -56,8 +54,17 @@ export function parseFunction(func) {
 
     let preprocessedFunction = result.func;
 
+    const arcFunctions = ["asin", "acos", "atan"];
     for (const [token, value] of functionTokens) {
-        preprocessedFunction = preprocessedFunction.replaceAll(token, value);
+        if (arcFunctions.includes(token)) {
+            preprocessedFunction = preprocessedFunction.replaceAll(token, token.toUpperCase());
+        } else {
+            preprocessedFunction = preprocessedFunction.replaceAll(token, value);
+        }
+    }
+
+    for (const token of arcFunctions) {
+        preprocessedFunction = preprocessedFunction.replaceAll(token.toUpperCase()  , "Math." + token);
     }
 
     for (const [token, value] of constantTokens) {
