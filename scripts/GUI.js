@@ -83,7 +83,9 @@ export class GUI {
             context.stroke();
 
             const graphX = fmt((x - originX) * length * zoomX / width);
-            if (graphX !== 0) context.fillText(graphX, x, Math.max(Math.min(originY, height - 20), 0) + 4);
+            if (graphX !== 0) {
+                context.fillText(graphX, x, Math.max(Math.min(originY, height - 20), 0) + 4);
+            }
         }
 
         const stepY = pickStep(zoomY, height / 2, 1);
@@ -96,7 +98,7 @@ export class GUI {
             context.stroke();
 
             const graphY = fmt(2 * (originY - y) * zoomY / height);
-            if (Math.abs(graphY) > 0.001) {
+            if (graphY !== 0) {
                 context.fillText(graphY, Math.max(Math.min(originX, width - 40), 0) + 20, y);
             }
         }
