@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/sidebar.css">
     <link rel="stylesheet" href="styles/icons.css">
+    <link rel="stylesheet" href="styles/functionError.css">
 </head>
 <body>
 <div id="container">
@@ -120,14 +121,20 @@
             <form id="functions">
                 <label class="function-row">
                     <span class="function-caption">Ф-я нач. положения</span>
-                    <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    <div class="input-wrapper">
+                        <div id="savePosError" class="error-tooltip"></div>
+                        <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    </div>
                     <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
                         <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
                 </label>
                 <label class="function-row">
                     <span class="function-caption">Ф-я нач. скорости</span>
-                    <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    <div class="input-wrapper">
+                        <div id="saveSpeedError" class="error-tooltip"></div>
+                        <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    </div>
                     <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
                         <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon" />
                     </button>
