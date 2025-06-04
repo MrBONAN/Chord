@@ -22,6 +22,8 @@ export class InputHandler {
 
         this.savePosBtn = document.getElementById("savePosFunc");
         this.saveSpeedBtn = document.getElementById("saveSpeedFunc");
+        this.savePosErrorDiv = document.getElementById("savePosError");
+        this.saveSpeedErrorDiv = document.getElementById("saveSpeedError");
 
         this.startTimeSlider = document.getElementById("startTime");
         this.startTimeSliderValue = document.getElementById("startTime-value");
@@ -39,7 +41,7 @@ export class InputHandler {
         this.saveBtn = document.getElementById("saveImage");
         this.loadBtn = document.getElementById("loadImage");
         this.fileInput = document.getElementById("fileInput");
-    
+
         this.isFrozenBackup = false;
     }
 
@@ -125,31 +127,41 @@ export class InputHandler {
     }
 
     initFunctionInputs() {
+        const errorShowTime = 2000;
+
+        const funcListener = (funcName, errorDiv, successAction) => {
+            const strFunc = document.getElementById(funcName).value
+            const parsedFunc = this.parseFunction(strFunc);
+            if (!parsedFunc.success) {
+                errorDiv.textContent =
+                    parsedFunc.message.replace("Неизвестный тип токена 'UNKNOWN' возле", "Неизвестный символ");
+                errorDiv.classList.add("visible");
+                setTimeout(() => {
+                    errorDiv.classList.remove("visible");
+                    setTimeout(() => {
+                        errorDiv.textContent = "";
+                    }, 500);
+                }, errorShowTime);
+                console.error(parsedFunc.message);
+                return;
+            }
+            successAction(parsedFunc, strFunc);
+            this.state.rebuild();
+            this.state.resetTime();
+            this.dumpForHistory();
+        };
+
         this.savePosBtn.addEventListener("click", () => {
-            const strPosFunc = document.getElementById("posFuncStr").value
-            const posFunction = this.parseFunction(strPosFunc);
-            if (posFunction.success) {
+            funcListener("posFuncStr", this.savePosErrorDiv, (posFunction, strPosFunc) => {
                 this.state.setPositionFunction(posFunction.func, strPosFunc);
                 this.state.drawnPoints = [];
-            } else {
-                console.error(posFunction.message);
-            }
-            this.state.rebuild();
-            this.state.resetTime();
-            this.dumpForHistory();
+            });
         });
-        
+
         this.saveSpeedBtn.addEventListener("click", () => {
-            const strSpeedFunc = document.getElementById("speedFuncStr").value;
-            const speedFunction = this.parseFunction(strSpeedFunc);
-            if (speedFunction.success) {
+            funcListener("speedFuncStr", this.saveSpeedErrorDiv, (speedFunction, strSpeedFunc) => {
                 this.state.setSpeedFunction(speedFunction.func, strSpeedFunc);
-            } else {
-                console.error(speedFunction.message);
-            }
-            this.state.rebuild();
-            this.state.resetTime();
-            this.dumpForHistory();
+            });
         });
     }
 
@@ -165,7 +177,7 @@ export class InputHandler {
             try {
                 const metadata = this.state.dumpData();
                 const finalBlob = await this.imageSaver.saveImage(metadata);
-                
+
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(finalBlob);
                 a.download = 'image_with_metadata.png';
@@ -174,11 +186,11 @@ export class InputHandler {
                 console.error('Error saving image:', err);
             }
         });
-        
+
         this.loadBtn.addEventListener("click", () => {
             fileInput.click();
         });
-        
+
         this.fileInput.addEventListener("change", async () => {
             const file = fileInput.files[0];
             try {
@@ -196,7 +208,7 @@ export class InputHandler {
 
     initZoomControls() {
         const zoomDelta = 1.1;
-        
+
         this.zoomInBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             if (e.shiftKey) {
@@ -205,7 +217,7 @@ export class InputHandler {
                 this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, zoomDelta);
             }
         });
-        
+
         this.zoomOutBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             if (e.shiftKey) {
@@ -214,7 +226,7 @@ export class InputHandler {
                 this.canvasHandler.zoomToMouse(this.canvasHandler.rect.width / 2, this.canvasHandler.rect.height / 2, 1 / zoomDelta);
             }
         });
-        
+
         this.resetViewBtn.addEventListener("click", (e) => {
             if (this.state.isDrawingMode) return;
             this.state.resetClip();
