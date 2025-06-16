@@ -5,51 +5,36 @@ export class StringCalculator {
         this.state = state;
     }
 
-    integrate(heights) {
-        return heights.reduce((sum, height) => sum + height, 0) * this.state.dx;
-    }
-
-    multiplyFunctionHeights(heights1, heights2) {
-        if (heights1.length !== heights2.length) {
-            console.error(`Количество точек, в которых вычислены значения функций, должны совпадать: ${heights1.length} != ${heights2.length}`);
-        }
-        const minLength = Math.min(heights1.length, heights2.length);
-        return heights1
-            .slice(0, minLength)
-            .map((h1, i) => h1 * heights2[i]);
-    }
-
-    calculateFunctionHeights(func, count) {
+    integrate(func, pointsCount) {
+        const dx = this.state.dx;
+        let heightsSum = 0;
         let x = 0;
-        const heights = [];
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < pointsCount; i++){
             x = Math.min(this.state.length, x);
-            heights.push(func(x));
-            x += this.state.dx;
+            heightsSum += func(x);
+            x += dx
         }
-        return heights;
+        return heightsSum * dx;
     }
 
-    calculateMainIntegral(heights, lambda) {
-        const sinFunc = (x) => Math.sin(x * lambda);
-        const sinHeights = this.calculateFunctionHeights(sinFunc, heights.length);
-        const functionsCompositionHeights = this.multiplyFunctionHeights(heights, sinHeights);
-        return this.integrate(functionsCompositionHeights);
+    calculateMainIntegral(func, lambda, pointsCount) {
+        const functionsComposition = (x) => func(x) * Math.sin(x * lambda);
+        return this.integrate(functionsComposition, pointsCount);
     }
 
-    calculateDCoefficients(a, L, lambdas, initialSpeedHeights) {
+    calculateDCoefficients(a, L, lambdas, speedFunc, pointsCount) {
         const D = [];
         for (const lambda of lambdas) {
-            const integral = this.calculateMainIntegral(initialSpeedHeights, lambda);
+            const integral = this.calculateMainIntegral(speedFunc, lambda, pointsCount);
             D.push(2 / (a * lambda * L) * integral);
         }
         return D;
     }
 
-    calculateECoefficients(a, L, lambdas, initialPositionHeights) {
+    calculateECoefficients(a, L, lambdas, posFunc, pointsCount) {
         const E = [];
         for (const lambda of lambdas) {
-            const integral = this.calculateMainIntegral(initialPositionHeights, lambda);
+            const integral = this.calculateMainIntegral(posFunc, lambda, pointsCount);
             E.push(2 / L * integral);
         }
         return E;
@@ -62,7 +47,7 @@ export class StringCalculator {
             count = Math.min(D.length, E.length, lambdas.length);
         }
         const nonZeroCoefficients = [];
-        const eps = 1e-7;
+        const eps = 1e-9;
         for (let i = 0; i < count; i++) {
             if (Math.abs(D[i]) > eps || Math.abs(E[i]) > eps) {
                 nonZeroCoefficients.push({D: D[i], E: E[i], lambda: lambdas[i]});
@@ -81,23 +66,12 @@ export class StringCalculator {
         const pointsCount = Math.floor(length / this.state.dx) + 1;
         const lambdas = new Array(this.state.modes).fill(0).map((_, index) => Math.PI * (index + 1) / length);
 
-        const initialPositionHeights = this.calculateFunctionHeights(positionFunction, pointsCount);
-        const initialSpeedHeights = this.calculateFunctionHeights(speedFunction, pointsCount);
-        const D = this.calculateDCoefficients(a, length, lambdas, initialSpeedHeights);
-        const E = this.calculateECoefficients(a, length, lambdas, initialPositionHeights);
+        const D = this.calculateDCoefficients(a, length, lambdas, speedFunction, pointsCount);
+        const E = this.calculateECoefficients(a, length, lambdas, positionFunction, pointsCount);
 
         return this.calculateFunction(D, E, lambdas, a);
     }
 
-    /**
-     * Создаёт массив координат [x, y, …] для функции с нормированием из области данных в область клиппирования.
-     *
-     * @param {function(number): number} func – функция от x (физические координаты), возвращающая y.
-     * @param {number} pointsCount – количество точек для выборки.
-     * @param {number} length
-     * @param {{left: number, right: number, bottom: number, top: number}} clipBounds – границы области клиппирования, в которую проецируются координаты.
-     * @returns {number[]} – плоский массив координат [x1, y1, x2, y2, …] в пределах clipBounds.
-     */
     createFunctionPoints(func, pointsCount, length, clipBounds) {
         const {left: xClipMin, right: xClipMax, bottom: yClipMin, top: yClipMax} = clipBounds;
         const physicalDx = length / (pointsCount - 1);
