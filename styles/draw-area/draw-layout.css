@@ -1,0 +1,28 @@
+#draw-area {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 600px;
+    background: #fcfcfc;
+    border: 2px solid #dedede;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px 0 rgba(130,130,150,0.07);
+    padding: 18px 20px 0 20px;
+    margin-right: 20px;
+    margin-bottom: 0;
+    min-width: 820px;
+}
+
+#glcanvas {
+    border: 2px solid #333;
+    display: block;
+    background: #fff;
+    border-radius: 7px;
+}
+
+#canvas-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+}

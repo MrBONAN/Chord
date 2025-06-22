@@ -10,7 +10,13 @@
     <link rel="stylesheet" href="styles/params/functions.css">
     <link rel="stylesheet" href="styles/params/extra-options.css">
     <link rel="stylesheet" href="styles/params/buttons.css">
-    <link rel="stylesheet" href="styles/draw.css">
+
+    <link rel="stylesheet" href="styles/draw-area/draw-layout.css">
+    <link rel="stylesheet" href="styles/draw-area/canvas-ui.css">
+    <link rel="stylesheet" href="styles/draw-area/control-panel.css">
+    <link rel="stylesheet" href="styles/draw-area/control-buttons.css">
+    <link rel="stylesheet" href="styles/draw-area/tooltip.css">
+
     <link rel="stylesheet" href="styles/icons.css">
     <link rel="stylesheet" href="styles/animations.css">
     <link rel="stylesheet" href="styles/functionError.css">
@@ -125,26 +131,26 @@
                 <div class="input-wrapper">
                     <div id="savePosError" class="error-tooltip"></div>
                     <input id="posFuncStr" type="text" value="sin(2*PI*x)" class="func-input">
+                    <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon"/>
+                    </button>
                 </div>
-                <button type="button" class="func-save-btn" id="savePosFunc" title="Сохранить">
-                    <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon"/>
-                </button>
             </label>
             <label class="function-row">
                 <span class="function-caption">Ф-я нач. скорости</span>
                 <div class="input-wrapper">
                     <div id="saveSpeedError" class="error-tooltip"></div>
                     <input id="speedFuncStr" type="text" value="0" class="func-input">
+                    <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
+                        <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon"/>
+                    </button>
                 </div>
-                <button type="button" class="func-save-btn" id="saveSpeedFunc" title="Сохранить">
-                    <img src="./icons/check-solid.svg" alt="Сохранить" class="svg-icon"/>
-                </button>
             </label>
         </form>
         <button id="extraOptionsBtn" type="button" class="paramsChanger" style="margin-top:15px;">
             Дополнительные настройки
         </button>
-        <div id="extraOptionsPopup" class="extra-options-popup" style="display:none;">
+        <div id="extraOptionsPopup" style="display:none;">
             <div class="extra-options-header">
                 <b>Дополнительные настройки</b>
                 <button id="closeExtraOptions" type="button" class="close-btn" aria-label="Закрыть">✕</button>
@@ -198,7 +204,7 @@
                                value="0.1">
                     </div>
                 </label>
-                <input type="reset" value="Сбросить" style="margin-top:10px;">
+                <input id="resetExtraOptions" type="reset" value="Сбросить" style="margin-top:10px;">
             </form>
         </div>
     </div>
