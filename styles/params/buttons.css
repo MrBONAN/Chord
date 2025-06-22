@@ -1,0 +1,53 @@
+.paramsChanger {
+    width: 100%;
+    padding: 9px 0;
+    background: #ededed;
+    color: #232324;
+    border: 1.6px solid #bbb;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.15s, border-color 0.15s;
+    box-shadow: 0 1.5px 7px 0 rgba(120,120,120,0.07);
+}
+
+.paramsChanger:hover {
+    background: #e2e2e2;
+    border-color: #888;
+}
+
+.close-btn {
+    background: #ededed;
+    border: 1.6px solid #bbb;
+    border-radius: 6px;
+    color: #232324;
+    font-size: 1.09em;
+    font-weight: 700;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, border-color 0.13s;
+}
+
+.close-btn:hover {
+    background: #e2e2e2;
+    border-color: #888;
+}
+
+.close-btn:active {
+    background: #dddddd;
+    border-color: #888;
+}
+
+.svg-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    pointer-events: none;
+    display: block;
+}
