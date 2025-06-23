@@ -1,0 +1,93 @@
+.view-btn,
+.side-btn,
+.history-btn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 2px solid #555555;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+.view-btn:hover:enabled,
+.side-btn:hover:enabled,
+.history-btn:hover:enabled {
+    background: #ededed;
+    border-color: #888;
+}
+
+.view-btn:disabled,
+.side-btn:disabled,
+.history-btn:disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+    background: #fafafa;
+}
+
+.view-btn:disabled .svg-icon,
+.side-btn:disabled .svg-icon,
+.history-btn:disabled .svg-icon {
+    opacity: 0.3;
+    filter: grayscale(1);
+    transition: opacity 0.13s;
+}
+
+.view-btn .svg-icon,
+.side-btn .svg-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.history-btn .svg-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.freeze-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 2px solid #555555;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #fff;
+    transition: 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+.freeze-btn .svg-play {
+    display: inline;
+    opacity: 0.9;
+    filter: grayscale(1);
+}
+
+.freeze-btn .svg-pause {
+    display: none;
+    opacity: 0.9;
+    filter: grayscale(1);
+}
+
+#isFrozen:checked + .freeze-btn .svg-play {
+    display: none;
+}
+#isFrozen:checked + .freeze-btn .svg-pause {
+    display: inline;
+}
+
+.freeze-btn .svg-icon {
+    width: 24px;
+    height: 24px;
+    margin-top: 3px;
+}
+
+.freeze-btn:hover {
+    background: #ededed;
+}

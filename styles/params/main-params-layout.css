@@ -1,0 +1,12 @@
+#params {
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    background: #fcfcfc;
+}
+
+#params h2 {
+    margin: 0;
+}
